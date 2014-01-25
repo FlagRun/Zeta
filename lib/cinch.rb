@@ -22,7 +22,7 @@ bot = Cinch::Bot.new do
     c.ssl.use           = ENV['BOT_SERVER_SSL']
 
     c.modes             = %w{+B -x}
-    c.channels          = %w{#ruby}
+    c.channels          = %w{#flagrun #ruby #gentoo #linux}
     c.plugins.prefix    = /^./
 
     ## Authentication
