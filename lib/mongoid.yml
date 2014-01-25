@@ -1,0 +1,6 @@
+development:
+  sessions:
+    default:
+      database: <% ENV['MONGOID_DATABASE'] %>
+      hosts:
+        - localhost:27017

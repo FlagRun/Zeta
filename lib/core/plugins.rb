@@ -1,0 +1,1 @@
+require_rel '../plugins/*.rb'
