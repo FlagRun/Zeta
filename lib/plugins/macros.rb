@@ -7,7 +7,9 @@ module Plugins
 
     attr_reader :macros
 
-    set plugin_name: "Macros", help: "Enables the classic #shakesoda macros to be used (including new ones.)", react_on: :channel
+    set plugin_name: "Macros", help: "Enables the classic #shakesoda macros to be used (including new ones.)",
+        react_on: :channel,
+        prefix: /^./
 
     def initialize *args
       super
@@ -109,7 +111,7 @@ module Plugins
 
     private
     def getuser(m)
-      User.where(nick: m.user.nick).first || User.new
+      ZUser.where(nick: m.user.nick).first || ZUser.new
     end
 
   end

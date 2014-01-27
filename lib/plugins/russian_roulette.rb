@@ -1,25 +1,28 @@
+require_relative '../helpers/check_user'
 
 module Plugins
   class RussianRoulette
     include Cinch::Plugin
 
-    set plugin_name: "Russian Roulette", help: "In Soviet Russia, boolet shoots YOU!\nUsage: !rr <nick>", react_on: :channel
+    set plugin_name: "Russian Roulette",
+        help: "In Soviet Russia, boolet shoots YOU!\nUsage: !rr <nick>",
+        react_on: :channel
 
     attr_reader :games
 
     PHRASES = [
-      "\"BANG\" You're dead! ... Just kidding comrade... for now.",
-      "\"...BLAMMO!\" (hangfires are a bitch, aren't they?)",
-      "Are you scared yet, comrade?",
-      "Are you pissing your pants yet?",
-      "You are lucky, comrade. At least for now.",
-      "The chamber was as empty as your head.",
-      "Damn. And I thought that it had bullet too.",
-      "Lucky you, comrade.",
-      "Must be your lucky day, comrade.",
-      "\"BLAM!\" you can't play russian roulette with a tokarev, comrade.",
-      "... Looks like you get to live another day... or 5 second.",
-      "... Bad primer."
+        "\"BANG\" You're dead! ... Just kidding comrade... for now.",
+        "\"...BLAMMO!\" (hangfires are a bitch, aren't they?)",
+        "Are you scared yet, comrade?",
+        "Are you pissing your pants yet?",
+        "You are lucky, comrade. At least for now.",
+        "The chamber was as empty as your head.",
+        "Damn. And I thought that it had bullet too.",
+        "Lucky you, comrade.",
+        "Must be your lucky day, comrade.",
+        "\"BLAM!\" you can't play russian roulette with a tokarev, comrade.",
+        "... Looks like you get to live another day... or 5 second.",
+        "... Bad primer."
     ]
 
     def initialize(*args)
@@ -27,22 +30,23 @@ module Plugins
       @games = []
     end
 
-    match /!rr(?: (.+))?/
+    match /rr(?: (.+))?/
+
     def execute(m, nick)
-      #return m.reply "I am sorry comrade, but I do not have pistol on me." unless check_user(m.channel, @bot)
+      return m.reply "I am sorry comrade, but I do not have pistol on me." unless check_user(m.channel, @bot)
       return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)
 
       # player setup
-      player = nick || m.user.nick
+      player = check_user(m.channel, m.user) ? User(nick || m.user) : m.user
       player = m.user if player == @bot
       # be nice, don't force the game on the starter unless the user actually exists in the channel.
-      return m.reply "I am terribly sorry %s, but I don't know %s." % [m.user.nick, player] unless m.channel.users.include?(player)
+      return m.reply "I am terribly sorry %s, but I don't know %s." % [m.user.nick, player.nick] unless m.channel.users.include?(player)
 
       # start game
       @games << m.channel.name
 
-      turns, round_location = Array.new(2) {|i| Random.new.rand(1..6) }
-      m.channel.action "starts a %d-turn game of Russian Roulette with %s." % [turns, player]
+      turns, round_location = Array.new(2) { |i| Random.new.rand(1..6) }
+      m.channel.action "starts a %d-turn game of Russian Roulette with %s." % [turns, player.nick]
 
       phrases = PHRASES.dup.shuffle
 
@@ -77,3 +81,4 @@ module Plugins
     end
   end
 end
+

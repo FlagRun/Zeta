@@ -1,4 +1,4 @@
-class User
+class ZUser
   include Mongoid::Document
   include Mongoid::Timestamps
 

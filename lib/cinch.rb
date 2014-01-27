@@ -1,6 +1,13 @@
 require 'cinch'
+require 'cinch/plugins/forecast'
+require 'cinch/plugins/quotes'
+require 'cinch-convert'
+require 'cinch-calculate'
+require 'cinch-wikipedia'
+
 require 'dotenv'
-require 'require_all'
+require 'open-uri'
+require 'nokogiri'
 
 Dotenv.load
 
@@ -13,6 +20,7 @@ require_relative 'core/plugins'
 bot = Cinch::Bot.new do
   configure do |c|
     c.nick              = ENV['BOT_NICK']
+    c.nicks             = ENV['BOT_NICKS'].split(' ')
     c.user              = ENV['BOT_USERNAME']
     c.realname          = ENV['BOT_REALNAME']
     c.sasl.username     = ENV['SASL_USERNAME']
@@ -21,9 +29,10 @@ bot = Cinch::Bot.new do
     c.port              = ENV['BOT_SERVER_PORT']
     c.ssl.use           = ENV['BOT_SERVER_SSL']
 
-    c.modes             = %w{+B -x}
-    c.channels          = %w{#flagrun #ruby #gentoo #linux}
-    c.plugins.prefix    = /^./
+    c.modes             = ENV['BOT_MODES'].split(' ')
+    #c.channels          = %w{#flagrun #ruby #gentoo #linux}
+    c.channels          = ENV['BOT_CHANNELS'].split(' ')
+    c.plugins.prefix    = /^!/
 
     ## Authentication
 
@@ -39,6 +48,10 @@ bot = Cinch::Bot.new do
 
 
     ## Plugins
+    c.plugins.plugins   << Cinch::Plugins::Forecast
+    c.plugins.plugins   << Cinch::Plugins::Wikipedia
+    c.plugins.plugins   << Cinch::Plugins::Calculate
+    c.plugins.plugins   << Cinch::Plugins::Convert
     c.plugins.plugins   << Plugins::Attack
     c.plugins.plugins   << Plugins::Tell
     c.plugins.plugins   << Plugins::Eightball
@@ -58,16 +71,19 @@ bot = Cinch::Bot.new do
     c.plugins.plugins   << Plugins::UserPlugin
 
     ## Plugins Options
+    c.plugins.options[Cinch::Plugins::Calculate][:units_path]   = '/usr/bin/gunits'
+    c.plugins.options[Cinch::Plugins::Convert][:units_path]     = '/usr/bin/gunits'
+
 
 
   end
 
-  ## Chatlog
-  on :message do |msg|
-    if not msg.channel.nil?
-      Chatlog.create(channel: msg.channel.name, time: msg.time, nick: msg.user.nick, msg: msg.message )
-    end
-  end
+  ### Zchatlog
+  #on :message do |msg|
+  #  if not msg.channel.nil?
+  #    Zchatlog.create(channel: msg.channel.name, time: msg.time, nick: msg.user.nick, msg: msg.message )
+  #  end
+  #end
 
 
 end

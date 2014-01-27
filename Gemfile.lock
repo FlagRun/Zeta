@@ -20,29 +20,33 @@ GEM
     chronic (0.10.2)
     chronic_duration (0.10.2)
       numerizer (~> 0.1.1)
-    cinch-authentication (0.1.0)
-      cinch (~> 2.0.3)
+    cinch-calculate (1.0.0)
+    cinch-convert (1.0.0)
+      cinch (~> 2.0.5)
     cinch-cooldown (1.0.1)
       cinch (~> 2.0.5)
       time-lord (~> 1.0.1)
-    cinch-weatherman (1.0.1)
+    cinch-forecast (0.0.3)
+      cinch (~> 2.0.5)
+    cinch-quotes (0.0.4)
+      cinch (~> 2.0)
+    cinch-toolbox (1.0.3)
+      nokogiri (~> 1.6.0)
+      patron (~> 0.4.18)
+    cinch-wikipedia (1.0.1)
       cinch (~> 2.0.5)
       cinch-cooldown (~> 1.0.1)
-      time-lord (~> 1.0.1)
-      weather-underground (~> 1.1.1)
+      cinch-toolbox (~> 1.0.3)
     dotenv (0.9.0)
     geocoder (1.1.9)
     haml (4.0.4)
       tilt
-    happymapper (0.4.1)
-      libxml-ruby (~> 2.0)
     httparty (0.12.0)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     i18n (0.6.9)
     json (1.8.1)
-    libxml-ruby (2.7.0)
-    mime-types (2.0)
+    mini_portile (0.5.2)
     mongoid (3.1.6)
       activemodel (~> 3.2)
       moped (~> 1.4)
@@ -51,29 +55,25 @@ GEM
     moped (1.5.1)
     multi_json (1.8.4)
     multi_xml (0.5.5)
+    nokogiri (1.6.1)
+      mini_portile (~> 0.5.0)
     numerizer (0.1.1)
     origin (1.1.0)
+    patron (0.4.18)
     rack (1.5.2)
     rack-protection (1.5.2)
       rack
     redis (3.0.6)
     require_all (1.3.2)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
     sinatra (1.4.4)
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
     sinatra-twitter-bootstrap (2.3.3)
     tag_formatter (0.0.3)
-    temperature (1.2)
     tilt (1.4.1)
     time-lord (1.0.1)
     tzinfo (0.3.38)
-    weather-underground (1.1.1)
-      happymapper
-      rest-client
-      temperature (>= 1.0.0)
 
 PLATFORMS
   ruby
@@ -83,13 +83,17 @@ DEPENDENCIES
   chronic
   chronic_duration
   cinch!
-  cinch-authentication
-  cinch-weatherman
+  cinch-calculate
+  cinch-convert
+  cinch-forecast
+  cinch-quotes
+  cinch-wikipedia
   dotenv
   geocoder
   haml
   httparty
   mongoid
+  nokogiri
   redis
   require_all
   sinatra

@@ -4,7 +4,8 @@ module Plugins
   class Tell
     include Cinch::Plugin
 
-    set help: "Allows messaging users who are away.\nUsage: !tell <nick> <message>"
+    set help: "Allows messaging users who are away.\nUsage: !tell <nick> <message>",
+        prefix: /^!/
 
     match /tell (\S+) (.+)/, method: :tell
     def tell(m, nick, msg)

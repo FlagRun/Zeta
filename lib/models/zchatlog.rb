@@ -1,4 +1,4 @@
-class Chatlog
+class ZChatlog
   include Mongoid::Document
 
   field :channel,   type: String

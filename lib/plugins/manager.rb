@@ -59,7 +59,7 @@ module Plugins
 
     private
     def getuser(m)
-      User.where(nick: m.user.nick).first || User.new
+      ZUser.where(nick: m.user.nick).first || ZUser.new
     end
   end
 

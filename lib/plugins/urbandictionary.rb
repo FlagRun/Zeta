@@ -6,7 +6,8 @@ require 'cgi'
 module Plugins
   class UrbanDictionary
     include Cinch::Plugin
-    set plugin_name: "Urban Dictionary", help: "Gets the first entry for an entry on UrbanDictionary.\nUsage: `!urban <entry>`"
+    set plugin_name: "Urban Dictionary", help: "Gets the first entry for an entry on UrbanDictionary.\nUsage: `!urban <entry>`",
+        prefix: /^!/
 
     match /urban (.+)/
 
