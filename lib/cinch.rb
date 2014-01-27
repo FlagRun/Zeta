@@ -12,7 +12,6 @@ require 'nokogiri'
 Dotenv.load
 
 require_relative 'core/admin'
-require_relative 'core/load'
 require_relative 'core/models'
 require_relative 'core/plugins'
 
@@ -52,6 +51,7 @@ bot = Cinch::Bot.new do
     c.plugins.plugins   << Cinch::Plugins::Wikipedia
     c.plugins.plugins   << Cinch::Plugins::Calculate
     c.plugins.plugins   << Cinch::Plugins::Convert
+    c.plugins.plugins   << Cinch::Plugins::Quotes
     c.plugins.plugins   << Plugins::Attack
     c.plugins.plugins   << Plugins::Tell
     c.plugins.plugins   << Plugins::Eightball
@@ -73,6 +73,7 @@ bot = Cinch::Bot.new do
     ## Plugins Options
     c.plugins.options[Cinch::Plugins::Calculate][:units_path]   = '/usr/bin/gunits'
     c.plugins.options[Cinch::Plugins::Convert][:units_path]     = '/usr/bin/gunits'
+    c.plugins.options[Cinch::Plugins::Quotes][:quotes_file]     = File.join(__dir__, 'locales/quotes.yml')
 
 
 
