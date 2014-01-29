@@ -1,3 +1,7 @@
+require 'nokogiri'
+require 'dotenv'
+require 'open-uri'
+
 require 'cinch'
 require 'cinch/plugins/forecast'
 require 'cinch/plugins/quotes'
@@ -6,10 +10,6 @@ require 'cinch-calculate'
 require 'cinch-wikipedia'
 require 'cinch-weatherman'
 require 'weather-underground'
-
-require 'dotenv'
-require 'open-uri'
-require 'nokogiri'
 
 Dotenv.load
 
