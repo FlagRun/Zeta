@@ -4,6 +4,7 @@ require 'cinch/plugins/quotes'
 require 'cinch-convert'
 require 'cinch-calculate'
 require 'cinch-wikipedia'
+require 'cinch-weatherman'
 
 require 'dotenv'
 require 'open-uri'
@@ -48,6 +49,7 @@ bot = Cinch::Bot.new do
 
     ## Plugins
     c.plugins.plugins   << Cinch::Plugins::Forecast
+    c.plugins.plugins   << Cinch::Plugins::Weatherman
     c.plugins.plugins   << Cinch::Plugins::Wikipedia
     c.plugins.plugins   << Cinch::Plugins::Calculate
     c.plugins.plugins   << Cinch::Plugins::Convert
