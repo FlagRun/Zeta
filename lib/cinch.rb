@@ -71,8 +71,8 @@ bot = Cinch::Bot.new do
     c.plugins.plugins   << Plugins::UserPlugin
 
     ## Plugins Options
-    c.plugins.options[Cinch::Plugins::Calculate][:units_path]   = '/usr/bin/gunits'
-    c.plugins.options[Cinch::Plugins::Convert][:units_path]     = '/usr/bin/gunits'
+    c.plugins.options[Cinch::Plugins::Calculate][:units_path]   = '/usr/bin/units'
+    c.plugins.options[Cinch::Plugins::Convert][:units_path]     = '/usr/bin/units'
     c.plugins.options[Cinch::Plugins::Quotes][:quotes_file]     = File.join(__dir__, 'locales/quotes.yml')
 
 
