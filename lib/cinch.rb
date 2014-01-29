@@ -53,7 +53,7 @@ bot = Cinch::Bot.new do
     c.plugins.plugins   << Cinch::Plugins::Convert
     c.plugins.plugins   << Cinch::Plugins::Quotes
     c.plugins.plugins   << Plugins::Attack
-    c.plugins.plugins   << Plugins::Tell
+    # c.plugins.plugins   << Plugins::Tell
     c.plugins.plugins   << Plugins::Eightball
     c.plugins.plugins   << Plugins::Fnord
     c.plugins.plugins   << Plugins::Disdate
