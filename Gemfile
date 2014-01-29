@@ -4,6 +4,7 @@ gem 'cinch-forecast'
 gem 'cinch-wikipedia'
 gem 'cinch-calculate'
 gem 'cinch-weatherman'
+gem 'weather-underground'
 gem 'cinch-convert'
 gem 'cinch-quotes'
 
