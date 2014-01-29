@@ -5,6 +5,7 @@ require 'cinch-convert'
 require 'cinch-calculate'
 require 'cinch-wikipedia'
 require 'cinch-weatherman'
+require 'weather-underground'
 
 require 'dotenv'
 require 'open-uri'
