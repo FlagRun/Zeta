@@ -3,6 +3,7 @@ gem 'cinch', git: 'git://github.com/cinchrb/cinch.git'
 gem 'cinch-forecast'
 gem 'cinch-wikipedia'
 gem 'cinch-calculate'
+gem 'cinch-weatherman'
 gem 'cinch-convert'
 gem 'cinch-quotes'
 
