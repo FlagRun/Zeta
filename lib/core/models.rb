@@ -5,7 +5,8 @@ ActiveRecord::Base.establish_connection(
     database: ENV['DB_DATABASE'],
     username: ENV['DB_USERNAME'],
     password: ENV['DB_PASSWORD'],
-    host:     ENV['DB_HOSTNAME']
+    host:     ENV['DB_HOSTNAME'],
+    pool:     ENV['DB_POOL']
 )
 
 require_relative '../models/zquote'

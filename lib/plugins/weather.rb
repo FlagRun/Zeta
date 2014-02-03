@@ -33,9 +33,11 @@ module Plugins
       return msg.reply 'Problem getting data. Try again later.' if data.nil?
 
       #[ Clarkston, WA, United States | Cloudy | Temp: 34 F (1 C) | Humidity: 73% | Winds: 8 mph ]
-      reply_data = "|:: #{data.county}, #{data.country} ::: #{data.weather}, #{data.feels_like} " \
-                  "::: UV: #{data.uv_level}, Humidity: #{data.relative_humidity}" \
-                  "::: Wind: #{data.wind} ::|"
+      reply_data = "|:: #{data.county}, #{data.country} " \
+                  ":|: #{data.weather} #{data.feels_like} " \
+                  ":|: Humidity: #{data.relative_humidity} " \
+                  ":|: Pressure: #{data.pressure_mb} mmHg " \
+                  ":|: Wind: #{data.wind_mph} mph gusting to #{data.wind_gust_mph} mph ::|"
       msg.reply(reply_data)
     end
 

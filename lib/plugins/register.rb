@@ -1,7 +1,10 @@
 module Plugins
   class Register
     include Cinch::Plugin
-    set prefix: /^./
+    set(
+        plugin_name: "Register",
+        help: "Register with Zbot!\nUsage: `!hello`",
+    )
 
     match /hello/, method: :register
     def register(m)

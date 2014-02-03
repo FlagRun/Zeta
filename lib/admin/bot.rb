@@ -22,6 +22,13 @@ module Admin
       bot.modes = m
     end
 
+    match /sync/, method: :sync_database
+    def sync_database(m)
+      m.reply 'Syncing Database'
+      ActiveRecord::Base.connection.reconnect!
+      m.reply 'Synced!'
+    end
+
     private
     def getuser(m)
       Zuser.where(nick: m.user.nick).first || Zuser.new
