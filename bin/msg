@@ -1,0 +1,2 @@
+#!/bin/zsh
+echo "PRIVMSG $1 $2" >> ../tmp/bot
