@@ -1,0 +1,2 @@
+#!/bin/zsh
+echo "MODE $1 $2" >> ../tmp/bot

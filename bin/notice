@@ -1,0 +1,2 @@
+#!/bin/zsh
+echo "NOTICE $1 $2" >> ../tmp/bot
