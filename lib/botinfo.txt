@@ -1,0 +1,3 @@
+Hello I'm {bot_name} and im running {cinch_version} with {ruby_platform} ({ruby_version}).
+I am currently trolling {total_users} in {total_channels} channels with and uptime of {uptime}
+My master is {owner_name} and he has plugged me with {plugins_count_remaining} plugins
