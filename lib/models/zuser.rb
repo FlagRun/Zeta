@@ -1,17 +1,4 @@
-class ZUser
-  include Mongoid::Document
-  include Mongoid::Timestamps
-
-  embeds_many :quotes
-
-  field :channel,    type: String
-  field :nick,       type: String
-  field :user,       type: String
-  field :real,       type: String
-  field :host,       type: String
-  field :auth,       type: String
-  field :role,       type: String,  default: 'nobody'
-  field :ircop,      type: Boolean, default: false
+class Zuser < ActiveRecord::Base
 
   ## roles
   def is_owner?

@@ -8,7 +8,7 @@ module Plugins
 
     set plugin_name: "Dicebox", help: "Dicebox -- Uses standard dice notation.\nUsage: `<X#>YdZ<[+|-]A>` (Examples: `1d6`; `2d6-3`; `2#1d6`; `5#2d6+10`)"
 
-    match /^(.+)/, use_prefix: false
+    match /^roll (.+)/
     def execute(m, s)
       return unless Boneroller.is_valid?(s)
 

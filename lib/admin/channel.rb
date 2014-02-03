@@ -28,7 +28,7 @@ module Admin
 
     match /quit(?: (.+))?/, method: :quit, group: :quit
     def quit(m, msg=nil)
-      return unless getuser(m).is_admin?
+      return unless getuser(m).is_owner?
       msg ||= m.user.nick
       @bot.handlers.dispatch :admin, m, "I am being shut down NOW!#{" - Reason: " + msg unless msg.nil?}", m.target
       sleep 2
@@ -37,7 +37,7 @@ module Admin
 
     private
     def getuser(m)
-      ZUser.where(nick: m.user.nick).first || ZUser.new
+      Zuser.where(nick: m.user.nick).first || Zuser.new
     end
 
   end

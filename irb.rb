@@ -13,5 +13,3 @@ Dotenv.load
 require_relative 'lib/core/admin'
 require_relative 'lib/core/models'
 require_relative 'lib/core/plugins'
-require_relative 'lib/cinch'
-

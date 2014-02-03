@@ -1,5 +1,2 @@
-class ZQuote
-  include Mongoid::Document
-
-  embedded_in :user
+class Zquote  < ActiveRecord::Base
 end

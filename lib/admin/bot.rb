@@ -9,7 +9,7 @@ module Admin
 
     match /nick (.+)/, method: :nick
     def nick(m, nick)
-      return unless authenticated? m
+      return unless getuser(m).is_admin?
       bot.nick = nick
       synchronize(:nickchange) do
         @bot.handlers.dispatch :admin, m, "My nick got changed from #{@bot.last_nick} to #{@bot.nick} by #{m.user.nick}", m.target
@@ -18,10 +18,14 @@ module Admin
 
     match /mode (.+)/, method: :mode
     def mode(m, nick)
-      return unless authenticated? m
+      return unless getuser(m).is_admin?
       bot.modes = m
     end
 
+    private
+    def getuser(m)
+      Zuser.where(nick: m.user.nick).first || Zuser.new
+    end
 
   end
 end

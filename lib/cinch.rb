@@ -1,23 +1,3 @@
-require 'nokogiri'
-require 'dotenv'
-require 'open-uri'
-
-require 'cinch'
-require 'cinch/plugins/forecast'
-require 'cinch/plugins/quotes'
-require 'cinch-convert'
-require 'cinch-calculate'
-require 'cinch-wikipedia'
-require 'cinch-weatherman'
-require 'weather-underground'
-
-Dotenv.load
-
-require_relative 'core/admin'
-require_relative 'core/models'
-require_relative 'core/plugins'
-
-# Start the bot
 bot = Cinch::Bot.new do
   configure do |c|
     c.nick              = ENV['BOT_NICK']
@@ -41,27 +21,25 @@ bot = Cinch::Bot.new do
     ##  Admin Plugins
     c.plugins.plugins   << Admin::BotAdmin
     c.plugins.plugins   << Admin::UserAdmin
-    c.plugins.plugins   << Admin::ChatlogAdmin
+    c.plugins.plugins   << Admin::Fifo
     c.plugins.plugins   << Admin::ChannelAdmin
-
+    c.plugins.plugins   << Admin::Plugins
 
     ##  Admin Options
+    c.plugins.options[Admin::Fifo][:path] = File.join(__dir__, '../tmp/bot')
 
 
     ## Plugins
-    c.plugins.plugins   << Cinch::Plugins::Forecast
-    c.plugins.plugins   << Cinch::Plugins::Weatherman
     c.plugins.plugins   << Cinch::Plugins::Wikipedia
     c.plugins.plugins   << Cinch::Plugins::Calculate
     c.plugins.plugins   << Cinch::Plugins::Convert
     c.plugins.plugins   << Cinch::Plugins::Quotes
+    c.plugins.plugins   << Plugins::Forecast
     c.plugins.plugins   << Plugins::Attack
-    # c.plugins.plugins   << Plugins::Tell
     c.plugins.plugins   << Plugins::Eightball
     c.plugins.plugins   << Plugins::Fnord
     c.plugins.plugins   << Plugins::Disdate
     c.plugins.plugins   << Plugins::JargonFile
-    c.plugins.plugins   << Plugins::PluginManager
     c.plugins.plugins   << Plugins::Porno
     c.plugins.plugins   << Plugins::Rainbow
     c.plugins.plugins   << Plugins::Silly
@@ -71,7 +49,7 @@ bot = Cinch::Bot.new do
     c.plugins.plugins   << Plugins::Macros
     c.plugins.plugins   << Plugins::Dice
     c.plugins.plugins   << Plugins::BotInfo
-    c.plugins.plugins   << Plugins::UserPlugin
+    c.plugins.plugins   << Plugins::Register
 
     ## Plugins Options
     c.plugins.options[Cinch::Plugins::Calculate][:units_path]   = '/usr/bin/units'
@@ -91,5 +69,5 @@ bot = Cinch::Bot.new do
 
 
 end
-### Begin
+## Start the bot
 bot.start

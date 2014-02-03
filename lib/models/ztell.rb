@@ -1,3 +1,3 @@
-class ZTell
-  include Mongoid::Document
+class Ztell < ActiveRecord::Base
+
 end

@@ -1,10 +1,13 @@
-require 'mongoid'
-Mongoid.connect_to('zbot')
+require 'active_record'
 
-require 'redis'
-$redis = Redis.new(:host => '127.0.0.1')
+ActiveRecord::Base.establish_connection(
+    adapter:  ENV['DB_ADAPTER'],
+    database: ENV['DB_DATABASE'],
+    username: ENV['DB_USERNAME'],
+    password: ENV['DB_PASSWORD'],
+    host:     ENV['DB_HOSTNAME']
+)
 
 require_relative '../models/zquote'
 require_relative '../models/zuser'
 require_relative '../models/ztell'
-require_relative '../models/zchatlog'
