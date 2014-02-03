@@ -41,6 +41,9 @@ GEM
     cinch-toolbox (1.0.3)
       nokogiri (~> 1.6.0)
       patron (~> 0.4.18)
+    cinch-urbandictionary (0.10.0)
+      cinch (~> 2.0)
+      nokogiri (>= 1.4.4)
     cinch-wikipedia (1.0.1)
       cinch (~> 2.0.5)
       cinch-cooldown (~> 1.0.1)
@@ -95,6 +98,7 @@ DEPENDENCIES
   cinch-convert
   cinch-forecast
   cinch-quotes
+  cinch-urbandictionary
   cinch-wikipedia
   dotenv
   geocoder

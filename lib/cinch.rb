@@ -34,6 +34,7 @@ bot = Cinch::Bot.new do
     c.plugins.plugins   << Cinch::Plugins::Calculate
     c.plugins.plugins   << Cinch::Plugins::Convert
     c.plugins.plugins   << Cinch::Plugins::Quotes
+    c.plugins.plugins   << Plugins::UrbanDictionary
     c.plugins.plugins   << Plugins::Forecast
     c.plugins.plugins   << Plugins::Attack
     c.plugins.plugins   << Plugins::Eightball
@@ -43,7 +44,6 @@ bot = Cinch::Bot.new do
     c.plugins.plugins   << Plugins::Porno
     c.plugins.plugins   << Plugins::Rainbow
     c.plugins.plugins   << Plugins::Silly
-    c.plugins.plugins   << Plugins::UrbanDictionary
     c.plugins.plugins   << Plugins::Vote
     c.plugins.plugins   << Plugins::RussianRoulette
     c.plugins.plugins   << Plugins::Macros

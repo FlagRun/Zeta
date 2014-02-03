@@ -7,7 +7,7 @@ module Plugins
     def register(m)
       unless Zuser.where(nick: m.user.nick).exists?
         Zuser.create(nick: m.user.nick, user: m.user.user, host: m.user.host)
-        return m.reply "Why hello #{m.user.nick}"
+        return m.reply "Well hello #{m.user.nick}"
       else
         return m.reply "Don't I already know you #{m.user.nick}?"
       end
