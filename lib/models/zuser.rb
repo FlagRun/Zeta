@@ -16,7 +16,7 @@ class Zuser < Sequel::Model
     true if role.to_sym == :q || :a || :o
   end
 
-  def is_halop?
+  def is_halfop?
     return false if role.nil?
     true if role.to_sym == :q || :a || :o || :h
   end
