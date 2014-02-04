@@ -16,10 +16,11 @@ gem 'tag_formatter'
 gem 'geocoder'
 gem 'httparty'
 
-gem 'activerecord'
+gem 'sequel'
 gem 'pg'
 gem 'dotenv'
 gem 'mkfifo'
 gem 'god'
+gem 'activesupport'
 
 gem 'haml'

@@ -1,23 +1,22 @@
 require 'dotenv'
-require 'active_record'
 require 'yaml'
 
 Dotenv.load
 
-task :default => :migrate
+namespace :db do
 
-desc "Migrate the database through scripts in db/migrate. Target specific version with VERSION=x"
-task :migrate => :environment do
-  ActiveRecord::Migrator.migrate('db/migrate', ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
-end
+  desc 'Run migrations'
+  task :migrate, [:version] do |t, args|
+    require 'sequel'
+    Sequel.extension :migration
+    db = Sequel.connect(ENV['DATABASE_URL'])
+    if args[:version]
+      puts "Migrating to version #{args[:version]}"
+      Sequel::Migrator.run(db, File.join(__dir__, 'db/migrate'), target: args[:version].to_i)
+    else
+      puts 'Migrating to latest'
+      Sequel::Migrator.run(db, File.join(__dir__, 'db/migrate'))
+    end
+  end
 
-task :environment do
-  ActiveRecord::Base.establish_connection(
-      adapter:  ENV['DB_ADAPTER'],
-      database: ENV['DB_DATABASE'],
-      username: ENV['DB_USERNAME'],
-      password: ENV['DB_PASSWORD'],
-      host:     ENV['DB_HOSTNAME']
-  )
-  ActiveRecord::Base.logger = Logger.new(File.open('database.log', 'a'))
 end

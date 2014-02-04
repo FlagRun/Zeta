@@ -12,5 +12,12 @@ module Cinch
       modes = @bot.irc.isupport["PREFIX"].keys - ignored_members
       modes.any? {|mode| users[user].include?(mode)}
     end
+
+    def get_user(m)
+      return false if m.user.authname == nil
+      user = Zuser.find(nick: m.user.nick) || Zuser.new
+      DB.disconnect
+      user
+    end
   end
 end

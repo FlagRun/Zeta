@@ -9,7 +9,7 @@ module Admin
 
     match /nick (.+)/, method: :nick
     def nick(m, nick)
-      return unless getuser(m).is_admin?
+      return unless get_user(m).is_admin?
       bot.nick = nick
       synchronize(:nickchange) do
         @bot.handlers.dispatch :admin, m, "My nick got changed from #{@bot.last_nick} to #{@bot.nick} by #{m.user.nick}", m.target
@@ -18,20 +18,16 @@ module Admin
 
     match /mode (.+)/, method: :mode
     def mode(m, nick)
-      return unless getuser(m).is_admin?
+      return unless get_user(m).is_admin?
       bot.modes = m
     end
 
-    match /sync/, method: :sync_database
-    def sync_database(m)
-      m.reply 'Syncing Database'
-      ActiveRecord::Base.connection.reconnect!
-      m.reply 'Synced!'
-    end
-
-    private
-    def getuser(m)
-      Zuser.where(nick: m.user.nick).first || Zuser.new
+    match /eval (.+)/, method: :boteval
+    def boteval(m, s)
+      return unless get_user(m).is_owner?
+      eval(s)
+    rescue => e
+      m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
     end
 
   end

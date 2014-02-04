@@ -8,9 +8,12 @@ module Plugins
 
     match /hello/, method: :register
     def register(m)
-      unless Zuser.where(nick: m.user.nick).exists?
-        Zuser.create(nick: m.user.nick, user: m.user.user, host: m.user.host)
-        return m.reply "Well hello #{m.user.nick}"
+      return m.reply('You are not identified by NickServ') if m.user.authname == nil
+
+      unless Zuser.find(nick: m.user.nick)
+        Zuser.create(nick: m.user.nick, user: m.user.user, host: m.user.host, authname:m.user.authname, ircop: m.user.oper)
+        DB.disconnect
+        return m.reply "Well hello #{m.user.nick}."
       else
         return m.reply "Don't I already know you #{m.user.nick}?"
       end
@@ -19,7 +22,8 @@ module Plugins
 
     match /whois(?: (.+))?/, method: :whois
     def whois(msg, target=nil)
-      user = Zuser.where(nick: target).first
+      user = Zuser.find(nick: target)
+      DB.disconnect
       if user
         if user.ircop
           return(msg.reply("#{user.nick} is a COP!!!"))

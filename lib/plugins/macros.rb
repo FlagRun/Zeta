@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'yaml'
+require_relative '../helpers/check_user'
 
 module Plugins
   class Macros
@@ -18,7 +19,7 @@ module Plugins
 
     match "reload macros", method: :execute_reloadmacros, react_on: :private, use_prefix: false
     def execute_reloadmacros m
-      return unless getuser(m).is_voice?
+      return unless get_user(m).is_voice?
       begin
         @macros = YAML::load_file(File.join(__dir__, '../locales/macros.yml'))
         m.user.notice "Macros have been reloaded."
@@ -109,10 +110,6 @@ module Plugins
       }
     end
 
-    private
-    def getuser(m)
-      ZUser.where(nick: m.user.nick).first || ZUser.new
-    end
 
   end
 end

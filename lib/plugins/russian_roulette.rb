@@ -53,7 +53,7 @@ module Plugins
       sleep 5
 
       turns.times do |chamber|
-        return end_game(m.channel, true) if !m.channel.users.include?(player)
+        return end_game(m.channel, true) unless m.channel.users.include?(player)
         if round_location == chamber.succ
           m.reply "*click*"
           #m.channel.kick(player, "*BLAM*")

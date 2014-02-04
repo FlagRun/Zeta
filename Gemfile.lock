@@ -7,24 +7,13 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (4.0.2)
-      activesupport (= 4.0.2)
-      builder (~> 3.1.0)
-    activerecord (4.0.2)
-      activemodel (= 4.0.2)
-      activerecord-deprecated_finders (~> 1.0.2)
-      activesupport (= 4.0.2)
-      arel (~> 4.0.0)
-    activerecord-deprecated_finders (1.0.3)
     activesupport (4.0.2)
       i18n (~> 0.6, >= 0.6.4)
       minitest (~> 4.2)
       multi_json (~> 1.3)
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
-    arel (4.0.1)
     atomic (1.1.14)
-    builder (3.1.4)
     chronic (0.10.2)
     chronic_duration (0.10.2)
       numerizer (~> 0.1.1)
@@ -74,6 +63,7 @@ GEM
     pg (0.17.1)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    sequel (4.7.0)
     tag_formatter (0.0.3)
     temperature (1.2)
     thread_safe (0.1.3)
@@ -90,7 +80,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord
+  activesupport
   chronic
   chronic_duration
   cinch!
@@ -108,5 +98,6 @@ DEPENDENCIES
   mkfifo
   nokogiri
   pg
+  sequel
   tag_formatter
   weather-underground

@@ -1,3 +1,3 @@
-class Ztell < ActiveRecord::Base
+class Ztell < Sequel::Model
 
 end

@@ -1,2 +1,2 @@
-class Zquote  < ActiveRecord::Base
+class Zquote  < Sequel::Model
 end

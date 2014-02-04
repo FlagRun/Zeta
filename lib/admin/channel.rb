@@ -1,3 +1,5 @@
+require_relative '../helpers/check_user'
+
 module Admin
   class ChannelAdmin
     include Cinch::Plugin
@@ -10,7 +12,7 @@ module Admin
 
     match /join (.+)/, method: :join
     def join(m, channel)
-      return unless getuser(m).is_admin?
+      return unless get_user(m).is_op?
       channel.split(", ").each {|ch|
         Channel(ch).join
         @bot.handlers.dispatch :admin, m, "Attempt to join #{ch.split[0]} by #{m.user.nick}...", m.target
@@ -19,7 +21,7 @@ module Admin
 
     match /part(?: (\S+))?(?: (.+))?/, method: :part, group: :part
     def part(m, channel=nil, msg=nil)
-      return unless getuser(m).is_admin?
+      return unless get_user(m).is_op?
       channel ||= m.channel.name
       msg ||= m.user.nick
       Channel(channel).part(msg) if channel
@@ -28,17 +30,13 @@ module Admin
 
     match /quit(?: (.+))?/, method: :quit, group: :quit
     def quit(m, msg=nil)
-      return unless getuser(m).is_owner?
+      return unless get_user(m).is_owner?
       msg ||= m.user.nick
       @bot.handlers.dispatch :admin, m, "I am being shut down NOW!#{" - Reason: " + msg unless msg.nil?}", m.target
       sleep 2
       bot.quit(msg)
     end
 
-    private
-    def getuser(m)
-      Zuser.where(nick: m.user.nick).first || Zuser.new
-    end
 
   end
 
