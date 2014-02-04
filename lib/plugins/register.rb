@@ -9,10 +9,10 @@ module Plugins
     match /hello/, method: :register
     def register(m)
       return m.reply('You are not identified by NickServ') if m.user.authname == nil
-      oper = m.user.oper || false
+      ircop = defined?(m.user.oper?) ? m.user.oper? : false
 
       unless Zuser.find(nick: m.user.nick)
-        Zuser.create(nick: m.user.nick, user: m.user.user, host: m.user.host, authname:m.user.authname, ircop: oper)
+        Zuser.create(nick: m.user.nick, user: m.user.user, host: m.user.host, authname:m.user.authname, ircop: ircop)
         DB.disconnect
         return m.reply "Well hello #{m.user.nick}."
       else
