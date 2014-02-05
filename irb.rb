@@ -1,10 +1,10 @@
 # Required Libraries
 require 'libxml'
 require 'dotenv'
+require 'cinch'
 require 'open-uri'
 require 'nokogiri'
 require 'json'
-require 'cinch'
 
 # Load Enviromental Variables
 Dotenv.load
