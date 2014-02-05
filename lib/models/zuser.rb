@@ -28,6 +28,7 @@ class Zuser < Sequel::Model
 
   def is_nobody?
     return false if role.nil?
+    true if role.to_sym == :q || :a || :o || :h || :v
     true if self.role == 'nobody' || self.role.nil?
   end
 
