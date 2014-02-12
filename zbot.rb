@@ -6,6 +6,7 @@ require 'open-uri'
 require 'nokogiri'
 require 'json'
 
+
 # Load Enviromental Variables
 Dotenv.load
 
@@ -13,5 +14,6 @@ Dotenv.load
 require_relative 'lib/core/admin'
 require_relative 'lib/core/models'
 require_relative 'lib/core/plugins'
+require_relative 'lib/core/helpers'
 require_relative 'lib/cinch'
 

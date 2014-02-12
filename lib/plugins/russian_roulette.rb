@@ -33,6 +33,7 @@ module Plugins
     match /rr(?: (.+))?/
 
     def execute(m, nick)
+
       #return m.reply "I am sorry comrade, but I do not have pistol on me." unless check_user(m.channel, @bot)
       return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)
 

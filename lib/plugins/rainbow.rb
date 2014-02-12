@@ -42,6 +42,7 @@ module Plugins
     match /rainbow (.+)/, method: :execute_rainbow
 
     def execute_rainbow(m, string)
+
       ; m.reply(rainbowification(string), false);
     end
 
@@ -50,6 +51,7 @@ module Plugins
     match /eyerape (.+)/, method: :execute_eyerape
 
     def execute_eyerape(m, string)
+
       ; m.reply(eyerapeification(string), false);
     end
 

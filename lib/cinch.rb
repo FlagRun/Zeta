@@ -7,6 +7,7 @@ bot = Cinch::Bot.new do
     c.sasl.username     = ENV['SASL_USERNAME']
     c.sasl.password     = ENV['SASL_PASSWORD']
     c.server            = ENV['BOT_SERVER']
+    c.password          = ENV['BOT_SERVER_PASSWORD']
     c.port              = ENV['BOT_SERVER_PORT']
     c.ssl.use           = ENV['BOT_SERVER_SSL']
 
@@ -50,6 +51,8 @@ bot = Cinch::Bot.new do
     c.plugins.plugins   << Plugins::Dice
     c.plugins.plugins   << Plugins::BotInfo
     c.plugins.plugins   << Plugins::Register
+    c.plugins.plugins   << Plugins::BotHelp
+    c.plugins.plugins   << Plugins::DCC
 
     ## Plugins Options
     c.plugins.options[Cinch::Plugins::Calculate][:units_path]   = '/usr/bin/units'

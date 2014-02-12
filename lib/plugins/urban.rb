@@ -17,10 +17,12 @@ module Plugins
 
 
     def query(m, query)
+
       m.reply "UD> #{search(query)}"
     end
 
     def woty(m)
+
       url = URI.encode "http://www.urbandictionary.com/woty.php"
       doc = Nokogiri.HTML(open url)
       word = doc.at_css('.word').text.strip[0..800]
@@ -29,6 +31,7 @@ module Plugins
     end
 
     def wotd(m)
+
       url = URI.encode "http://www.urbandictionary.com/"
       doc = Nokogiri.HTML(open url)
       word = doc.at_css('.word').text.strip[0..800]

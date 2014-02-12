@@ -11,6 +11,7 @@ module Plugins
     match /porno(?> )?(.+)?/, method: :execute_porno
 
     def execute_porno(m, search)
+
       pornos = YAML.load_file(File.join(__dir__, '../locales/porno.yml'))
       if search
         results = pornos.find_all { |title| title =~ /#{Regexp.escape(search)}/i }

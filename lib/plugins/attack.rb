@@ -18,6 +18,7 @@ module Plugins
 
     match /attack(?: (.+))?/, group: :attack
     def execute(m, target=nil)
+
       target = m.user.nick if !target.nil? && target.match(/(\bmy\b|\b#{@bot.nick}\S*\b|\b\S*self\b)/i)
       target.gsub(/(\bmy\b|\b#{@bot.nick}\S*\b|\b\S*self\b)/i,m.user.nick+"'s") if !target.nil?;
        populate_attacks!

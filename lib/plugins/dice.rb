@@ -10,6 +10,7 @@ module Plugins
 
     match /^roll (.+)/
     def execute(m, s)
+
       return unless Boneroller.is_valid?(s)
 
       turn = Boneroller::Dice.new(s)

@@ -316,6 +316,7 @@ module Plugins
     match /fnord/
 
     def execute(m)
+
       m.reply Fnord.headline
     end
   end
@@ -397,12 +398,14 @@ module Plugins
     match /ddate$/, method: :execute
 
     def execute(m)
+
       get_time(m, Time.now)
     end
 
     match /ddate (.*)/, method: :get_time
 
     def get_time(m, time)
+
       time ||= Time.now
       date = ""
       if time

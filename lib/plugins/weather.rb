@@ -13,6 +13,7 @@ module Plugins
     # @param query [String] zipcode captured by the match method.
     # @return [String] weather summary to IRC channel.
     def forecast(msg, query)
+
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 
@@ -26,6 +27,8 @@ module Plugins
     match /wx (.+)/, method: :weather
     match /weather (.+)/, method: :weather
     def weather(msg, query)
+
+
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 

@@ -19,7 +19,8 @@ module Plugins
 
     match "reload macros", method: :execute_reloadmacros, react_on: :private, use_prefix: false
     def execute_reloadmacros m
-      return unless get_user(m).is_voice?
+
+      return unless get_user(m).is_op?
       begin
         @macros = YAML::load_file(File.join(__dir__, '../locales/macros.yml'))
         m.user.notice "Macros have been reloaded."
@@ -32,6 +33,7 @@ module Plugins
     def execute_macro m, macro, arguments
       return unless @macros.has_key?(macro)
       parse(arguments, @macros[macro], m.channel, m.user)
+
 
       # Guide to writing macros:
       # - A macro can be a string, hash, or array

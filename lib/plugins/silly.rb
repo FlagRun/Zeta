@@ -29,6 +29,7 @@ module Plugins
     match /^pokes (.+)$/, react_on: :action, method: :listen_poke, use_prefix: false
 
     def listen_poke(m, thebot)
+
       if User(thebot) == @bot
         @pokers[m.user] = 0 if !@pokers.include?(m.user)
         @pokers[m.user] += 1
@@ -52,6 +53,7 @@ module Plugins
     match /\b(dumb|stupid)\b.+\bbots*\b/i, method: :execute_botinsult, use_prefix: false
 
     def execute_botinsult(m)
+
       ; m.reply ["Stupid human!", "Dumb human!", "Stupid meatbag.", "Silly human, your insults cannot harm me!"].sample if m.user.nick != "TempTina";
     end
 
@@ -70,6 +72,7 @@ module Plugins
     match /xmas (\S+)/, method: :xmas
 
     def xmas(m, tz = nil)
+
       tz ||= "-00:00"
       tz = tzparser(tz)
       begin
@@ -92,6 +95,7 @@ module Plugins
     match /newyear (\S+)/, method: :newyear
 
     def newyear(m, tz = nil)
+
       tz ||= "-00:00"
       tz = tzparser(tz)
       begin
@@ -114,6 +118,7 @@ module Plugins
     match /tz (\S+)/, method: :tz
 
     def tz(m, tz = nil)
+
       tz ||= "-00:00"
       tz = tzparser(tz)
       begin
@@ -129,6 +134,7 @@ module Plugins
     match "mayan", method: :mayan
 
     def mayan(m)
+
       msd = (Date.today.jd - Date.new(1, 1, 1).jd) + 1137142
       lc = {
           baktun: (msd - (msd % 144000)) / 144000,
@@ -144,6 +150,7 @@ module Plugins
     match /heavymetalize (.+)/, method: :heavymetalize
 
     def heavymetalize(m, s)
+
       m.reply s.tr('AEIOUaeiouyYWwXx', 'ÄËÏÖÜäëïöüÿŸẄẅẌẍ')
     end
 

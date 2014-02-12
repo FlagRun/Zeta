@@ -53,6 +53,7 @@ module Plugins
     end
 
     def execute(m, word)
+
       m.reply(lookup(word) || "No results found", false)
     end
   end

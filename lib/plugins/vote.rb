@@ -24,6 +24,7 @@ module Plugins
     end
 
     def on_vote_create(msg, topic)
+
       id = generate_vote_id
       @votes[id] = Vote.new(topic)
 
@@ -31,6 +32,7 @@ module Plugins
     end
 
     def on_vote_delete(msg, id)
+
       msg.reply("No vote with id ##{id}.") and return unless @votes[id.to_i]
 
       @votes.delete(id.to_i)
@@ -38,6 +40,7 @@ module Plugins
     end
 
     def on_vote_add_choice(msg, id, choice)
+
       msg.reply("No vote with id ##{id}.") and return unless @votes[id.to_i]
 
       @votes[id.to_i].choices << choice
@@ -45,6 +48,7 @@ module Plugins
     end
 
     def on_vote_open(msg, id)
+
       msg.reply("No vote with id ##{id}.") and return unless @votes[id.to_i]
 
       @votes[id.to_i].open = true
@@ -52,6 +56,7 @@ module Plugins
     end
 
     def on_vote_list(msg)
+
       msg.reply("There are no votes currently.") and return if @votes.empty?
 
       msg.reply("The following votes are available (use `vote show #<num>' for details on a vote):")
@@ -62,6 +67,7 @@ module Plugins
     end
 
     def on_vote_show(msg, id)
+
       msg.reply("No vote with id ##{id}.") and return unless @votes[id.to_i]
 
       vote = @votes[id.to_i]

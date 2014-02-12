@@ -4,3 +4,4 @@
 tmp/*
 data/*
 lib/locales/porno.yml
+lib/*.pstore

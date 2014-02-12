@@ -26,6 +26,7 @@ module Plugins
 
     match 'info', use_prefix: false
     def execute(m)
+
       tags = {
         bot_name: @bot.nick,
         cinch_version: Cinch::VERSION,
@@ -56,6 +57,7 @@ module Plugins
 
     match 'list plugins', method: :execute_list, use_prefix: false
     def execute_list(m)
+
       list = []
       @bot.plugins.each {|p| list << p.class.plugin_name };
       m.user.notice("All #{list.size} currently loaded plugins for #{@bot.nick}:\n#{list.to_sentence}.\nTo view help for a plugin, use `/msg #{@bot.nick} help <plugin name>`.")
@@ -63,6 +65,7 @@ module Plugins
 
     match /^help (.+)$/i, method: :execute_help, use_prefix: false
     def execute_help(m, name)
+
       list = {}
       @bot.plugins.each {|p| list[p.class.plugin_name.downcase] = {name: p.class.plugin_name, help: p.class.help} };
       return m.user.notice("Help for \"#{name}\" could not be found.") if !list.has_key?(name.downcase)
