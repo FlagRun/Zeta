@@ -10,7 +10,7 @@ module Plugins
 
     set plugin_name: "Macros", help: "Enables the classic #shakesoda macros to be used (including new ones.)",
         react_on: :channel,
-        prefix: /^./
+        prefix: /^\./
 
     def initialize *args
       super
