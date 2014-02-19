@@ -5,7 +5,7 @@ module Admin
     set(
       plugin_name: "BotAdmin",
       help: "Bot administrator-only private commands.\nUsage: `~nick [channel]`;",
-      prefix: /^~/)
+      prefix: /^\?/)
 
     match /nick (.+)/, method: :nick
     def nick(m, nick)
@@ -22,10 +22,19 @@ module Admin
       bot.modes = m
     end
 
+    match /e (.+)/, method: :boteval
     match /eval (.+)/, method: :boteval
     def boteval(m, s)
       return unless get_user(m).is_owner?
       eval(s)
+    rescue => e
+      m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
+    end
+
+    match /ereturn (.+)/, method: :botevalreturn
+    def botevalreturn(m, s)
+      return unless get_user(m).is_owner?
+      return m.reply eval(s)
     rescue => e
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
     end

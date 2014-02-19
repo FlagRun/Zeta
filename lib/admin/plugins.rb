@@ -7,7 +7,7 @@ module Admin
     set(
       plugin_name: 'PluginsAdmin',
       help: "Bot administrator-only private commands.\nUsage: `~join [channel]`; `~part [channel] <reason>`; `~quit [reason]`;",
-      prefix: /^~/
+      prefix: /^\?/
     )
 
     match(/plugin load (\S+)(?: (\S+))?/, method: :load_plugin)

@@ -6,8 +6,8 @@ module Admin
 
     set(
         plugin_name: 'UserAdmin',
-        help: "Bot administrator-only private commands.\nUsage: `~set admin [user]`; `~set op [user] `; `~set hop [user]`; `~set voice [user] `;",
-        prefix: /^~/
+        help: "Bot administrator-only private commands.\nUsage: `?set admin [user]`; `?set op [user] `; `?set hop [user]`; `?set voice [user] `;",
+        prefix: /^\?/
     )
 
     ############### Set Permission
@@ -18,6 +18,7 @@ module Admin
       return m.reply('Who do you want to make an admin?') if t.nil?
       u = Zuser.find(nick: t)
       if u
+        return m.reply("#{t} is an owner and cannot be modified") if u.role == :q
         u.role = :a
         if u.save
           DB.disconnect
@@ -36,6 +37,7 @@ module Admin
       return m.reply('Who do you want to make an Op?') if t.nil?
       u = Zuser.find(nick: t)
       if u
+        return m.reply("#{t} is an owner and cannot be modified") if u.role == :q
         u.role = :o
         if u.save
           DB.disconnect
@@ -54,6 +56,7 @@ module Admin
       return m.reply('Who do you want to make an HalfOp?') if t.nil?
       u = Zuser.find(nick: t)
       if u
+        return m.reply("#{t} is an owner and cannot be modified") if u.role == :q
         u.role = :h
         if u.save
           DB.disconnect
@@ -72,6 +75,7 @@ module Admin
       return m.reply('Who do you want to make an Voice?') if t.nil?
       u = Zuser.find(nick: t)
       if u
+        return m.reply("#{t} is an owner and cannot be modified") if u.role == :q
         u.role = :v
         if u.save
           DB.disconnect
@@ -90,6 +94,7 @@ module Admin
       return m.reply('Who do you want to make an Nobody?') if t.nil?
       u = Zuser.find(nick: t)
       if u
+        return m.reply("#{t} is an owner and cannot be modified") if u.role == :q
         u.role = false
         if u.save
           DB.disconnect
