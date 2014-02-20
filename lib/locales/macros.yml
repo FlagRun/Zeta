@@ -12,13 +12,14 @@ bapes: HATERS GET MAD CAUSE I GOT ME SOME GATORADE
 punch:
   sent_as: action
   action: random
-  lines: "punches [in] in the dick"
-  lines: "hulk smashes [in] in the dick"
-  lines: "falcon punches [in] in the dick"
-  lines: "upercuts [in] in the dick"
-  lines: "punches [in] in the face"
-  lines: "punches [in] in the arm"
-  lines: "double punches [in] in the dick and face"
+  lines:
+  - "punches [in] in the dick"
+  - "hulk smashes [in] in the dick"
+  - "falcon punches [in] in the dick"
+  - "upercuts [in] in the dick"
+  - "punches [in] in the face"
+  - "punches [in] in the arm"
+  - "double punches [in] in the dick and face"
 alart:
   type: random
   lines:
