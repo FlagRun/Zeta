@@ -32,9 +32,19 @@ module Admin
     end
 
     match /ereturn (.+)/, method: :botevalreturn
+    match /er (.+)/, method: :botevalreturn
     def botevalreturn(m, s)
       return unless get_user(m).is_owner?
       return m.reply eval(s)
+    rescue => e
+      m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
+    end
+
+    match /evalmsg (.+)/, method: :botevalmsg
+    match /em (.+)/, method: :botevalmsg
+    def botevalmsg(m, s)
+      return unless get_user(m).is_owner?
+      return m.user.msg eval(s)
     rescue => e
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
     end
