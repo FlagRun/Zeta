@@ -7,7 +7,7 @@ module Admin
     set(
       plugin_name: 'ChannelAdmin',
       help: "Bot administrator-only private commands.\nUsage: `~join [channel]`; `~part [channel] <reason>`; `~quit [reason]`;",
-      prefix: /^~/
+      prefix: /^\?/
     )
 
     match /join (.+)/, method: :join
