@@ -9,7 +9,6 @@ module Plugins
         plugin_name: 'UrbanDictionary',
         help: "Urban Dictionary -- Grabs a term from urbandictionary.com.\nUsage: `!urban <term>`; `!wotd`; `!woty`"
     )
-
     match /urban (.*)/, method: :query
     match /ud (.*)/,    method: :query
     match /wotd/,       method: :wotd
@@ -22,7 +21,6 @@ module Plugins
     end
 
     def woty(m)
-
       url = URI.encode "http://www.urbandictionary.com/woty.php"
       doc = Nokogiri.HTML(open url)
       word = doc.at_css('.word').text.strip[0..800]
