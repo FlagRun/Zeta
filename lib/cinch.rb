@@ -53,6 +53,7 @@ bot = Cinch::Bot.new do
     c.plugins.plugins   << Plugins::Register
     c.plugins.plugins   << Plugins::BotHelp
     c.plugins.plugins   << Plugins::DCC
+    c.plugins.plugins   << Plugins::Movies
 
     ## Plugins Options
     c.plugins.options[Cinch::Plugins::Calculate][:units_path]   = '/usr/bin/units'
