@@ -12,15 +12,18 @@ module Plugins
       data = query_movie(movie)
       if data && data.response == 'True'
         m.reply "Movie> #{data.title} (#{data.year}) <#{data.rated}> #{data.plot.to_s.strip[0..800]} [www.imdb.com/title/#{data.imdbid}/]"
+      elsif data && data.response == 'False'
+        m.reply data.error
       else
         m.reply 'Unable to find movie!'
       end
     end
 
     private
-    def query_movie(q)
-      movie = URI.encode(q)
-      data = JSON.parse(open("http://www.omdbapi.com/?t=#{movie}").read)
+    def query_movie(m)
+      year = m[/:\d+/].gsub(/:/, '') if m[/:\d+/]
+      movie = URI.encode(m.gsub(/:\d+/, ''))
+      data = JSON.parse(open("http://www.omdbapi.com/?t=#{movie}&y=#{year}").read)
       OpenStruct.new(
           title:       data['Title'],
           year:        data['Year'],
@@ -41,7 +44,8 @@ module Plugins
           imdbvotes:   data['imdbVotes'],
           imdbid:      data['imdbID'],
           type:        data['Type'],
-          response:    data['Response']
+          response:    data['Response'],
+          error:       data['Error']
       )
     rescue
       nil
