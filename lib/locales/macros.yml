@@ -11,7 +11,7 @@ anime: ANIME SWAG I'M FLYIN' LIKE GOKU
 bapes: HATERS GET MAD CAUSE I GOT ME SOME GATORADE
 punch:
   sent_as: action
-  action: random
+  type: random
   lines:
   - "punches [in] in the dick"
   - "hulk smashes [in] in the dick"
