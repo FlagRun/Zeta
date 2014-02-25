@@ -4,34 +4,34 @@ And will try to get the correct credits in source
 
 ## Commands
 roles: owner,admin,operator,halfop,voice,nobody
-prefix: admin(\?), action(!), meme(.), remote(?)
+prefix: admin(?), action(!), meme(.), remote(~)
 
 ### Admin
 _Channel_
 
-* \?join (\#channel) - admin
-* \?part (\#channel) - admin
-* \?quit (\#channel) - owner
+* ?join (\#channel) - admin
+* ?part (\#channel) - admin
+* ?quit (\#channel) - owner
 
 _Plugins_
-* \?plugin load   (plugin) - admin
-* \?plugin unload (plugin) - admin
-* \?plugin reload (plugin) - admin
-* \?plugin set    (plugin) - admin
+* ?plugin load   (plugin) - admin
+* ?plugin unload (plugin) - admin
+* ?plugin reload (plugin) - admin
+* ?plugin set    (plugin) - admin
 
 _Permissions_
 
-* \?set admin  (user) - owner
-* \?set op     (user) - admin
-* \?set hop    (user) - op
-* \?set voice  (user) - halfop
-* \?set nobody (user) - halfop
+* ?set admin  (user) - owner
+* ?set op     (user) - admin
+* ?set hop    (user) - op
+* ?set voice  (user) - halfop
+* ?set nobody (user) - halfop
 
 _Developer_
 
-* \?e code  - owner // (alias: eval) Evaluate command
-* \?em code - owner // (alias: eval) Evaluate command send in msg
-* \?er code - owner // (alias: evalreply) Evaluate command and send to channel
+* ?e code  - owner // (alias: eval) Evaluate command
+* ?em code - owner // (alias: eval) Evaluate command send in msg
+* ?er code - owner // (alias: evalreply) Evaluate command and send to channel
 
 
 ### Plugins
@@ -41,6 +41,13 @@ _Utility_
 * !math
 * !wx
 * !wiki
+
+_DarkScience Code Contest_
+
+* !dcc
+* !dcc help
+* !dcc list
+* !dcc commits
 
 _Quotes_
 
