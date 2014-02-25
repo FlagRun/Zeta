@@ -8,6 +8,17 @@ module Plugins
         help: "Darkscience Code Contest.\nUsage: `~nick [channel]`;",
         prefix: /^!/
     )
+    match /dcc/, method: :dcc
+    match /dcc list/, method: :dcc_list
+
+    def dcc
+
+    end
+
+   private
+    def github()
+      github = Github.new oauth_token: ENV['GITHUB_KEY']
+    end
 
   end
 end
