@@ -10,6 +10,10 @@ gem 'weather-underground'
 gem 'cinch-convert'
 gem 'cinch-quotes'
 
+gem 'wolfram'
+gem 'wolfram-alpha'
+gem 'github_api'
+
 gem 'chronic'
 gem 'chronic_duration'
 gem 'tag_formatter'
