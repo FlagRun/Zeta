@@ -14,28 +14,22 @@ module Cinch
     end
 
     def has_role?(m, role=:voice)
-      return unless m.user.authed?
+      # return unless m.user.authed?
       case role
         when :owner
-          true if Zconfig.roles.owner.split(' ').include? m.user.nick
+          true if @owner.include?(m.user.nick)
         when :admin
-          true if Zconfig.roles.owner.split(' ').include? m.user.nick
-          true if Zconfig.roles.admin.split(' ').include? m.user.nick
+          true if @owner.include?(m.user.nick) || @admin.include?(m.user.nick)
         when :operator
-          true if Zconfig.roles.owner.split(' ').include? m.user.nick
-          true if Zconfig.roles.admin.split(' ').include? m.user.nick
-          true if Zconfig.roles.operator.split(' ').include? m.user.nick
+          true if @owner.include?(m.user.nick) || @admin.include?(m.user.nick)
+          true if @operator.include?(m.user.nick)
         when :halfop
-          true if Zconfig.roles.owner.split(' ').include? m.user.nick
-          true if Zconfig.roles.admin.split(' ').include? m.user.nick
-          true if Zconfig.roles.operator.split(' ').include? m.user.nick
-          true if Zconfig.roles.halfop.split(' ').include? m.user.nick
+          true if @owner.include?(m.user.nick) || @admin.include?(m.user.nick)
+          true if @operator.include?(m.user.nick) || @halfop.include?(m.user.nick)
         when :voice
-          true if Zconfig.roles.owner.split(' ').include? m.user.nick
-          true if Zconfig.roles.admin.split(' ').include? m.user.nick
-          true if Zconfig.roles.operator.split(' ').include? m.user.nick
-          true if Zconfig.roles.halfop.split(' ').include? m.user.nick
-          true if Zconfig.roles.voice.split(' ').include? m.user.nick
+          true if @owner.include?(m.user.nick) || @admin.include?(m.user.nick)
+          true if @operator.include?(m.user.nick) || @halfop.include?(m.user.nick)
+          true if @voices.include?(m.user.nick)
         else
           false
       end

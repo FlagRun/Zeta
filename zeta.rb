@@ -13,7 +13,7 @@ require 'recursive_open_struct'
 
 # Load Config Data
 Zconf   = RecursiveOpenStruct.new( YAML.load_file($root_path + '/config/config.yml') )
-Zsecret = RecursiveOpenStruct.new( YAML.load_file($root_path + '/config/secret.yml') )
+Zsec = RecursiveOpenStruct.new( YAML.load_file($root_path + '/config/secret.yml') )
 
 # Initilize the rest of the bot
 require_all "#{$root_path}/config/initializers/*.rb"

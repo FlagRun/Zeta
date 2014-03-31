@@ -18,14 +18,14 @@ module Admin
 
     match /mode (.+)/, method: :mode
     def mode(m, nick)
-      return unless has_role?(m, :owner)
+      return unless @owner.include? m.user.nick
       bot.modes = m
     end
 
     match /e (.+)/, method: :boteval
     match /eval (.+)/, method: :boteval
     def boteval(m, s)
-      return unless has_role?(m, :owner)
+      return unless @owner.include? m.user.nick
       eval(s)
     rescue => e
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
@@ -34,7 +34,7 @@ module Admin
     match /ereturn (.+)/, method: :botevalreturn
     match /er (.+)/, method: :botevalreturn
     def botevalreturn(m, s)
-      return unless has_role?(m, :owner)
+      return unless @owner.include? m.user.nick
       return m.reply eval(s)
     rescue => e
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
@@ -43,7 +43,7 @@ module Admin
     match /evalmsg (.+)/, method: :botevalmsg
     match /em (.+)/, method: :botevalmsg
     def botevalmsg(m, s)
-      return unless has_role?(m, :owner)
+      return unless @owner.include? m.user.nick
       return m.user.msg eval(s)
     rescue => e
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]

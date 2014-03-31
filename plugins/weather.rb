@@ -50,7 +50,7 @@ module Plugins
     # @param zipcode [String] zipcode
     # @return [String] location-specific parameter for getting conditions.
     def geolookup(zipcode)
-      location = JSON.parse(open("http://api.wunderground.com/api/#{Zsecret.key.wunderground}/geolookup/q/#{zipcode}.json").read)
+      location = JSON.parse(open("http://api.wunderground.com/api/#{Zsec.key.wunderground}/geolookup/q/#{zipcode}.json").read)
       location['location']['l']
     rescue
       nil
@@ -61,7 +61,7 @@ module Plugins
     # @param location [String] provided by the geolookup method
     # @return [OpenStruct] parsed weather conditions.
     def get_conditions(location)
-      data = JSON.parse(open("http://api.wunderground.com/api/#{Zsecret.key.wunderground}/conditions#{location}.json").read)
+      data = JSON.parse(open("http://api.wunderground.com/api/#{Zsec.key.wunderground}/conditions#{location}.json").read)
       current = data['current_observation']
       location_data = current['display_location']
 

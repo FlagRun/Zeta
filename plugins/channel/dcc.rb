@@ -17,7 +17,7 @@ module Plugins
 
    private
     def github()
-      github = Github.new oauth_token: Zsecrets.keys.github
+      github = Github.new oauth_token: Zsec.keys.github
     end
 
   end
