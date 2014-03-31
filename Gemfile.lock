@@ -84,6 +84,8 @@ GEM
     patron (0.4.18)
     pg (0.17.1)
     rack (1.5.2)
+    recursive-open-struct (0.4.5)
+    require_all (1.3.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     sequel (4.7.0)
@@ -126,6 +128,8 @@ DEPENDENCIES
   mkfifo
   nokogiri
   pg
+  recursive-open-struct
+  require_all
   sequel
   tag_formatter
   weather-underground

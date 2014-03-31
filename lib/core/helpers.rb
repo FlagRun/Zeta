@@ -1,5 +1,0 @@
-require_relative '../helpers/check_user'
-require_relative '../helpers/is_channel_disabled'
-require_relative '../helpers/natural_language'
-require_relative '../helpers/stats'
-require_relative '../helpers/table_format'

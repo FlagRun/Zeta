@@ -3,5 +3,8 @@
 .idea
 tmp/*
 data/*
-lib/locales/porno.yml
-lib/*.pstore
+log/*
+config/config.yml
+config/secret.yml
+/locales/porno.yml
+*.pstore

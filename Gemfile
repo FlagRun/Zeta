@@ -28,3 +28,5 @@ gem 'god'
 gem 'activesupport'
 
 gem 'haml'
+gem 'recursive-open-struct'
+gem 'require_all'

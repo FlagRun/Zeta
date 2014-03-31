@@ -1,0 +1,42 @@
+# bot name
+bot:
+  nick: zeta
+  nicks: 'Bota Botaa'
+  username: zeta
+  realname: zeta
+
+server:
+  # bot channel
+  channels: '#flagrun'
+  network: Darkscience
+  hostname: irc.darkscience.net
+  password:
+  port: 6697
+  ssl: true
+  modes: '+b'
+
+  services:
+    chanserv: t
+    nickserv: t
+    memoserv: f
+    rpgserv:  f
+    botserv:  f
+    hostserv: f
+
+sasl:
+  username:
+  password:
+
+plugins:
+
+admin:
+  fifo:
+    mode: 0666
+    path: /tmp/bot
+
+roles:
+  owner: Liothen
+  admin: 'me meme mememe'
+  operator:
+  halfop:
+  voice:
