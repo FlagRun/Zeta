@@ -2,8 +2,9 @@
 .DS_Store
 .idea
 tmp/*
-data/*
-log/*
+data/*.yml
+data/*.rb
+log/*.log
 config/config.yml
 config/secret.yml
 /locales/porno.yml
