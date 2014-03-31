@@ -17,10 +17,10 @@ module Plugins
       @macros = YAML::load_file($root_path + '/locales/macros.yml')
     end
 
-    match "reload macros", method: :execute_reloadmacros, react_on: :private, use_prefix: false
+    match "reload", method: :execute_reloadmacros, react_on: :private, use_prefix: false
     def execute_reloadmacros m
 
-      return unless has_role?(m, :op)
+      return unless @operator.include?(m.user.nick)
       begin
         @macros = YAML::load_file($root_path + '/locales/macros.yml')
         m.user.notice "Macros have been reloaded."

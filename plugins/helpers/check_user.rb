@@ -34,5 +34,7 @@ module Cinch
           false
       end
     end
+
   end
+
 end

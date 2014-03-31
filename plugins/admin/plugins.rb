@@ -16,7 +16,7 @@ module Admin
     match(/plugin set (\S+) (\S+) (.+)$/, method: :set_option)
 
     def load_plugin(m, plugin, mapping)
-      return unless get_user(m).is_admin?
+      return unless @owner.include?(m.user.nick)
       mapping ||= plugin.gsub(/(.)([A-Z])/) { |_|
         $1 + "_" + $2
       }.downcase # we downcase here to also catch the first letter
@@ -47,6 +47,7 @@ module Admin
     end
 
     def unload_plugin(m, plugin)
+      @owner.include?(m.user.nick)
       begin
         plugin_class = Plugins.const_get(plugin)
       rescue NameError
@@ -83,13 +84,13 @@ module Admin
     end
 
     def reload_plugin(m, plugin, mapping)
-      return unless get_user(m).is_admin?
+      return unless @owner.include?(m.user.nick)
       unload_plugin(m, plugin)
       load_plugin(m, plugin, mapping)
     end
 
     def set_option(m, plugin, option, value)
-      return unless get_user(m).is_admin?
+      return unless @owner.include?(m.user.nick)
       begin
         const = Plugins.const_get(plugin)
       rescue NameError
