@@ -1,10 +1,8 @@
 require 'cinch/plugins/quotes'
 # require 'cinch-convert'
 require 'cinch-calculate'
-# require 'cinch-wikipedia'
 require 'weather-underground'
 
-# Zeta.config.plugins.plugins   << Cinch::Plugins::Wikipedia
 Zeta.config.plugins.plugins   << Cinch::Plugins::Calculate
 # Zeta.config.plugins.plugins   << Cinch::Plugins::Convert
 Zeta.config.plugins.plugins   << Cinch::Plugins::Quotes
