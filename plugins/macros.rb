@@ -1,6 +1,6 @@
 # coding: utf-8
 require 'yaml'
-# require_relative '../helpers/check_user'
+require_relative '../lib/helpers/check_user'
 
 module Plugins
   class Macros
@@ -14,15 +14,14 @@ module Plugins
 
     def initialize *args
       super
-      @macros = YAML::load_file($root_path + '/locales/macros.yml')
+      @macros = YAML::load_file($root_path + '/data/macros.yml')
     end
 
     match "reload", method: :execute_reloadmacros, react_on: :private, use_prefix: false
     def execute_reloadmacros m
-
       return unless @operator.include?(m.user.nick)
       begin
-        @macros = YAML::load_file($root_path + '/locales/macros.yml')
+        @macros = YAML::load_file($root_path + '/data/macros.yml')
         m.user.notice "Macros have been reloaded."
       rescue
         m.user.notice "Reloading macros has failed: #{$!}"
