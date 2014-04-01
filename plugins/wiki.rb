@@ -38,7 +38,7 @@ module Plugins
       text = Cinch::Toolbox.truncate(get_def(term, url), @max_length)
       url  = Cinch::Toolbox.shorten(url)
 
-      "Wikipedia âˆ´ #{text} [#{url}]"
+      "Wiki ∴ #{text} [#{url}]"
     end
 
     def get_def(term, url)
