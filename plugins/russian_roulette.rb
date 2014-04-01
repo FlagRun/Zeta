@@ -1,4 +1,4 @@
-# require_relative '../helpers/check_user'
+require_relative '../lib/helpers/check_user'
 
 module Plugins
   class RussianRoulette
