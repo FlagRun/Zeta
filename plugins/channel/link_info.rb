@@ -59,6 +59,7 @@ module Plugins
     match %r{(https?://.*?)(?:\s|$|,|\.\s|\.$)}, :use_prefix => false
 
     def execute(msg, url)
+      return unless msg.channel == '#flagrun' || msg.channel == '#flagworx'
       blacklist = DEFAULT_BLACKLIST.dup
       blacklist.concat(config[:blacklist]) if config[:blacklist]
 
@@ -82,5 +83,5 @@ end
 
 
 # AutoLoad
-# Zeta.config.plugins.plugins.push Plugins::LinkInfo
+Zeta.config.plugins.plugins.push Plugins::LinkInfo
 
