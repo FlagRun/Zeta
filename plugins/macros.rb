@@ -17,9 +17,9 @@ module Plugins
       @macros = YAML::load_file($root_path + '/data/macros.yml')
     end
 
-    match "reload", method: :execute_reloadmacros, react_on: :private, use_prefix: false
+    match /reload/, method: :execute_reloadmacros, react_on: :private
     def execute_reloadmacros m
-      return unless @operator.include?(m.user.nick)
+      return unless $operator.include?(m.user.nick)
       begin
         @macros = YAML::load_file($root_path + '/data/macros.yml')
         m.user.notice "Macros have been reloaded."
