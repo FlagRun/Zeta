@@ -5,7 +5,8 @@ module Admin
     set(
       plugin_name: "BotAdmin",
       help: "Bot administrator-only private commands.\nUsage: `~nick [channel]`;",
-      prefix: /^\?/)
+      # prefix: /^\?/
+    )
 
     match /nick (.+)/, method: :nick
     def nick(m, nick)

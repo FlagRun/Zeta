@@ -33,7 +33,7 @@ Zeta = Cinch::Bot.new do
 
     c.modes             = Zconf.server.modes.split(' ')
     c.channels          = Zconf.server.channels.split(' ')
-    c.plugins.prefix    = /^!/
+    c.plugins.prefix    = /^\?/
   end
 end
 

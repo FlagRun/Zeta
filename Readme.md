@@ -4,7 +4,7 @@ And will try to get the correct credits in source
 
 ## Commands
 roles: owner,admin,operator,halfop,voice,nobody
-prefix: admin(?), action(!), meme(.), remote(~)
+prefix: admin(?), action(?), meme(.), remote(~)
 
 ### Admin
 _Channel_
@@ -37,29 +37,29 @@ _Developer_
 ### Plugins
 _Utility_
 
-* !convert
-* !math
-* !wx
-* !wiki
+* ?convert
+* ?math
+* ?wx
+* ?wiki
 
 _DarkScience Code Contest_
 
-* !dcc
-* !dcc help
-* !dcc list
-* !dcc commits
+* ?dcc
+* ?dcc help
+* ?dcc list
+* ?dcc commits
 
 _Quotes_
 
-* !quote
+* ?quote
 
 _Misc_
 
-* !attack (target) - any
-* !8ball (question) - any
-* !roll (dice) - any
-* !silly (dice) - any
-* !urban (dice) - any
-* !vote (dice) - any
-* !info (dice) - any
-* !rr (dice) - any
+* ?attack (target) - any
+* ?8ball (question) - any
+* ?roll (dice) - any
+* ?silly (dice) - any
+* ?urban (dice) - any
+* ?vote (dice) - any
+* ?info (dice) - any
+* ?rr (dice) - any
