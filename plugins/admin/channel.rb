@@ -6,7 +6,7 @@ module Admin
 
     set(
       plugin_name: 'ChannelAdmin',
-      help: "Bot administrator-only private commands.\nUsage: `~join [channel]`; `~part [channel] <reason>`; `~quit [reason]`;",
+      help: "Bot administrator-only private commands.\nUsage: `?join [channel]`; `?part [channel] <reason>`; `?quit [reason]`;",
       # prefix: /^\?/
     )
 
@@ -30,7 +30,7 @@ module Admin
 
     match /quit(?: (.+))?/, method: :quit, group: :quit
     def quit(m, msg=nil)
-      return unless $admin.include? m.user.nick
+      return unless $owner == m.user.nick
       msg ||= m.user.nick
       @bot.handlers.dispatch :admin, m, "I am being shut down NOW!#{" - Reason: " + msg unless msg.nil?}", m.target
       sleep 2
