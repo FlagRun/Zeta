@@ -4,7 +4,7 @@ module Plugins
 
     set(
         plugin_name: "BotHelp",
-        help: "Need help?.\nUsage: `!help`\nUsage: `!help [plugin]` `!help plugins`",
+        help: "Need help?.\nUsage: `?help`\nUsage: `?help [plugin]` `?help plugins`",
     )
     match /help (.+)$/i, method: :execute_help
 
@@ -16,7 +16,7 @@ module Plugins
       m.user.notice("Help for #{Format(:bold, list[name.downcase][:name])}:\n#{list[name.downcase][:help]}")
     end
 
-    match 'help plugins', method: :execute_list
+    match 'help', method: :execute_list
     def execute_list(m)
 
       list = []
