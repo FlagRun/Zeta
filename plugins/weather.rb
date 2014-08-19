@@ -13,7 +13,7 @@ module Plugins
     # @param query [String] zipcode captured by the match method.
     # @return [String] weather summary to IRC channel.
     def forecast(msg, query)
-
+      return unless msg.channel == '#darkscience'
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 
