@@ -8,7 +8,7 @@ module Plugins
 
     attr_reader :macros
 
-    set plugin_name: "Macros", help: "Enables the classic #shakesoda macros to be used (including new ones.)",
+    set plugin_name: "Macros", help: "Macro's are prefixed by a <dot> example .dnf",
         react_on: :channel,
         prefix: /^\./
 

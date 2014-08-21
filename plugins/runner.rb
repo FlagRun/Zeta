@@ -3,7 +3,10 @@ require 'gist'
 
 class Plugins::Runner
   include Cinch::Plugin
-
+  set(
+      plugin_name: "Runner",
+      help: "Run a program though eval.so!\nUsage: `?run [lang] <expression>` `?langs`",
+  )
 
   match /run ([\S]+) (.+)/, method: :eval
   match /r ([\S]+) (.+)/, method: :eval
