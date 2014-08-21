@@ -43,7 +43,7 @@ module Plugins
       return 'No Results found' if data['result_type'] == 'no_results'
 
       # Return first definition
-      data['list'].first['definition'].strip[0..500]
+      data['list'].first['definition'].strip[0..500].gsub(/\r\n/, ' ')
     rescue => e
       e.message
     end
