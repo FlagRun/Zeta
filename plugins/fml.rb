@@ -4,6 +4,10 @@
 module Plugins
   class Fml
     include Cinch::Plugin
+    set(
+        plugin_name: "FuckMyLife",
+        help: "Get a random FML.\nUsage: `?fml`",
+    )
 
     match /fml/
 

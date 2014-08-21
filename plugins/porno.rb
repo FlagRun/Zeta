@@ -5,8 +5,8 @@ module Plugins
   class Porno
     include Cinch::Plugin
 
-    set help: "Random porno film names.\nUsage: `!porno [search term]`",
-        prefix: /^./
+    set plugin_name: 'porno name',
+        help: "Random porno film names.\nUsage: `?porno [search term]`"
 
     match /porno(?> )?(.+)?/, method: :execute_porno
 

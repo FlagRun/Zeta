@@ -6,6 +6,11 @@ module Plugins
   class Forecast
     include Cinch::Plugin
 
+    set(
+        plugin_name: "Weather",
+        help: "Get the Weather?.\nUsage: `?weather`\nUsage: `?wx zip` `?w zip` `?forecast zip`",
+    )
+
     match /forecast (.+)/, method: :forecast
     # Executes the geolookup and get_conditions method when Regexp is matched
     #

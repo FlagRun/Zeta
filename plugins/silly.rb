@@ -14,7 +14,6 @@ module Plugins
     set(
         plugin_name: "Silly",
         help: "You know, silly stuff.",
-        prefix: /^./
     )
 
     _seconds_in_a_day = 86400

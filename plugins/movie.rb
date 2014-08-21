@@ -2,8 +2,8 @@ module Plugins
   class Movies
     include Cinch::Plugin
     set(
-     plugin_name: 'Random Attacker',
-     help: 'Movie Plot\nUsage: `!movie <name of movie>`;',
+     plugin_name: 'Movies',
+     help: 'Movie Plots \nUsage: `?movie <name of movie>`;',
      react_on: :channel
     )
 

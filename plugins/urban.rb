@@ -13,8 +13,6 @@ module Plugins
     match /urban (.*)/, method: :query
     match /ud (.*)/,    method: :query
     match /wotd/,       method: :wotd
-    match /woty/,       method: :woty
-
 
     def query(m, query)
       m.reply "UD> #{search(query)}"

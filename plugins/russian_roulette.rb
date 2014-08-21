@@ -5,7 +5,7 @@ module Plugins
     include Cinch::Plugin
 
     set plugin_name: "Russian Roulette",
-        help: "In Soviet Russia, boolet shoots YOU!\nUsage: !rr <nick>",
+        help: "In Soviet Russia, boolet shoots YOU!\nUsage: ?rr <nick>",
         react_on: :channel
 
     attr_reader :games

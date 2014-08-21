@@ -4,7 +4,7 @@ require 'chronic'
 module Plugins
   class Fnord
     include Cinch::Plugin
-    @help="fnord: !fnord - Creates a fnord"
+    @help="fnord: ?fnord - Creates a fnord"
     @plugin_name="fnord"
     ADJECTIVES =
         ["23rd", "acceptable", "acrobatic", "alien", "amiable",
@@ -394,7 +394,7 @@ module Plugins
     end
 
     @plugin_name="ddate"
-    @help="ddate: !ddate [time] - gives the discordian date for the day given, or today's if none specified"
+    @help="ddate: ?ddate [time] - gives the discordian date for the day given, or today's if none specified"
     match /ddate$/, method: :execute
 
     def execute(m)

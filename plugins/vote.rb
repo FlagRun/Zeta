@@ -2,6 +2,10 @@
 module Plugins
   class Vote
     include Cinch::Plugin
+    set(
+        plugin_name: "Polls",
+        help: "Need help?.\nUsage: `?vote`\nUsage: `?vote create [poll]` `?vote delete #` `?vote list` `?vote show #` `?vote add-choice` `?vote open #`",
+    )
 
     Vote = Struct.new(:topic, :choices, :open) do
       def initialize(*)

@@ -6,7 +6,7 @@ module Plugins
   class Dice
     include Cinch::Plugin
 
-    set plugin_name: "Dicebox", help: "Dicebox -- Uses standard dice notation.\nUsage: `<X#>YdZ<[+|-]A>` (Examples: `1d6`; `2d6-3`; `2#1d6`; `5#2d6+10`)"
+    set plugin_name: "Dicebox", help: "Dicebox -- Uses standard dice notation.\nUsage: `?roll <X#>YdZ<[+|-]A>` (Examples: `1d6`; `2d6-3`; `2#1d6`; `5#2d6+10`)"
 
     match /^roll (.+)/
     def execute(m, s)

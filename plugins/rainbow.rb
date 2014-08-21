@@ -13,7 +13,7 @@ module Plugins
   class Rainbow
     include Cinch::Plugin
 
-    set plugin_name: "Rainbow", help: "Rainbowificates your text.\nUsage: `!rainbow [text]`.\nUsage: `eyerape [text]`.", suffix: /$/
+    set plugin_name: "Rainbow", help: "Rainbowificates your text.\nUsage: `?rainbow [text]`.\nUsage: `?eyerape [text]`.", suffix: /$/
 
     def rainbowification(s)
       s.gsub(/\x03([0-9]{2}(,[0-9]{2})?)?/, "") # Because total function abuse.
