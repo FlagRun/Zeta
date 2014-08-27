@@ -22,7 +22,7 @@ module Admin
       }.downcase # we downcase here to also catch the first letter
 
       #file_name = "lib/plugins/#{mapping}.rb"
-      file_name = File.join(__dir__, "../lib/plugins/#{mapping}.rb")
+      file_name = $root_path + "/plugins/#{mapping}.rb"
       unless File.exist?(file_name)
         m.reply "Could not load #{plugin} because #{file_name} does not exist."
         return
