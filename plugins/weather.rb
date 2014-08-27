@@ -18,22 +18,22 @@ module Plugins
     # @param query [String] zipcode captured by the match method.
     # @return [String] weather summary to IRC channel.
     def forecast(msg, query)
-      return if msg.channel == '#darkscience' # Do not send to #darkscience
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 
       data = get_conditions(location)
       return msg.reply 'Problem getting data. Try again later.' if data.nil?
 
-      msg.reply(weather_summary(data))
+      msg.user.msg(weather_summary(data))
     end
 
     match /w (.+)/, method: :weather
     match /wx (.+)/, method: :weather
     match /weather (.+)/, method: :weather
+    match /almanac (.+)/, method: :almanac
+    match /hurricane/, method: :hurricane
+
     def weather(msg, query)
-
-
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 
@@ -41,21 +41,74 @@ module Plugins
       return msg.reply 'Problem getting data. Try again later.' if data.nil?
 
       #[ Clarkston, WA, United States | Cloudy | Temp: 34 F (1 C) | Humidity: 73% | Winds: 8 mph ]
-      reply_data = "|:: #{data.county}, #{data.country} " \
-                  ":|: #{data.weather} #{data.feels_like} " \
-                  ":|: Humidity: #{data.relative_humidity} " \
-                  ":|: Pressure: #{data.pressure_mb} mmHg " \
-                  ":|: Wind: #{data.wind_mph} mph gusting to #{data.wind_gust_mph} mph ::|"
+      reply_data = "∴ #{data.county}, #{data.country} " \
+                  "≈ #{data.weather} #{data.feels_like} " \
+                  "≈ Humidity: #{data.relative_humidity} " \
+                  "≈ Pressure: #{data.pressure_mb} mmHg " \
+                  "≈ Wind: #{data.wind_mph} mph gusting to #{data.wind_gust_mph} mph ∴"
       msg.reply(reply_data)
     end
 
+    def hurricane(msg)
+      url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/currenthurricane/view.json"
+      location = JSON.parse(
+           open(url).read
+       )
+      return msg.reply "No results found for #{query}." if location.nil?
+      reply_msg = "∴ #{location['currenthurricane'][0]['stormInfo']['stormName_Nice']} " \
+                  "(#{location['currenthurricane'][0]['stormInfo']['stormNumber']}) "\
+                  "≈ Category #{location['currenthurricane'][0]['Current']['SaffirSimpsonCategory']} " \
+                  "≈ Wind #{location['currenthurricane'][0]['Current']['WindSpeed']['Mph']} mph " \
+                  "(#{location['currenthurricane'][0]['Current']['WindSpeed']['Kph']} kph) " \
+                  "≈ Wind Gust #{location['currenthurricane'][0]['Current']['WindGust']['Mph']} mph " \
+                  "(#{location['currenthurricane'][0]['Current']['WindGust']['Kph']} kph) " \
+                  "≈ #{location['currenthurricane'][0]['Current']['Time']['pretty']} ∴"
+      msg.reply(reply_msg)
+    end
 
-    # Finds location for zipcode
+    def almanac(msg,locale)
+      url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/almanac/q/#{locale}.json"
+      location = JSON.parse(
+           open(url).read
+       )
+      return msg.reply "No results found for #{query}." if location.nil?
+
+      time = Time.now()
+
+      data = OpenStruct.new(
+          date: time.strftime('%B, %d %Y (%A) '),
+          airport: location['almanac']['airport_code'],
+          high_norm_f: location['almanac']['temp_high']['normal']['F'],
+          high_norm_c: location['almanac']['temp_high']['normal']['C'],
+          high_record_y: location['almanac']['temp_high']['recordyear'],
+          high_record_f: location['almanac']['temp_high']['record']['F'],
+          high_record_c: location['almanac']['temp_high']['normal']['C'],
+          low_norm_f: location['almanac']['temp_low']['normal']['F'],
+          low_norm_c: location['almanac']['temp_low']['normal']['C'],
+          low_record_y: location['almanac']['temp_low']['recordyear'],
+          low_record_f: location['almanac']['temp_low']['record']['F'],
+          low_record_c: location['almanac']['temp_low']['normal']['C'],
+      )
+
+      reply_msg = "∴ Almanac #{data.date} ≈ Airport #{data.airport} " \
+              "≈ Normal #{data.high_norm_f} F (#{data.high_norm_c} C) | #{data.low_norm_f} F (#{data.low_norm_c} C) " \
+              "≈ High #{data.high_record_f} F (#{data.high_record_c} C) [#{data.high_record_y}] " \
+              "≈ Low #{data.low_record_f} F (#{data.low_record_c} C) [#{data.low_record_y}] ∴"
+
+      msg.reply(reply_msg)
+    end
+
+
+    ################################################
+    # Finds location for String
     #
-    # @param zipcode [String] zipcode
+    # @param zipcode [String] string
     # @return [String] location-specific parameter for getting conditions.
-    def geolookup(zipcode)
-      location = JSON.parse(open("http://api.wunderground.com/api/#{Zsec.key.wunderground}/geolookup/q/#{zipcode}.json").read)
+    def geolookup(locale)
+      url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/geolookup/q/#{locale}.json"
+      location = JSON.parse(
+          open(url).read
+      )
       location['location']['l']
     rescue
       nil
@@ -127,6 +180,7 @@ module Plugins
     rescue
       'Problem fetching the weather summary. Try again later.'
     end
+
   end
 end
 
