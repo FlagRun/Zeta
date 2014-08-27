@@ -1,8 +1,8 @@
 module Plugins
-  class Movies
+  class Movie
     include Cinch::Plugin
     set(
-     plugin_name: 'Movies',
+     plugin_name: 'Movie',
      help: 'Movie Plots \nUsage: `?movie <name of movie>`;',
      react_on: :channel
     )
@@ -57,4 +57,4 @@ end
 
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Plugins::Movies
+Zeta.config.plugins.plugins.push Plugins::Movie
