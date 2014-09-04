@@ -12,11 +12,12 @@ module Plugins
     )
 
     match /forecast (.+)/, method: :forecast
-    # Executes the geolookup and get_conditions method when Regexp is matched
-    #
-    # @param msg [Cinch::Bot] passed internally by the framework.
-    # @param query [String] zipcode captured by the match method.
-    # @return [String] weather summary to IRC channel.
+    match /w (.+)/, method: :weather
+    match /wx (.+)/, method: :weather
+    match /weather (.+)/, method: :weather
+    match /almanac (.+)/, method: :almanac
+    match /hurricane/, method: :hurricane
+
     def forecast(msg, query)
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
@@ -26,12 +27,6 @@ module Plugins
 
       msg.user.msg(weather_summary(data))
     end
-
-    match /w (.+)/, method: :weather
-    match /wx (.+)/, method: :weather
-    match /weather (.+)/, method: :weather
-    match /almanac (.+)/, method: :almanac
-    match /hurricane/, method: :hurricane
 
     def weather(msg, query)
       location = geolookup(query)
@@ -99,11 +94,7 @@ module Plugins
     end
 
 
-    ################################################
-    # Finds location for String
-    #
-    # @param zipcode [String] string
-    # @return [String] location-specific parameter for getting conditions.
+
     def geolookup(locale)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/geolookup/q/#{locale}.json"
       location = JSON.parse(
@@ -114,10 +105,6 @@ module Plugins
       nil
     end
 
-    # Fetches weather conditions and formats output
-    #
-    # @param location [String] provided by the geolookup method
-    # @return [OpenStruct] parsed weather conditions.
     def get_conditions(location)
       data = JSON.parse(open("http://api.wunderground.com/api/#{Zsec.key.wunderground}/conditions#{location}.json").read)
       current = data['current_observation']
@@ -152,10 +139,6 @@ module Plugins
       nil
     end
 
-    # Displays weather summary for IRC output
-    #
-    # @param data [OpenStruct] weather conditions data
-    # @return [String] weather summary.
     def weather_summary(data)
       ##
       # Sample Summary using !forecast 00687
