@@ -63,7 +63,7 @@ module Admin
 
     def open_fifo(msg)
       File.mkfifo("#{$root_path}/tmp/bot" || raise(ArgumentError, "No FIFO path given!"))
-      File.chmod(0666, "#{$root_path}/tmp/bot")
+      File.chmod(0660, "#{$root_path}/tmp/bot")
 
       File.open("#{$root_path}/tmp/bot", "r+") do |fifo|
         bot.info "Opened named pipe (FIFO) at #{"#{$root_path}/tmp/bot"}"
