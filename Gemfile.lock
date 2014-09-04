@@ -1,23 +1,23 @@
-GIT
-  remote: git://github.com/cinchrb/cinch.git
-  revision: ebc55c2747a2cc41bfa7f80b76fbabac376e6043
-  specs:
-    cinch (2.1.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.0.4)
+    actionview (4.1.4)
+      activesupport (= 4.1.4)
+      builder (~> 3.1)
+      erubis (~> 2.7.0)
+    activesupport (4.1.4)
       i18n (~> 0.6, >= 0.6.9)
-      minitest (~> 4.2)
-      multi_json (~> 1.3)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
       thread_safe (~> 0.1)
-      tzinfo (~> 0.3.37)
+      tzinfo (~> 1.1)
     addressable (2.3.6)
     atomic (1.1.16)
+    builder (3.2.2)
     chronic (0.10.2)
     chronic_duration (0.10.4)
       numerizer (~> 0.1.1)
+    cinch (2.1.0)
     cinch-calculate (1.0.0)
     cinch-cooldown (1.0.0)
       time-lord (>= 1.0.1)
@@ -33,10 +33,17 @@ GEM
       cinch-toolbox
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    dotenv (0.11.1)
+      dotenv-deployment (~> 0.0.2)
+    dotenv-deployment (0.0.2)
+    erubis (2.7.0)
     evalso (0.0.9)
       httparty
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
+    foreman (0.75.0)
+      dotenv (~> 0.11.1)
+      thor (~> 0.19.1)
     geocoder (1.1.9)
     gist (4.3.0)
     github_api (0.11.3)
@@ -55,14 +62,14 @@ GEM
     httparty (0.13.0)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    i18n (0.6.9)
+    i18n (0.6.11)
     json (1.8.1)
     jwt (0.1.11)
       multi_json (>= 1.5)
     libxml-ruby (2.7.0)
     mime-types (2.2)
     mini_portile (0.5.3)
-    minitest (4.7.5)
+    minitest (5.4.0)
     mkfifo (0.0.1)
     multi_json (1.9.2)
     multi_xml (0.5.5)
@@ -86,11 +93,13 @@ GEM
     sequel (4.9.0)
     tag_formatter (0.0.3)
     temperature (1.2)
+    thor (0.19.1)
     thread_safe (0.3.1)
       atomic (>= 1.1.7, < 2)
     tilt (2.0.1)
     time-lord (1.0.1)
-    tzinfo (0.3.39)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
     weather-underground (1.1.1)
       happymapper
       rest-client
@@ -104,10 +113,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport
+  actionview
   chronic
   chronic_duration
-  cinch!
+  cinch
   cinch-calculate
   cinch-cooldown
   cinch-quotes
@@ -115,10 +124,12 @@ DEPENDENCIES
   cinch-urbandictionary
   cinch-wikipedia
   evalso
+  foreman
   geocoder
   gist
   github_api
   haml
+  hashie
   httparty
   mkfifo
   nokogiri
