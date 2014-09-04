@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Cinch
-gem 'cinch', git: 'git://github.com/cinchrb/cinch.git'
+gem 'cinch'
 gem 'cinch-cooldown'
 gem 'cinch-toolbox'
 gem 'cinch-wikipedia'
@@ -20,9 +20,9 @@ gem 'tag_formatter'
 gem 'geocoder'
 gem 'httparty'
 gem 'mkfifo'
-gem 'activesupport'
 gem 'haml'
 gem 'nokogiri'
+gem 'actionview'
 
 gem 'recursive-open-struct'
 gem 'require_all'
@@ -34,3 +34,7 @@ gem 'github_api'
 gem 'weather-underground'
 gem 'evalso'
 gem 'gist'
+gem 'hashie'
+
+# Background
+gem 'foreman'
