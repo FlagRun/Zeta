@@ -9,6 +9,7 @@ require 'nokogiri'
 require 'json'
 require 'ostruct'
 require 'yaml'
+require 'hashie'
 require 'recursive_open_struct'
 
 # Load Config Data
