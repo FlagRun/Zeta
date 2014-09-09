@@ -11,6 +11,4 @@ data/*.rb
 log/*.log
 config/config.yml
 config/secret.yml
-config/ignore.yml
-/locales/porno.yml
 *.pstore
