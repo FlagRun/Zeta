@@ -14,8 +14,8 @@ module Plugins
 
 
     def peek(msg, channel)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       chan = channel || msg.user.channel
       request = Hashie::Mash.new(request_channel(channel))
 
@@ -29,8 +29,8 @@ module Plugins
     end
 
     def finger(msg, nickname)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       nick = nickname || msg.user.nick
       request = request_user(nick)
 
