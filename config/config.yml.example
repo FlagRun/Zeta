@@ -34,9 +34,5 @@ admin:
     mode: 0666
     path: /tmp/bot
 
-roles:
-  owner: Liothen
-  admin: 'me meme mememe'
-  operator:
-  halfop:
-  voice:
+master:
+  nick: m00t

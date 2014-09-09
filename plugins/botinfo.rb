@@ -8,6 +8,7 @@ require 'chronic_duration'
 module Plugins
   class BotInfo
     include Cinch::Plugin
+    include Cinch::Helpers
 
     set(
       plugin_name: "Botinfo",
@@ -26,6 +27,8 @@ module Plugins
 
     match 'info', use_prefix: false
     def execute(m)
+      return unless check_user(m)
+      return unless check_channel(m)
 
       tags = {
         bot_name: @bot.nick,
@@ -57,6 +60,7 @@ module Plugins
 
     match 'list plugins', method: :execute_list, use_prefix: false
     def execute_list(m)
+      return unless check_user(m)
 
       list = []
       @bot.plugins.each {|p| list << p.class.plugin_name };
@@ -65,7 +69,7 @@ module Plugins
 
     match /^help (.+)$/i, method: :execute_help, use_prefix: false
     def execute_help(m, name)
-
+      return unless check_user(m)
       list = {}
       @bot.plugins.each {|p| list[p.class.plugin_name.downcase] = {name: p.class.plugin_name, help: p.class.help} };
       return m.user.notice("Help for \"#{name}\" could not be found.") if !list.has_key?(name.downcase)

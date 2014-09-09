@@ -5,6 +5,8 @@ require 'yaml'
 module Plugins
   class Attack
     include Cinch::Plugin
+    include Cinch::Helpers
+
      set(
       plugin_name: 'Random Attacker',
       help: 'Attacks a user with a random attack.\nUsage: `?attack <nick or phrase>`; `<nick or phrase>` may be omitted for a random attack on a random nick.',
@@ -18,6 +20,8 @@ module Plugins
 
     match /attack(?: (.+))?/, group: :attack
     def execute(m, target=nil)
+      return unless check_user(m)
+      return unless check_channel(m)
 
       target = m.user.nick if !target.nil? && target.match(/(\bmy\b|\b#{@bot.nick}\S*\b|\b\S*self\b)/i)
       target.gsub(/(\bmy\b|\b#{@bot.nick}\S*\b|\b\S*self\b)/i,m.user.nick+"'s") if !target.nil?;

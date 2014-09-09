@@ -1,6 +1,7 @@
 module Admin
   class BotAdmin
     include Cinch::Plugin
+    include Cinch::Helpers
 
     set(
       plugin_name: "BotAdmin",
@@ -10,7 +11,7 @@ module Admin
 
     match /nick (.+)/, method: :nick
     def nick(m, nick)
-      return unless $admin.include? m.user.nick
+      return unless check_user(m, :admin)
       bot.nick = nick
       synchronize(:nickchange) do
         @bot.handlers.dispatch :admin, m, "My nick got changed from #{@bot.last_nick} to #{@bot.nick} by #{m.user.nick}", m.target
@@ -19,14 +20,14 @@ module Admin
 
     match /mode (.+)/, method: :mode
     def mode(m, nick)
-      return unless $admin.include? m.user.nick
+      return unless check_user(m, :admin)
       bot.modes = m
     end
 
     match /e (.+)/, method: :boteval
     match /eval (.+)/, method: :boteval
     def boteval(m, s)
-      return unless $admin.include? m.user.nick
+      return unless check_user(m, :owner)
       eval(s)
     rescue => e
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
@@ -35,7 +36,7 @@ module Admin
     match /ereturn (.+)/, method: :botevalreturn
     match /er (.+)/, method: :botevalreturn
     def botevalreturn(m, s)
-      return unless $admin.include? m.user.nick
+      return unless check_user(m, :owner)
       return m.reply eval(s)
     rescue => e
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
@@ -44,10 +45,67 @@ module Admin
     match /evalmsg (.+)/, method: :botevalmsg
     match /em (.+)/, method: :botevalmsg
     def botevalmsg(m, s)
-      return unless $admin.include? m.user.nick
+      return unless check_user(m, :owner)
       return m.user.msg eval(s)
     rescue => e
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
+    end
+
+    match /ignore (.+)/, method: :ignore_user
+    def ignore_user(m, user)
+      return m.reply("Must specify a user to ignore!") unless user
+      return unless check_user(m, :operator)
+      if Zusers.admin.split(' ').include?(user) || Zusers.operator.split(' ').include?(user)
+        m.reply "#{user} cannot be ignored"
+      else
+        Zignore.users << " #{user}"
+        m.action_reply "is now ignoring #{user} "
+      end
+    end
+
+    match /unignore (.+)/, method: :unignore_user
+    def unignore_user(m, user)
+      return unless check_user(m, :operator)
+      if Zignore.users.split(' ').include?(user)
+        Zignore.users.sub!(user,'')
+        Zignore.users.strip!
+        m.action_reply "is no longer ignoring #{user}"
+      else
+        m.action_reply "wasn't ignoring #{user} anyways"
+      end
+    end
+
+    match /crash (.+)/, method: :ignore_channel
+    def ignore_channel(m, channel='')
+      return unless check_user(m, :operator)
+      if channel
+        Zignore.channels << " #{channel}"
+        m.action_reply "is no longer interested in #{channel}"
+      else
+        Zignore.channels << " #{m.channel}"
+        m.action_reply "hates #{m.channel} then runs off..."
+      end
+    end
+
+    match /overide (.+)/, method: :crash_overide
+    def crash_overide(m, channel='')
+      return unless check_user(m, :operator)
+      if channel
+        Zignore.channels.sub!(channel,'')
+        Zignore.channels.strip!
+        m.action_reply "Finds something interesting in #{channel} again..."
+      else
+        Zignore.channels.sub!(m.channel,'')
+        Zignore.channels.strip!
+        m.action_reply "Reboots!!!"
+      end
+    end
+
+    match /say (.+)/, method: :say_test
+    def say_test(m, say)
+      return unless check_user(m)
+      return unless check_channel(m)
+      m.reply say
     end
 
   end

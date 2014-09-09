@@ -5,6 +5,8 @@ require 'nokogiri'
 module Plugins
   class UrbanDictionary
     include Cinch::Plugin
+    include Cinch::Helpers
+
     set(
         plugin_name: 'UrbanDictionary',
         help: "Urban Dictionary -- Grabs a term from urbandictionary.com.\nUsage: `?urban <term>`; `?wotd`; `!?woty`"
@@ -15,16 +17,20 @@ module Plugins
     match /wotd/,       method: :wotd
 
     def query(m, query)
-      m.reply "UD> #{search(query)}"
+      return unless check_user(m)
+      return unless check_channel(m)
+      m.reply "UD↦ #{search(query)}"
     end
 
 
     def wotd(m)
+      return unless check_user(m)
+      return unless check_channel(m)
       url = URI.encode "http://www.urbandictionary.com/"
       doc = Nokogiri.HTML(open url)
       word = doc.at_css('.word').text.strip[0..500]
       meaning = doc.at_css('.meaning').text.strip[0..500]
-      m.reply "UD> #{word} -- #{meaning}"
+      m.reply "UD↦ #{word} -- #{meaning}"
     end
 
     private

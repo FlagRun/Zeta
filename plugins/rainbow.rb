@@ -12,6 +12,7 @@ end
 module Plugins
   class Rainbow
     include Cinch::Plugin
+    include Cinch::Helpers
 
     set plugin_name: "Rainbow", help: "Rainbowificates your text.\nUsage: `?rainbow [text]`.\nUsage: `?eyerape [text]`.", suffix: /$/
 
@@ -31,9 +32,9 @@ module Plugins
       sd = s.dup
       sd.gsub(/\x03([0-9]{2}(,[0-9]{2})?)?/, "") # Because total function abuse.
       colour = %w{04 07 08 09 10 06 13}
-      offset = Random.new.rand(0..colour.size-1);
+      offset = Random.new.rand(0..colour.size-1)
       sd = "\x02" + sd.upcase.split(" ").map { |c|
-        offset = (offset < colour.size-1 ? offset.next : 0);
+        offset = (offset < colour.size-1 ? offset.next : 0)
         "\x03#{colour[offset]},#{colour[offset-4]}#{c.each_char.each_with_index.map { |char, index| index % 2 == 0 ? char : char.downcase }.join}"
       }.join(" ")
       #sd
@@ -42,20 +43,21 @@ module Plugins
     match /rainbow (.+)/, method: :execute_rainbow
 
     def execute_rainbow(m, string)
-
-      ; m.reply(rainbowification(string), false);
+      return unless check_user(m)
+      return unless check_channel(m)
+      m.reply(rainbowification(string), false)
     end
 
-    ;
+
 
     match /eyerape (.+)/, method: :execute_eyerape
 
     def execute_eyerape(m, string)
-
-      ; m.reply(eyerapeification(string), false);
+      return unless check_user(m)
+      return unless check_channel(m)
+      m.reply(eyerapeification(string), false)
     end
 
-    ;
 
   end
 end

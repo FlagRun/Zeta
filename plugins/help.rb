@@ -1,6 +1,7 @@
 module Plugins
   class BotHelp
     include Cinch::Plugin
+    include Cinch::Helpers
 
     set(
         plugin_name: "BotHelp",
@@ -9,6 +10,8 @@ module Plugins
     match /help (.+)$/i, method: :execute_help
 
     def execute_help(m, name)
+      return unless check_user(m)
+      return unless check_channel(m)
 
       list = {}
       @bot.plugins.each { |p| list[p.class.plugin_name.downcase] = {name: p.class.plugin_name, help: p.class.help} };
@@ -18,6 +21,8 @@ module Plugins
 
     match 'help', method: :execute_list
     def execute_list(m)
+      return unless check_user(m)
+      return unless check_channel(m)
 
       list = []
       @bot.plugins.each {|p| list << p.class.plugin_name };

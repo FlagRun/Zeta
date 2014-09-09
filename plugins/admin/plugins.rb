@@ -3,6 +3,7 @@ require_relative '../../lib/helpers/check_user'
 module Admin
   class Plugins
     include Cinch::Plugin
+    include Cinch::Helpers
 
     set(
       plugin_name: 'PluginsAdmin',
@@ -16,7 +17,7 @@ module Admin
     match(/plugin set (\S+) (\S+) (.+)$/, method: :set_option)
 
     def load_plugin(m, plugin, mapping)
-      return unless $admin.include?(m.user.nick)
+      return unless check_user(m, :admin)
       mapping ||= plugin.gsub(/(.)([A-Z])/) { |_|
         $1 + "_" + $2
       }.downcase # we downcase here to also catch the first letter
@@ -47,7 +48,7 @@ module Admin
     end
 
     def unload_plugin(m, plugin)
-      return unless $admin.include? m.user.nick
+      return unless check_user(m, :admin)
       begin
         plugin_class = Plugins.const_get(plugin)
       rescue NameError
@@ -84,13 +85,13 @@ module Admin
     end
 
     def reload_plugin(m, plugin, mapping)
-      return unless $admin.include?(m.user.nick)
+      return unless check_user(m, :admin)
       unload_plugin(m, plugin)
       load_plugin(m, plugin, mapping)
     end
 
     def set_option(m, plugin, option, value)
-      return unless $admin.include?(m.user.nick)
+      return unless check_user(m, :admin)
       begin
         const = Plugins.const_get(plugin)
       rescue NameError

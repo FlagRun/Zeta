@@ -10,6 +10,7 @@ module Plugins
   # Plugin to allow users to search wikipedia.
   class Wikipedia
     include Cinch::Plugin
+    include Cinch::Helpers
 
     enforce_cooldown
 
@@ -24,6 +25,8 @@ module Plugins
     end
 
     def execute(m, term)
+      return unless check_user(m)
+      return unless check_channel(m)
       m.reply wiki(term)
     end
 

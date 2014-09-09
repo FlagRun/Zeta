@@ -3,6 +3,7 @@ require_relative '../lib/helpers/check_user'
 module Plugins
   class RussianRoulette
     include Cinch::Plugin
+    include Cinch::Helpers
 
     set plugin_name: "Russian Roulette",
         help: "In Soviet Russia, boolet shoots YOU!\nUsage: ?rr <nick>",
@@ -33,6 +34,8 @@ module Plugins
     match /rr(?: (.+))?/
 
     def execute(m, nick)
+      return unless check_user(m)
+      return unless check_channel(m)
 
       #return m.reply "I am sorry comrade, but I do not have pistol on me." unless check_user(m.channel, @bot)
       return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)

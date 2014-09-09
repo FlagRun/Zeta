@@ -5,6 +5,7 @@ module Plugins
   # @author Jonah Ruiz <jonah@pixelhipsters.com>
   class Forecast
     include Cinch::Plugin
+    include Cinch::Helpers
 
     set(
         plugin_name: "Weather",
@@ -19,6 +20,8 @@ module Plugins
     match /hurricane/, method: :hurricane
 
     def forecast(msg, query)
+      return unless check_user(m)
+      return unless check_channel(m)
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 
@@ -29,6 +32,8 @@ module Plugins
     end
 
     def weather(msg, query)
+      return unless check_user(m)
+      return unless check_channel(m)
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 
@@ -45,6 +50,8 @@ module Plugins
     end
 
     def hurricane(msg)
+      return unless check_user(m)
+      return unless check_channel(m)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/currenthurricane/view.json"
       location = JSON.parse(
            open(url).read
@@ -62,6 +69,8 @@ module Plugins
     end
 
     def almanac(msg,locale)
+      return unless check_user(m)
+      return unless check_channel(m)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/almanac/q/#{locale}.json"
       location = JSON.parse(
            open(url).read

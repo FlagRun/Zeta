@@ -3,6 +3,7 @@ require_relative '../../lib/helpers/check_user'
 module Admin
   class ChannelAdmin
     include Cinch::Plugin
+    include Cinch::Helpers
 
     set(
       plugin_name: 'ChannelAdmin',
@@ -12,7 +13,7 @@ module Admin
 
     match /join (.+)/, method: :join
     def join(m, channel)
-      return unless $operator.include? m.user.nick
+      return unless check_user(m, :operator)
       channel.split(", ").each {|ch|
         Channel(ch).join
         @bot.handlers.dispatch :admin, m, "Attempt to join #{ch.split[0]} by #{m.user.nick}...", m.target
@@ -21,7 +22,7 @@ module Admin
 
     match /part(?: (\S+))?(?: (.+))?/, method: :part, group: :part
     def part(m, channel=nil, msg=nil)
-      return unless $operator.include? m.user.nick
+      return unless check_user(m, :operator)
       channel ||= m.channel.name
       msg ||= m.user.nick
       Channel(channel).part(msg) if channel
@@ -30,7 +31,7 @@ module Admin
 
     match /quit(?: (.+))?/, method: :quit, group: :quit
     def quit(m, msg=nil)
-      return unless $owner == m.user.nick
+      return unless check_user(m, :master)
       msg ||= m.user.nick
       @bot.handlers.dispatch :admin, m, "I am being shut down NOW!#{" - Reason: " + msg unless msg.nil?}", m.target
       sleep 2

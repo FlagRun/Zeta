@@ -6,6 +6,7 @@ require 'action_view'
 module Plugins
   class DarkScience
     include Cinch::Plugin
+    include Cinch::Helpers
     include ActionView::Helpers::DateHelper
 
     match /peek (.+)/, method: :peek
@@ -13,19 +14,25 @@ module Plugins
 
 
     def peek(msg, channel)
+      return unless check_user(m)
+      return unless check_channel(m)
+      chan = channel || msg.user.channel
       request = Hashie::Mash.new(request_channel(channel))
 
-      return msg.reply("Finger → #{request.message}") if request.status == 500
-      return msg.reply('Finger → Service Down') if request.status != 200
+      return msg.reply("Peek → #{request.message}") if request.status == 500
+      return msg.reply('Peek → Service Down') if request.status != 200
       return msg.reply('Peek → Channel Not Found') if request.data.channel.empty?
 
       msg.reply "Peek → #{request.data.channel.name} (#{request.data.channel.modes}) ~ " \
-                "Users: #{request.data.channel.stats.current_users} (x̄ #{request.data.channel.stats.peak_users}) ~ " \
+                "Users: #{request.data.channel.stats.current_users} (#{request.data.channel.stats.peak_users}x̄) ~ " \
                 "Last Topic set by #{request.data.channel.topic.author} @ #{Time.at(request.data.channel.topic.time).strftime("%D")}"
     end
 
     def finger(msg, nickname)
-      request = request_user(nickname)
+      return unless check_user(m)
+      return unless check_channel(m)
+      nick = nickname || msg.user.nick
+      request = request_user(nick)
 
       return msg.reply('Finger → User Not Found') if request['data']['user'].empty?
       return msg.reply('Finger → Service Down') if request['status'] != 200

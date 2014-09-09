@@ -1,4 +1,4 @@
-module Cinch
+!module Cinch
   module Helpers  
     # Determines if the requested channel is on the plugin's disabled list
     # @param c [Channel, String] A Channel object or String

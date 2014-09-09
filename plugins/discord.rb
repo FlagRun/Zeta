@@ -4,6 +4,8 @@ require 'chronic'
 module Plugins
   class Fnord
     include Cinch::Plugin
+    include Cinch::Helpers
+
     @help="fnord: ?fnord - Creates a fnord"
     @plugin_name="fnord"
     ADJECTIVES =
@@ -316,7 +318,8 @@ module Plugins
     match /fnord/
 
     def execute(m)
-
+      return unless check_user(m)
+      return unless check_channel(m)
       m.reply Fnord.headline
     end
   end

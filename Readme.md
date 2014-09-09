@@ -4,7 +4,7 @@ And will try to get the correct credits in source
 
 ## Commands
 roles: owner,admin,operator,halfop,voice,nobody
-prefix: admin(?), action(?), meme(.), remote(~)
+prefix: ?
 
 ### Admin
 _Channel_

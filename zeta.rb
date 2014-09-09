@@ -13,8 +13,10 @@ require 'hashie'
 require 'recursive_open_struct'
 
 # Load Config Data
-Zconf   = RecursiveOpenStruct.new( YAML.load_file($root_path + '/config/config.yml') )
-Zsec = RecursiveOpenStruct.new( YAML.load_file($root_path + '/config/secret.yml') )
+Zconf     =   Hashie::Mash.new( YAML.load_file($root_path + '/config/config.yml') ) rescue OpenStruct.new
+Zsec      =   Hashie::Mash.new( YAML.load_file($root_path + '/config/secret.yml') ) rescue OpenStruct.new
+Zignore   =   Hashie::Mash.new( YAML.load_file($root_path + '/data/ignore.yml')   ) rescue OpenStruct.new
+Zusers    =   Hashie::Mash.new( YAML.load_file($root_path + '/data/users.yml')    ) rescue OpenStruct.new
 
 # Initilize the rest of the bot
 require_all "#{$root_path}/config/initializers/*.rb"
@@ -34,6 +36,7 @@ Zeta = Cinch::Bot.new do
 
     c.modes             = Zconf.server.modes.split(' ')
     c.channels          = Zconf.server.channels.split(' ')
+    c.master            = Zconf.master
     c.plugins.prefix    = /^\?/
   end
 end

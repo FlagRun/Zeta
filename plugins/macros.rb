@@ -5,6 +5,7 @@ require_relative '../lib/helpers/check_user'
 module Plugins
   class Macros
     include Cinch::Plugin
+    include Cinch::Helpers
 
     attr_reader :macros
 
@@ -14,14 +15,15 @@ module Plugins
 
     def initialize *args
       super
-      @macros = YAML::load_file($root_path + '/data/macros.yml')
+      @macros = YAML::load_file($root_path + '/locales/macros.yml')
     end
 
     match /reload/, method: :execute_reloadmacros, react_on: :private
     def execute_reloadmacros m
-      return unless $operator.include?(m.user.nick)
+      return unless check_user(m, :admin)
+      # return unless check_channel(m)
       begin
-        @macros = YAML::load_file($root_path + '/data/macros.yml')
+        @macros = YAML::load_file($root_path + '/locales/macros.yml')
         m.user.notice "Macros have been reloaded."
       rescue
         m.user.notice "Reloading macros has failed: #{$!}"
@@ -30,6 +32,8 @@ module Plugins
 
     match /(\w+)(?: (.+))?/, method: :execute_macro, group: :macro
     def execute_macro m, macro, arguments
+      return unless check_user(m)
+      return unless check_channel(m)
       return unless @macros.has_key?(macro)
       parse(arguments, @macros[macro], m.channel, m.user)
 

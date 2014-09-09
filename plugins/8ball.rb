@@ -4,6 +4,7 @@
 module Plugins
   class Eightball
     include Cinch::Plugin
+    include Cinch::Helpers
 
     set(
         plugin_name: "8ball",
@@ -40,7 +41,7 @@ module Plugins
     match /8ball (.+)/
 
     def execute(m, s)
-
+      return unless check_channel(m)
       questions = s.split("? ")
       answers = [];
       questions.each { |question|

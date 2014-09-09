@@ -46,6 +46,7 @@
 module Plugins
   class LinkInfo
     include Cinch::Plugin
+    include Cinch::Helpers
 
     # Default list of URL regexps to ignore.
     DEFAULT_BLACKLIST = [/\.png$/i, /\.jpe?g$/i, /\.bmp$/i, /\.gif$/i, /\.pdf$/i].freeze
@@ -59,6 +60,8 @@ module Plugins
     match %r{(https?://.*?)(?:\s|$|,|\.\s|\.$)}, :use_prefix => false
 
     def execute(msg, url)
+      return unless check_user(m)
+      return unless check_channel(m)
       return unless msg.channel == '#flagrun' || msg.channel == '#flagworx'
       blacklist = DEFAULT_BLACKLIST.dup
       blacklist.concat(config[:blacklist]) if config[:blacklist]
