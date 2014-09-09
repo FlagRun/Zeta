@@ -101,13 +101,6 @@ module Admin
       end
     end
 
-    match /say (.+)/, method: :say_test
-    def say_test(m, say)
-      return unless check_user(m)
-      return unless check_channel(m)
-      m.reply say
-    end
-
   end
 end
 
