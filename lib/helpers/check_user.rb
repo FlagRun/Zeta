@@ -34,6 +34,13 @@ module Cinch
       true unless Zignore.channels.split(' ').include? m.channel
     end
 
+    def check(channel, user, ignored_members=nil)
+      ignored_members ||= [] # If nil, assign an empty array.
+      users = Channel(channel).users # All users from supplied channel
+      modes = @bot.irc.isupport["PREFIX"].keys - ignored_members
+      modes.any? {|mode| users[user].include?(mode)}
+    end
+
   end
 
 end
