@@ -31,9 +31,9 @@ module Plugins
       @games = []
     end
 
-    match /rr(?: (.+))?/
+    match /rr(?: (.+))?/, method: :russian
 
-    def execute(m, nick)
+    def russian(m, nick)
       return unless check_user(m)
       return unless check_channel(m)
 
@@ -41,7 +41,7 @@ module Plugins
       return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)
 
       # player setup
-      player = check_user(m.channel, m.user) ? User(nick || m.user) : m.user
+      player = User(nick) || m.user
       player = m.user if player == @bot
       # be nice, don't force the game on the starter unless the user actually exists in the channel.
       return m.reply "I am terribly sorry %s, but I don't know %s." % [m.user.nick, player.nick] unless m.channel.users.include?(player)
