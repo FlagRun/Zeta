@@ -26,6 +26,7 @@ gem 'actionview'
 
 gem 'recursive-open-struct'
 gem 'require_all'
+gem 'hashie'
 
 # API
 gem 'wolfram'
@@ -34,7 +35,8 @@ gem 'github_api'
 gem 'weather-underground'
 gem 'evalso'
 gem 'gist'
-gem 'hashie'
+
+
 
 # Background
 gem 'foreman'
