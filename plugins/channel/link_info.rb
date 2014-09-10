@@ -60,8 +60,8 @@ module Plugins
     match %r{(https?://.*?)(?:\s|$|,|\.\s|\.$)}, :use_prefix => false
 
     def execute(msg, url)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       return unless msg.channel == '#flagrun' || msg.channel == '#flagworx'
       blacklist = DEFAULT_BLACKLIST.dup
       blacklist.concat(config[:blacklist]) if config[:blacklist]
