@@ -5,6 +5,9 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    self.plugin_name = "Karma"
+    self.help = '?karmas for a list of users. <username> +1 to give karma -1 to take'
+
     def initialize(*args)
       super
       if File.exist?($root_path + '/data/karma.yml')
