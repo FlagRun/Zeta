@@ -7,21 +7,21 @@ module Cinch
         when :master || :god
           Zconf.master == m.user.authname
         when :owner || :w
-          Zusers.owner.split(' ').include? m.user.authname
+         return true if Zusers.owner.split(' ').include? m.user.authname
         when :admin || :a
-          Zusers.admin.split(' ').include? m.user.authname ||
-              Zusers.owner.split(' ').include?(m.user.authname)
+          return true if Zusers.owner.split(' ').include? m.user.authname
+          return true if Zusers.admin.split(' ').include? m.user.authname
         when :operator || :o
+          return true if Zusers.owner.split(' ').include?(m.user.authname)
+          return true if Zusers.admin.split(' ').include?(m.user.authname)
           return false if Zignore.users.split(' ').include? m.user.nick
-          Zusers.operator.split(' ').include? m.user.authname ||
-              Zusers.owner.split(' ').include?(m.user.authname) ||
-              Zusers.admin.split(' ').include?(m.user.authname)
+          return true if Zusers.operator.split(' ').include? m.user.authname
         when :voice || :v
+          return true if Zusers.owner.split(' ').include?(m.user.authname)
+          return true if Zusers.admin.split(' ').include?(m.user.authname)
           return false if Zignore.users.split(' ').include? m.user.nick
-          Zusers.voice.split(' ').include? m.user.authname ||
-              Zusers.operator.split(' ').include?(m.user.authname) ||
-              Zusers.owner.split(' ').include?(m.user.authname) ||
-              Zusers.admin.split(' ').include?(m.user.authname)
+          return true if Zusers.operator.split(' ').include? m.user.authname
+          return true if Zusers.voice.split(' ').include? m.user.authname
         when :nobody
           return false if Zignore.users.split(' ').include? m.user.nick
           true
