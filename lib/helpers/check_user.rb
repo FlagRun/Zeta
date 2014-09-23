@@ -41,6 +41,7 @@ module Cinch
       modes.any? {|mode| users[user].include?(mode)}
     end
 
+
   end
 
 end
