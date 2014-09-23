@@ -3,11 +3,14 @@ require 'net/http'
 require 'ostruct'
 require 'action_view'
 
-module Plugins
-  class DarkScience
+module Plugins::DarkScience
+  class Finger
     include Cinch::Plugin
     include Cinch::Helpers
     include ActionView::Helpers::DateHelper
+
+    self.plugin_name = 'DarkScience Finger'
+    self.help = '?finger <nick>, ?peek <#channel>'
 
     match /peek (.+)/, method: :peek
     match /finger (.+)/, method: :finger
@@ -131,7 +134,7 @@ module Plugins
 end
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Plugins::DarkScience
+Zeta.config.plugins.plugins.push Plugins::DarkScience::Finger
 
 
 
