@@ -17,6 +17,8 @@ module Plugins::DarkScience
     match "quote",           method: :randomquote
 
     def addquote(m, quote)
+      return unless check_user(m)
+      return unless check_channel(m)
       begin
         request = JSON.parse(
             RestClient.post(
@@ -33,13 +35,15 @@ module Plugins::DarkScience
 
         m.reply "Quote ##{quote.data.quote.quote_id} added by #{m.user}!"
       rescue RestClient::Unauthorized
-        m.reply_action "isn't currently authorized to do that"
+        m.action_reply "isn't currently authorized to do that"
       rescue
         m.reply "QDB is unavailable right now"
       end
     end
 
     def quote(m, search)
+      return unless check_user(m)
+      return unless check_channel(m)
       begin
         request = JSON.parse(
             RestClient.post(
@@ -57,7 +61,7 @@ module Plugins::DarkScience
 
         m.reply "QDB##{quote.data.quote.quote_id}: #{quote.data.quote.content}"
       rescue RestClient::Unauthorized
-        m.reply_action "isn't currently authorized to do that"
+        m.action_reply "isn't currently authorized to do that"
       rescue
         m.reply "QDB is unavailable right now"
       end
@@ -65,6 +69,8 @@ module Plugins::DarkScience
     end
 
     def randomquote(m)
+      return unless check_user(m)
+      return unless check_channel(m)
       begin
         request = JSON.parse(
             RestClient.post(
@@ -78,7 +84,7 @@ module Plugins::DarkScience
 
         m.reply "QDB##{quote.data.quote.quote_id}: #{quote.data.quote.content}"
       rescue RestClient::Unauthorized
-        m.reply_action "isn't currently authorized to do that"
+        m.action_reply "isn't currently authorized to do that"
       rescue
         m.reply "QDB is unavailable right now"
       end
