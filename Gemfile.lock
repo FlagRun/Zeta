@@ -136,6 +136,7 @@ DEPENDENCIES
   pg
   recursive-open-struct
   require_all
+  rest-client
   sequel
   tag_formatter
   weather-underground
