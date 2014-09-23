@@ -55,7 +55,7 @@
 require 'mkfifo'
 
 # Named pipe plugin for Cinch.
-module Admin
+module Plugins
   class Fifo
     include Cinch::Plugin
     listen_to :connect, :method => :open_fifo
@@ -87,4 +87,4 @@ end
 
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Admin::Fifo
+Zeta.config.plugins.plugins.push Plugins::Fifo

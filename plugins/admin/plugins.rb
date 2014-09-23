@@ -1,7 +1,7 @@
 require_relative '../../lib/helpers/check_user'
 
-module Admin
-  class Plugins
+module Plugins
+  class PluginsAdmin
     include Cinch::Plugin
     include Cinch::Helpers
 
@@ -106,4 +106,4 @@ end
 
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Admin::Plugins
+Zeta.config.plugins.plugins.push Plugins::PluginsAdmin

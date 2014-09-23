@@ -30,8 +30,8 @@ module Plugins
     end
 
     def on_vote_create(msg, topic)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       id = generate_vote_id
       @votes[id] = Vote.new(topic)
 
@@ -39,8 +39,8 @@ module Plugins
     end
 
     def on_vote_delete(msg, id)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       msg.reply("No vote with id ##{id}.") and return unless @votes[id.to_i]
 
       @votes.delete(id.to_i)
@@ -48,8 +48,8 @@ module Plugins
     end
 
     def on_vote_add_choice(msg, id, choice)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       msg.reply("No vote with id ##{id}.") and return unless @votes[id.to_i]
 
       @votes[id.to_i].choices << choice
@@ -57,8 +57,8 @@ module Plugins
     end
 
     def on_vote_open(msg, id)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       msg.reply("No vote with id ##{id}.") and return unless @votes[id.to_i]
 
       @votes[id.to_i].open = true
@@ -66,8 +66,8 @@ module Plugins
     end
 
     def on_vote_list(msg)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       msg.reply("There are no votes currently.") and return if @votes.empty?
 
       msg.reply("The following votes are available (use `vote show #<num>' for details on a vote):")
@@ -78,8 +78,8 @@ module Plugins
     end
 
     def on_vote_show(msg, id)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       msg.reply("No vote with id ##{id}.") and return unless @votes[id.to_i]
 
       vote = @votes[id.to_i]

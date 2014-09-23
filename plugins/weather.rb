@@ -20,8 +20,8 @@ module Plugins
     match /hurricane/, method: :hurricane
 
     def forecast(msg, query)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 
@@ -105,7 +105,7 @@ module Plugins
 
 
     def geolookup(locale)
-      url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/geolookup/q/#{locale}.json"
+      url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/geolookup/q/#{locale}.json"
       location = JSON.parse(
           open(url).read
       )
@@ -115,7 +115,7 @@ module Plugins
     end
 
     def get_conditions(location)
-      data = JSON.parse(open("http://api.wunderground.com/api/#{Zsec.key.wunderground}/conditions#{location}.json").read)
+      data = JSON.parse(open("http://api.wunderground.com/api/#{Zsec.wunderground}/conditions#{location}.json").read)
       current = data['current_observation']
       location_data = current['display_location']
 

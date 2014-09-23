@@ -1,6 +1,6 @@
 require_relative '../../lib/helpers/check_user'
 
-module Admin
+module Plugins
   class ChannelAdmin
     include Cinch::Plugin
     include Cinch::Helpers
@@ -50,4 +50,4 @@ module Admin
 end
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Admin::ChannelAdmin
+Zeta.config.plugins.plugins.push Plugins::ChannelAdmin
