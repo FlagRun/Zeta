@@ -14,14 +14,33 @@ module Plugins::DarkScience
 
     match /peek (.+)/, method: :peek
     match /finger (.+)/, method: :finger
+    match /stats (.+)/, method: :stats
 
 
     def peek(msg, channel)
       return unless check_user(msg)
       return unless check_channel(msg)
       chan = channel || msg.user.channel
-      request = Hashie::Mash.new(request_channel(channel))
 
+      # JSON Request
+      begin
+        data = JSON.parse(
+            RestClient.post(
+                'https://v3.darchoods.net/api/irc/channel/view',
+                {
+                  auth_token: Zsec.darkscience,
+                  channel: chan,
+                }
+            )
+        )
+      rescue RestClient::Unauthorized
+        m.action_reply "isn't currently authorized to do that"
+      end
+
+      # Turn JSON into an object
+      request = Hashie::Mash.new(data)
+
+      # Error Code replies
       return msg.reply("Peek → #{request.message}") if request.status == 500
       return msg.reply('Peek → Service Down') if request.status != 200
       return msg.reply('Peek → Channel Not Found') if request.data.channel.empty?
@@ -35,15 +54,34 @@ module Plugins::DarkScience
       return unless check_user(msg)
       return unless check_channel(msg)
       nick = nickname || msg.user.nick
-      request = request_user(nick)
 
-      return msg.reply('Finger → User Not Found') if request['data']['user'].empty?
-      return msg.reply('Finger → Service Down') if request['status'] != 200
+      # JSON request
+      begin
+        data = JSON.parse(
+            RestClient.post(
+                'https://v3.darchoods.net/api/irc/user/view',
+                {
+                  auth_token: Zsec.darkscience,
+                  username: nick,
+                }
+            )
+        )
+      rescue RestClient::Unauthorized
+        m.action_reply "isn't currently authorized to do that"
+      end
 
-      user = request['data']['user']
-      stats = request['data']['stats']
-      away_msg = request['data']['user']['away_msg'] || "No Message"
-      online_last = request['data']['user']['online_last'] || 0
+      # Turn JSON into an object
+      # request = Hashie::Mash.new(data)
+
+
+      # Error code replies
+      return msg.reply('Finger → User Not Found') if data['data']['user'].empty?
+      return msg.reply('Finger → Service Down') if data['status'] != 200
+
+      user = data['data']['user']
+      stats = data['data']['stats']
+      away_msg = data['data']['user']['away_msg'] || "No Message"
+      online_last = data['data']['user']['online_last'] || 0
 
       msg.reply "Finger → #{user['userstring']} ~ " \
                 "#{user['identified'] ? 'Identified' : 'Not Identified'} ~ " \
@@ -54,81 +92,46 @@ module Plugins::DarkScience
                 "Client: #{user['version']} "
     end
 
-    #############
-    def servers_list
-      url = 'http://v3.darchoods.net/api/irc/servers'
-      request = JSON.parse(
-          open(url).read
-      )
+    def stats(msg, nickname)
+      return unless check_user(msg)
+      return unless check_channel(msg)
+      nick = nickname || msg.user.nick
+
+      # JSON request
+      begin
+        data = JSON.parse(
+            RestClient.post(
+                'https://v3.darchoods.net/api/irc/user/view',
+                {
+                  auth_token: Zsec.darkscience,
+                  username: nick,
+                }
+            )
+        )
+      rescue RestClient::Unauthorized
+        m.action_reply "isn't currently authorized to do that"
+      end
+
+      # Turn JSON into an object
+      # request = Hashie::Mash.new(data)
+
+
+      # Error code replies
+      return msg.reply('Statistics → User Not Found') if data['data']['user'].empty?
+      return msg.reply('Statistics → Service Down') if data['status'] != 200
+
+      user = data['data']['user']
+      stats = data['data']['stats']
+
+      msg.reply "Statistics → #{user['nick']} ~ " \
+                "Currently in #{stats['channel_count']} ~ " \
+                "Owner of #{stats['mode_counts']['q']} channels ~ " \
+                "Admin of #{stats['mode_counts']['a']} channels ~ " \
+                "Operator(halfop) of #{stats['mode_counts']['o']}(#{stats['mode_counts']['h']}) channels ~ " \
+                "and finally voiced in #{stats['mode_counts']['v']} channels"
 
     end
 
-    def channels_list
-      url = 'http://v3.darchoods.net/api/irc/channels'
-      request = JSON.parse(
-          open(url).read
-      )
-
-    end
-
-    def request_channel(channel)
-      # Request: My API (2) (http://dh.dev.daldridge.co.uk/api/irc/channel/view)
-
-      #uri = URI.parse('http://dh.dev.daldridge.co.uk/api/irc/channel/view')
-      uri = URI.parse('http://v3.darchoods.net/api/irc/channel/view')
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.read_timeout = 30
-      request = Net::HTTP::Post.new(uri.request_uri)
-
-      # Body
-
-      request.set_form_data({
-      	channel: channel
-      })
-
-      # Send synchronously
-
-      response = http.request(request)
-      JSON.parse response.body
-    end
-
-    def request_user(user)
-      # uri = URI.parse('http://dh.dev.daldridge.co.uk/api/irc/user/view')
-      uri = URI.parse('http://v3.darchoods.net/api/irc/user/view')
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.read_timeout = 30
-      request = Net::HTTP::Post.new(uri.request_uri)
-
-      # Body
-
-      request.set_form_data({
-      	username: user
-      })
-
-      # Send synchronously
-
-      response = http.request(request)
-      JSON.parse response.body
-    end
-
-    def request_channel_users(channel)
-      # uri = URI.parse('http://dh.dev.daldridge.co.uk/api/irc/channel/users')
-      uri = URI.parse('http://v3.darchoods.net/api/irc/channel/users')
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.read_timeout = 30
-      request = Net::HTTP::Post.new(uri.request_uri)
-
-      # Body
-
-      request.set_form_data({
-      	channel: channel
-      })
-
-      # Send synchronously
-
-      response = http.request(request)
-      JSON.parse response.body
-    end
 
   end
 end

@@ -22,7 +22,7 @@ module Plugins::DarkScience
       begin
         request = JSON.parse(
             RestClient.post(
-                'http://v3.darchoods.net/api/qdb/create',
+                'https://v3.darchoods.net/api/qdb/create',
                 {
                   auth_token: Zsec.darkscience,
                   channel: m.channel,
@@ -47,7 +47,7 @@ module Plugins::DarkScience
       begin
         request = JSON.parse(
             RestClient.post(
-                'http://v3.darchoods.net/api/qdb/search/byId',
+                'https://v3.darchoods.net/api/qdb/search/byId',
                 {
                   auth_token: Zsec.darkscience,
                   channel: m.channel,
@@ -74,7 +74,7 @@ module Plugins::DarkScience
       begin
         request = JSON.parse(
             RestClient.post(
-                'http://v3.darchoods.net/api/qdb/random',
+                'https://v3.darchoods.net/api/qdb/random',
                 { auth_token: Zsec.darkscience,
                   channel: m.channel
                 }
