@@ -30,7 +30,8 @@ module Plugins::DarkScience
                 {
                   auth_token: Zsec.darkscience,
                   channel: chan,
-                }
+                },
+                verify_ssl: OpenSSL::SSL::VERIFY_NONE
             )
         )
       rescue RestClient::Unauthorized
@@ -63,7 +64,8 @@ module Plugins::DarkScience
                 {
                   auth_token: Zsec.darkscience,
                   username: nick,
-                }
+                },
+                verify_ssl: OpenSSL::SSL::VERIFY_NONE
             )
         )
       rescue RestClient::Unauthorized
@@ -105,7 +107,8 @@ module Plugins::DarkScience
                 {
                   auth_token: Zsec.darkscience,
                   username: nick,
-                }
+                },
+                verify_ssl: OpenSSL::SSL::VERIFY_NONE
             )
         )
       rescue RestClient::Unauthorized

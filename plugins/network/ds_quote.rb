@@ -28,7 +28,8 @@ module Plugins::DarkScience
                   channel: m.channel,
                   author: m.user,
                   quote: quote
-                }
+                },
+                verify_ssl: OpenSSL::SSL::VERIFY_NONE
             )
         )
         quote = Hashie::Mash.new(request)
@@ -52,7 +53,8 @@ module Plugins::DarkScience
                   auth_token: Zsec.darkscience,
                   channel: m.channel,
                   quote_id: search
-                }
+                },
+                verify_ssl: OpenSSL::SSL::VERIFY_NONE
             )
         )
         quote = Hashie::Mash.new(request)
@@ -77,7 +79,8 @@ module Plugins::DarkScience
                 'https://v3.darchoods.net/api/qdb/random',
                 { auth_token: Zsec.darkscience,
                   channel: m.channel
-                }
+                },
+                verify_ssl: OpenSSL::SSL::VERIFY_NONE
             )
         )
         quote = Hashie::Mash.new(request)
