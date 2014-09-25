@@ -32,8 +32,8 @@ module Plugins
     end
 
     def weather(msg, query)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 
@@ -69,8 +69,8 @@ module Plugins
     end
 
     def almanac(msg,locale)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/almanac/q/#{locale}.json"
       location = JSON.parse(
            open(url).read
