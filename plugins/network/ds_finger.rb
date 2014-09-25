@@ -26,12 +26,11 @@ module Plugins::DarkScience
       begin
         data = JSON.parse(
             RestClient.post(
-                'https://v3.darchoods.net/api/irc/channel/view',
+                'https://darchoods.net/api/irc/channel/view',
                 {
                   auth_token: Zsec.darkscience,
                   channel: chan,
-                },
-                verify_ssl: OpenSSL::SSL::VERIFY_NONE
+                }
             )
         )
       rescue RestClient::Unauthorized
@@ -60,12 +59,11 @@ module Plugins::DarkScience
       begin
         data = JSON.parse(
             RestClient.post(
-                'https://v3.darchoods.net/api/irc/user/view',
+                'https://darchoods.net/api/irc/user/view',
                 {
                   auth_token: Zsec.darkscience,
                   username: nick,
-                },
-                verify_ssl: OpenSSL::SSL::VERIFY_NONE
+                }
             )
         )
       rescue RestClient::Unauthorized
@@ -103,12 +101,11 @@ module Plugins::DarkScience
       begin
         data = JSON.parse(
             RestClient.post(
-                'https://v3.darchoods.net/api/irc/user/view',
+                'https://darchoods.net/api/irc/user/view',
                 {
                   auth_token: Zsec.darkscience,
                   username: nick,
-                },
-                verify_ssl: OpenSSL::SSL::VERIFY_NONE
+                }
             )
         )
       rescue RestClient::Unauthorized
