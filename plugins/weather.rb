@@ -50,8 +50,8 @@ module Plugins
     end
 
     def hurricane(msg)
-      return unless check_user(m)
-      return unless check_channel(m)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/currenthurricane/view.json"
       location = JSON.parse(
            open(url).read
