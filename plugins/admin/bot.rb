@@ -76,28 +76,34 @@ module Admin
     end
 
     match /crash (.+)/, method: :ignore_channel
+    match /sleep (.+)/, method: :ignore_channel
+    match "crash", method: :ignore_channel
+    match "sleep", method: :ignore_channel
     def ignore_channel(m, channel='')
       return unless check_user(m, :operator)
       if channel
         Zignore.channels << " #{channel}"
-        m.action_reply "is no longer interested in #{channel}"
+        m.action_reply "is now bored with #{channel} and falls asleep"
       else
         Zignore.channels << " #{m.channel}"
-        m.action_reply "hates #{m.channel} then runs off..."
+        m.action_reply "falls asleep on /dev/pst #{m.channel} drooling all over the buffer..."
       end
     end
 
-    match /overide (.+)/, method: :crash_overide
-    def crash_overide(m, channel='')
+    match /overide (.+)/, method: :unignore_channel
+    match /wake (.+)/, method: :unignore_channel
+    match "overide", method: :unignore_channel
+    match "wake", method: :unignore_channel
+    def unignore_channel(m, channel='')
       return unless check_user(m, :operator)
       if channel
         Zignore.channels.sub!(channel,'')
         Zignore.channels.strip!
-        m.action_reply "Finds something interesting in #{channel} again..."
+        m.action_reply "sleepily, Wakes up in #{channel}... "
       else
         Zignore.channels.sub!(m.channel,'')
         Zignore.channels.strip!
-        m.action_reply "Reboots!!!"
+        m.action_reply "Bolts upright in #{m.channel}"
       end
     end
 
