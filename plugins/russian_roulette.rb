@@ -92,5 +92,5 @@ end
 
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Plugins::RussianRoulette
+# Zeta.config.plugins.plugins.push Plugins::RussianRoulette
 
