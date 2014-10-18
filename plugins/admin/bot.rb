@@ -83,10 +83,10 @@ module Admin
       return unless check_user(m, :operator)
       if channel
         Zignore.channels << " #{channel}"
-        m.action_reply "falls asleep on /dev/pst #{m.channel} drooling all over the buffer..."
+        m.action_reply "falls asleep on the /dev/pst, drooling all over #{m.channel}'s' buffer..."
       else
         Zignore.channels << " #{m.channel}"
-        m.action_reply "falls asleep on /dev/pst #{m.channel} drooling all over the buffer..."
+        m.action_reply "falls asleep on the /dev/pst, drooling all over #{m.channel}'s' buffer..."
       end
     end
 
