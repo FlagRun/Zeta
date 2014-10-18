@@ -37,7 +37,7 @@ module Plugins
       return unless check_user(m)
       return unless check_channel(m)
 
-      return if msg.channel == '#darkscience' || msg.channel == '#bots'
+      return if m.channel == '#darkscience' || m.channel == '#bots'
 
       #return m.reply "I am sorry comrade, but I do not have pistol on me." unless check_user(m.channel, @bot)
       return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)
