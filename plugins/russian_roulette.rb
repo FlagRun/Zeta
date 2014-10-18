@@ -37,6 +37,8 @@ module Plugins
       return unless check_user(m)
       return unless check_channel(m)
 
+      return if msg.channel == '#darkscience' || msg.channel == '#bots'
+
       #return m.reply "I am sorry comrade, but I do not have pistol on me." unless check_user(m.channel, @bot)
       return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)
 
@@ -60,6 +62,7 @@ module Plugins
         return end_game(m.channel, true) unless m.channel.users.include?(player)
         if round_location == chamber.succ
           m.reply "*click*"
+          sleep 5
           #m.channel.kick(player, "*BLAM*")
           m.reply "*BLAM*"
           m.channel.action "watches %s's brain splatter across the wall." % player.nick
@@ -81,6 +84,7 @@ module Plugins
     def end_game(channel, premature=false)
       @games.delete channel.name
       channel.msg "Oh vell, it vas fun vhile it lasted." if premature
+      sleep 1
       channel.action "holsters the pistol."
     end
   end
