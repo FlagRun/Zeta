@@ -37,7 +37,7 @@ module Plugins::DarkScience
       rescue RestClient::Unauthorized
         m.action_reply "isn't currently authorized to do that"
       rescue
-        m.reply "QDB is unavailable right now"
+        m.reply 'QDB is unavailable right now'
       end
     end
 

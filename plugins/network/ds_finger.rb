@@ -34,15 +34,15 @@ module Plugins::DarkScience
             )
         )
       rescue RestClient::Unauthorized
-        m.action_reply "isn't currently authorized to do that"
+        msg.action_reply "isn't currently authorized to do that"
       end
 
       # Turn JSON into an object
       request = Hashie::Mash.new(data)
 
       # Error Code replies
-      return msg.reply("Peek → #{request.message}") if request.status == 500
-      return msg.reply('Peek → Service Down') if request.status != 200
+      return msg.reply("Peek → #{request.message}") if request.status_code == 500
+      return msg.reply('Peek → Service Down') if request.status_code != 200
       return msg.reply('Peek → Channel Not Found') if request.data.channel.empty?
 
       msg.reply "Peek → #{request.data.channel.name} (#{request.data.channel.modes}) ~ " \
@@ -67,7 +67,7 @@ module Plugins::DarkScience
             )
         )
       rescue RestClient::Unauthorized
-        m.action_reply "isn't currently authorized to do that"
+        msg.action_reply "isn't currently authorized to do that"
       end
 
       # Turn JSON into an object
@@ -76,7 +76,7 @@ module Plugins::DarkScience
 
       # Error code replies
       return msg.reply('Finger → User Not Found') if data['data']['user'].empty?
-      return msg.reply('Finger → Service Down') if data['status'] != 200
+      return msg.reply('Finger → Service Down') if data['status_code'] != 200
 
       user = data['data']['user']
       stats = data['data']['stats']
@@ -109,7 +109,7 @@ module Plugins::DarkScience
             )
         )
       rescue RestClient::Unauthorized
-        m.action_reply "isn't currently authorized to do that"
+        msg.action_reply "isn't currently authorized to do that"
       end
 
       # Turn JSON into an object
@@ -118,7 +118,7 @@ module Plugins::DarkScience
 
       # Error code replies
       return msg.reply('Statistics → User Not Found') if data['data']['user'].empty?
-      return msg.reply('Statistics → Service Down') if data['status'] != 200
+      return msg.reply('Statistics → Service Down') if data['status_code'] != 200
 
       user = data['data']['user']
       stats = data['data']['stats']
