@@ -79,11 +79,11 @@ module Admin
     match /sleep (.+)/, method: :ignore_channel
     match "crash", method: :ignore_channel
     match "sleep", method: :ignore_channel
-    def ignore_channel(m, channel='')
+    def ignore_channel(m, channel=nil)
       return unless check_user(m, :operator)
       if channel
         Zignore.channels << " #{channel}"
-        m.action_reply "is now bored with #{channel} and falls asleep"
+        m.action_reply "falls asleep on /dev/pst #{m.channel} drooling all over the buffer..."
       else
         Zignore.channels << " #{m.channel}"
         m.action_reply "falls asleep on /dev/pst #{m.channel} drooling all over the buffer..."
@@ -94,7 +94,7 @@ module Admin
     match /wake (.+)/, method: :unignore_channel
     match "overide", method: :unignore_channel
     match "wake", method: :unignore_channel
-    def unignore_channel(m, channel='')
+    def unignore_channel(m, channel=nil)
       return unless check_user(m, :operator)
       if channel
         Zignore.channels.sub!(channel,'')
