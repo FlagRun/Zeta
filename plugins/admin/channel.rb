@@ -29,7 +29,7 @@ module Plugins
       @bot.handlers.dispatch :admin, m, "Parted #{channel}#{" - #{msg}" unless msg.nil?}", m.target
     end
 
-    match /quit(?: (.+))?/, method: :quit, group: :quit
+    match /die(?: (.+))?/, method: :quit, group: :quit
     def quit(m, msg=nil)
       return unless check_user(m, :master)
       msg ||= m.user.nick
