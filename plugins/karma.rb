@@ -95,4 +95,4 @@ module Plugins
 end
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Plugins::Karma
+# Zeta.config.plugins.plugins.push Plugins::Karma
