@@ -36,6 +36,7 @@ gem 'github_api'
 gem 'weather-underground'
 gem 'evalso'
 gem 'gist'
+gem 'discourse_api'
 
 
 
