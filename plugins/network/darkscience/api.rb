@@ -4,18 +4,15 @@ require 'ostruct'
 require 'action_view'
 
 module Plugins::DarkScience
-  class Finger
+  class API
     include Cinch::Plugin
     include Cinch::Helpers
     include ActionView::Helpers::DateHelper
 
-    self.plugin_name = 'DarkScience Finger'
-    self.help = '?finger <nick>, ?peek <#channel>'
+    self.plugin_name = 'DarkScience API'
+    self.help = '?finger <nick>, ?peek <#channel>, ?stats <nick>, ?quote, ?addquote <quote>, ?quote <id>'
 
     match /peek (.+)/, method: :peek
-    match /finger (.+)/, method: :finger
-    match /stats (.+)/, method: :stats
-
 
     def peek(msg, channel)
       return unless check_user(msg)
@@ -49,6 +46,8 @@ module Plugins::DarkScience
                 "Users: #{request.data.channel.stats.current_users} (#{request.data.channel.stats.peak_users}x̄) ~ " \
                 "Last Topic set by #{request.data.channel.topic.author} @ #{Time.at(request.data.channel.topic.time).strftime("%D")}"
     end
+
+    match /finger (.+)/, method: :finger
 
     def finger(msg, nickname)
       return unless check_user(msg)
@@ -92,6 +91,8 @@ module Plugins::DarkScience
                 "Client: #{user['version']} "
     end
 
+    match /stats (.+)/, method: :stats
+
     def stats(msg, nickname)
       return unless check_user(msg)
       return unless check_channel(msg)
@@ -132,12 +133,93 @@ module Plugins::DarkScience
 
     end
 
+    match /addquote (.+)/i,  method: :addquote
+
+    def addquote(m, quote)
+      return unless check_user(m)
+      return unless check_channel(m)
+      begin
+        request = JSON.parse(
+            RestClient.post(
+                'https://darchoods.net/api/qdb/create',
+                {
+                  auth_token: Zsec.darkscience,
+                  channel: m.channel,
+                  author: m.user,
+                  quote: quote
+                }
+            )
+        )
+        quote = Hashie::Mash.new(request)
+
+        m.reply "Quote ##{quote.data.quote.quote_id} added by #{m.user}!"
+      rescue RestClient::Unauthorized
+        m.action_reply "isn't currently authorized to do that"
+      rescue
+        m.reply 'QDB is unavailable right now'
+      end
+    end
+
+    match /quote (.+)/i,     method: :quote
+
+    def quote(m, search)
+      return unless check_user(m)
+      return unless check_channel(m)
+      begin
+        request = JSON.parse(
+            RestClient.post(
+                'https://darchoods.net/api/qdb/search/byId',
+                {
+                  auth_token: Zsec.darkscience,
+                  channel: m.channel,
+                  quote_id: search
+                }
+            )
+        )
+        quote = Hashie::Mash.new(request)
+
+        return m.reply 'There is no quote by that ID' unless quote.data.quote
+
+        m.reply "QDB##{quote.data.quote.quote_id}: #{quote.data.quote.content}"
+      rescue RestClient::Unauthorized
+        m.action_reply "isn't currently authorized to do that"
+      rescue
+        m.reply "QDB is unavailable right now"
+      end
+
+    end
+
+    match "quote",           method: :randomquote
+
+    def randomquote(m)
+      return unless check_user(m)
+      return unless check_channel(m)
+      begin
+        request = JSON.parse(
+            RestClient.post(
+                'https://darchoods.net/api/qdb/random',
+                { auth_token: Zsec.darkscience,
+                  channel: m.channel
+                }
+            )
+        )
+        quote = Hashie::Mash.new(request)
+
+        m.reply "QDB##{quote.data.quote.quote_id}: #{quote.data.quote.content}"
+      rescue RestClient::Unauthorized
+        m.action_reply "isn't currently authorized to do that"
+      rescue
+        m.reply "QDB is unavailable right now"
+      end
+
+    end
+
 
   end
 end
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Plugins::DarkScience::Finger
+Zeta.config.plugins.plugins.push Plugins::DarkScience::API
 
 
 
