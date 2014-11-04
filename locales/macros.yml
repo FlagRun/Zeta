@@ -24,6 +24,12 @@ bod:
   - "[in] should go eat a bag full of DICKS!!!!"
 hi5:
   - "[in] (from [self]): http://www.ihighfive.com/"
+geg:
+  type: random
+  lines:
+  - "top geg http://i.imgur.com/DlLsdA2.png"
+  - "hey it geg http://i.imgur.com/KwW7Mde.png"
+  - "hey it geg http://cl.ly/image/1M010v0U1o34"
 drink:
   sent_as: action
   type: random
