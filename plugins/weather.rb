@@ -52,7 +52,7 @@ module Plugins
     def hurricane(msg)
       return unless check_user(msg)
       return unless check_channel(msg)
-      url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/currenthurricane/view.json"
+      url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/currenthurricane/view.json"
       location = JSON.parse(
            open(url).read
        )
@@ -71,7 +71,7 @@ module Plugins
     def almanac(msg,locale)
       return unless check_user(msg)
       return unless check_channel(msg)
-      url = URI.encode "http://api.wunderground.com/api/#{Zsec.key.wunderground}/almanac/q/#{locale}.json"
+      url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/almanac/q/#{locale}.json"
       location = JSON.parse(
            open(url).read
        )

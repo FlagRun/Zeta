@@ -43,7 +43,7 @@ module Plugins
     def execute(m, s)
       return unless check_channel(m)
       questions = s.split("? ")
-      answers = [];
+      answers = []
       questions.each { |question|
         question[0] = question[0].upcase
         answers << "\"#{question.delete("?")}?\" #{shake!}"
