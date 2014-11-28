@@ -93,3 +93,8 @@ fact:
   - ! '[in], I love you.'
 haha: HA! HA! I'm using the (INTERNET)[in]!!!1
 judgement: JAJUMENTO DESU NO!
+mkdir:
+  type: random
+  lines:
+  - /home/[in]/.secret/fury/bondage/
+  - /home/[in]/
