@@ -24,16 +24,18 @@ require_all "#{$root_path}/config/initializers/*.rb"
 
 Zeta = Cinch::Bot.new do
   configure do |c|
-    c.nick              = Zconf.bot.nick
-    c.nicks             = Zconf.bot.nicks.split(' ')
-    c.user              = Zconf.bot.username
-    c.realname          = Zconf.bot.realname
-    c.sasl.username     = Zconf.sasl.username
-    c.sasl.password     = Zconf.sasl.password
-    c.server            = Zconf.server.hostname
-    c.password          = Zconf.server.password
-    c.port              = Zconf.server.port
-    c.ssl.use           = Zconf.server.ssl
+    c.nick                      = Zconf.bot.nick
+    c.nicks                     = Zconf.bot.nicks.split(' ')
+    c.user                      = Zconf.bot.username
+    c.realname                  = Zconf.bot.realname
+    c.sasl.username             = Zconf.sasl.username
+    c.sasl.password             = Zconf.sasl.password
+    c.server                    = Zconf.server.hostname
+    c.password                  = Zconf.server.password
+    c.port                      = Zconf.server.port
+    c.ssl.use                   = Zconf.server.ssl
+    c.max_messages              = Zconf.server.max_messages
+    c.messages_per_second       = Zconf.server.messages_per_second
 
     c.modes             = Zconf.server.modes.split(' ')
     c.channels          = Zconf.server.channels.split(' ')
