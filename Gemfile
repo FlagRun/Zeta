@@ -28,6 +28,9 @@ gem 'actionview'
 gem 'recursive-open-struct'
 gem 'require_all'
 gem 'hashie'
+gem 'pdf-reader'
+gem 'faraday'
+gem 'humanize-bytes'
 
 # API
 gem 'wolfram'
