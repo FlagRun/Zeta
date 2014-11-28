@@ -50,7 +50,7 @@ module Plugins
         producer = reader.info[:Producer] || 'Anon'
         creation = reader.info[:CreationDate] || 'now'
         modification = reader.info[:ModDate] || 'now'
-        title = reader.info[:Title].strip[0..500] || nil
+        title = reader.info[:Title] || nil
         display = title ? title : "Title: None <> Creator: #{creator} <> Producer: #{producer} <> Creation: #{creation}"
         msg.reply "PDF (#{humanize_size}kb) → #{display}"
       end
