@@ -4,7 +4,7 @@
 require 'cinch'
 require 'cinch/toolbox'
 # require 'cinch/cooldown'
-require 'cinch-cooldown'
+# require 'cinch-cooldown'
 
 module Plugins
   # Plugin to allow users to search wikipedia.
@@ -12,7 +12,7 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
-    enforce_cooldown
+    # enforce_cooldown
 
     self.help = 'Use ?wiki <term> to see the Wikipedia info for that term.'
 
