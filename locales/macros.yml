@@ -3,6 +3,17 @@ dnf: Duke Nukem Forever came out. Your argument is invalid.
 pmf: http://programming-motherfucker.com/
 goku: BITCH I LOOK LIKE GOKU
 anime: ANIME SWAG I'M FLYIN' LIKE GOKU
+9000:
+  type: random
+  lines:
+  - "Higher than 9000? That is something wrong! It's a malfunction!"
+  - "It's over 9000!!!"
+  - "Vegeta, what did you say his power level is?"
+  - "What?! Nine thousand?! That can't be right! It must be broken!"
+  - "What? Nine thousand?"
+  - "What?! 9000?! You've got to be kidding me, that thing's a piece of junk!"
+  - "What! 9000!"
+  - "That cannot be! Sure you're seeing it right? He can't be this strong!"
 punch:
   sent_as: action
   type: random
@@ -28,8 +39,10 @@ geg:
   type: random
   lines:
   - "top geg http://i.imgur.com/DlLsdA2.png"
+  - "got geg? http://i.imgur.com/DlLsdA2.png"
   - "hey it geg http://i.imgur.com/KwW7Mde.png"
   - "hey it geg http://cl.ly/image/1M010v0U1o34"
+  - "GEG'ed http://cl.ly/image/1M010v0U1o34"
 drink:
   sent_as: action
   type: random
@@ -96,5 +109,7 @@ judgement: JAJUMENTO DESU NO!
 mkdir:
   type: random
   lines:
-  - /home/[in]/.secret/fury/bondage/
-  - /home/[in]/
+  - "/home/[in]/.secret/fury/bondage/"
+  - "/home/[in]/"
+  - "/usr/home/[in]/.supersecreteeplace/fury/hentai
+  - "/opt/secret/[in]/pr0n"
