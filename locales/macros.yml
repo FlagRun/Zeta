@@ -3,17 +3,6 @@ dnf: Duke Nukem Forever came out. Your argument is invalid.
 pmf: http://programming-motherfucker.com/
 goku: BITCH I LOOK LIKE GOKU
 anime: ANIME SWAG I'M FLYIN' LIKE GOKU
-over9k:
-  type: random
-  lines:
-  - "Higher than 9000? That is something wrong! It's a malfunction!"
-  - "It's over 9000!!!"
-  - "Vegeta, what did you say his power level is?"
-  - "What?! Nine thousand?! That can't be right! It must be broken!"
-  - "What? Nine thousand?"
-  - "What?! 9000?! You've got to be kidding me, that thing's a piece of junk!"
-  - "What! 9000!"
-  - "That cannot be! Sure you're seeing it right? He can't be this strong!"
 punch:
   sent_as: action
   type: random
