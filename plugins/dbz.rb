@@ -6,7 +6,7 @@ module Plugins
     self.plugin_name = 'DragonBall Z!'
     self.help = "It's Over Nine Thousand!"
 
-    match /(9k|^9...|overninethousand|ninethousand|Over\ Nine\ Thousand|Over\ 9000)/,
+    match /(^9000$|overninethousand|ninethousand|Over\ Nine\ Thousand|Over\ 9000)/,
           use_prefix: false, method: :randomquote
 
     def initialize(*args)
