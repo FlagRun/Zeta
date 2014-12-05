@@ -35,6 +35,8 @@ GEM
       cinch (~> 2)
       cinch-cooldown (~> 1.1, >= 1.1.1)
       cinch-toolbox (~> 1.1)
+    crack (0.4.2)
+      safe_yaml (~> 1.0.0)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     discourse_api (0.3.0)
@@ -108,6 +110,7 @@ GEM
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     ruby-rc4 (0.1.5)
+    safe_yaml (1.0.4)
     sequel (4.16.0)
     tag_formatter (0.0.3)
     temperature (1.2)
@@ -141,6 +144,7 @@ DEPENDENCIES
   cinch-toolbox
   cinch-urbandictionary
   cinch-wikipedia
+  crack
   discourse_api
   evalso
   faraday

@@ -31,6 +31,7 @@ gem 'hashie'
 gem 'pdf-reader'
 gem 'faraday'
 gem 'humanize-bytes'
+gem 'crack'
 
 # API
 gem 'wolfram'
