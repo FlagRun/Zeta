@@ -62,10 +62,10 @@ module Plugins
     listen_to :disconnect, :method => :close_fifo
 
     def open_fifo(msg)
-      File.mkfifo("#{$root_path}/tmp/bot" || raise(ArgumentError, "No FIFO path given!"))
-      File.chmod(0660, "#{$root_path}/tmp/bot")
+      File.mkfifo("#{$root_path}/tmp/zeta.io" || raise(ArgumentError, "No FIFO path given!"))
+      File.chmod(0660, "#{$root_path}/tmp/zeta.io")
 
-      File.open("#{$root_path}/tmp/bot", "r+") do |fifo|
+      File.open("#{$root_path}/tmp/zeta.io", "r+") do |fifo|
         bot.info "Opened named pipe (FIFO) at #{"#{$root_path}/tmp/bot"}"
 
         fifo.each_line do |line|
@@ -78,7 +78,7 @@ module Plugins
     end
 
     def close_fifo(msg)
-      File.delete("#{$root_path}/tmp/bot")
+      File.delete("#{$root_path}/tmp/zeta.io")
       bot.info "Deleted named pipe #{"#{$root_path}/tmp/bot"}."
     end
 
