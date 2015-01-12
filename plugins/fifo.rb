@@ -52,7 +52,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'mkfifo'
+
+unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+  require 'mkfifo'
+end
 
 # Named pipe plugin for Cinch.
 module Plugins
@@ -86,5 +89,7 @@ module Plugins
 end
 
 
-# AutoLoad
-Zeta.config.plugins.plugins.push Plugins::Fifo
+# AutoLoad if Not Jruby
+unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+  Zeta.config.plugins.plugins.push Plugins::Fifo
+end
