@@ -15,11 +15,12 @@ module Plugins
     match /urban (.*)/, method: :query
     match /ud (.*)/,    method: :query
     match /wotd/,       method: :wotd
+    match "ud",         method: :wotd
 
     def query(m, query)
       return unless check_user(m)
       return unless check_channel(m)
-      m.reply "UD↦ #{search(query)}"
+      m.user.notice "UD↦ #{search(query)}"
     end
 
 
@@ -30,7 +31,7 @@ module Plugins
       doc = Nokogiri.HTML(open url)
       word = doc.at_css('.word').text.strip[0..500]
       meaning = doc.at_css('.meaning').text.strip[0..500]
-      m.reply "UD↦ #{word} -- #{meaning}"
+      m.user.notice "UD↦ #{word} -- #{meaning}"
     end
 
     private
