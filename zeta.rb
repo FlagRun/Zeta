@@ -13,10 +13,6 @@ require 'hashie'
 require 'recursive_open_struct'
 
 # Load Config Data
-# Zconf     =   Hashie::Mash.new( YAML.load_file($root_path + '/config/config.yml') ) rescue OpenStruct.new
-# Zsec      =   Hashie::Mash.new( YAML.load_file($root_path + '/config/secret.yml') ) rescue OpenStruct.new
-# Zignore   =   Hashie::Mash.new( YAML.load_file($root_path + '/data/ignore.yml')   ) rescue OpenStruct.new
-# Zusers    =   Hashie::Mash.new( YAML.load_file($root_path + '/data/users.yml')    ) rescue OpenStruct.new
 Zconf   = Hashie::Mash.new YAML.load_file($root_path + '/config/config.yml')
 Zsec    = Hashie::Mash.new YAML.load_file($root_path + '/config/secret.yml')
 Zignore = Hashie::Mash.new YAML.load_file($root_path + '/config/ignore.yml')
