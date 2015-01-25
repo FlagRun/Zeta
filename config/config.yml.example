@@ -29,12 +29,5 @@ sasl:
   username:
   password:
 
-plugins:
-
-admin:
-  fifo:
-    mode: 0666
-    path: /tmp/bot
-
 master:
   nick: m00t

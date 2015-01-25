@@ -54,7 +54,7 @@ module Plugins
 
     def execute_botinsult(m)
 
-      m.reply ["Stupid human!", "Dumb human!", "Stupid meatbag.", "Silly human, your insults cannot harm me!"].sample
+      m.reply ["Stupid human!", "Dumb human!", "Stupid meatbag.", "Silly human, your insults cannot harm me!", "get rekt", "u fkn w0t m8"].sample
     end
 
     def tzparser(tz)

@@ -41,7 +41,7 @@ module Plugins
     listen_to :invite, method: :join_on_invite
     def join_on_invite(m)
       return unless check_user(m)
-      Channel(m.channel).join rescue m.msg "Could not join the channel you invited me too"
+      Channel(m.channel).join rescue m.msg 'Could not join the channel you invited me too'
     end
 
 

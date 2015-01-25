@@ -1,5 +1,5 @@
 module Cinch
-  module Helpers  
+  module Helpers
 
     def check_user(m, role=:nobody)
       return true if Zconf.master == m.user.authname
@@ -39,6 +39,10 @@ module Cinch
       users = Channel(channel).users # All users from supplied channel
       modes = @bot.irc.isupport["PREFIX"].keys - ignored_members
       modes.any? {|mode| users[user].include?(mode)}
+    end
+
+    def check_network(network)
+      @bot.irc.network.name  == network
     end
 
 

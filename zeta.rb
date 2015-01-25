@@ -19,8 +19,8 @@ require 'recursive_open_struct'
 # Zusers    =   Hashie::Mash.new( YAML.load_file($root_path + '/data/users.yml')    ) rescue OpenStruct.new
 Zconf   = Hashie::Mash.new YAML.load_file($root_path + '/config/config.yml')
 Zsec    = Hashie::Mash.new YAML.load_file($root_path + '/config/secret.yml')
-Zignore = Hashie::Mash.new YAML.load_file($root_path + '/data/ignore.yml')
-Zusers  = Hashie::Mash.new YAML.load_file($root_path + '/data/users.yml')
+Zignore = Hashie::Mash.new YAML.load_file($root_path + '/config/ignore.yml')
+Zusers  = Hashie::Mash.new YAML.load_file($root_path + '/config/users.yml')
 
 # Initilize the rest of the bot
 require_all "#{$root_path}/config/initializers/*.rb"

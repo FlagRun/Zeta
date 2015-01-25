@@ -88,7 +88,7 @@ module Plugins::DarkScience
                 "Seen #{user['online'] ? 'Now' : time_ago_in_words(Time.at(online_last))+ " ago"}  ~ " \
                 "Geo: #{user['country']} ~ " \
                 "#{user['away'] ? 'Away: ' + away_msg : 'Available' } ~ " \
-                "Client: #{user['version']} "
+                "Client: #{user['version']} ~ "
     end
 
     match /stats (.+)/, method: :stats
@@ -220,6 +220,3 @@ end
 
 # AutoLoad
 Zeta.config.plugins.plugins.push Plugins::DarkScience::API
-
-
-
