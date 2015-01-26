@@ -11,4 +11,6 @@ data/*.rb
 log/*.log
 config/config.yml
 config/secret.yml
+config/users.yml
+config/ignore.yml
 *.pstore
