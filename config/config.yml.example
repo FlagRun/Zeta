@@ -29,5 +29,9 @@ sasl:
   username:
   password:
 
+oper:
+  username:
+  password:
+
 master:
   nick: m00t
