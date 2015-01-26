@@ -11,6 +11,7 @@ require 'ostruct'
 require 'yaml'
 require 'hashie'
 require 'recursive_open_struct'
+require 'http_proxy_from_env'
 
 # Load Config Data
 Zconf   = Hashie::Mash.new YAML.load_file($root_path + '/config/config.yml')

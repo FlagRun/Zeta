@@ -27,7 +27,9 @@ module Plugins
     def query_movie(m)
       year = m[/:\d+/].gsub(/:/, '') if m[/:\d+/]
       movie = URI.encode(m.gsub(/:\d+/, ''))
-      data = JSON.parse(open("http://www.omdbapi.com/?t=#{movie}&y=#{year}").read)
+      data = JSON.parse(
+          open("http://www.omdbapi.com/?t=#{movie}&y=#{year}").read
+      )
       OpenStruct.new(
           title:       data['Title'],
           year:        data['Year'],

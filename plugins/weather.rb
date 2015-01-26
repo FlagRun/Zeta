@@ -115,7 +115,9 @@ module Plugins
     end
 
     def get_conditions(location)
-      data = JSON.parse(open("http://api.wunderground.com/api/#{Zsec.wunderground}/conditions#{location}.json").read)
+      data = JSON.parse(
+          open("http://api.wunderground.com/api/#{Zsec.wunderground}/conditions#{location}.json").read
+      )
       current = data['current_observation']
       location_data = current['display_location']
 

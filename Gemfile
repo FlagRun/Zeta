@@ -52,6 +52,7 @@ gem 'github_api'
 gem 'evalso'
 gem 'gist'
 gem 'discourse_api'
+gem 'http_proxy_from_env'
 
 # Background
 gem 'foreman'
