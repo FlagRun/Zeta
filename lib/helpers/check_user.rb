@@ -23,6 +23,7 @@ module Cinch
           return true if Zusers.operator.split(' ').include? m.user.authname
           return true if Zusers.voice.split(' ').include? m.user.authname
         when :nobody
+          return false if m.user.authname == nil
           return false if Zignore.users.split(' ').include? m.user.nick
           true
         else
