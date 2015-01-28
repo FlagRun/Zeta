@@ -63,7 +63,7 @@ module Plugins
         if round_location == chamber.succ
           m.reply "*click*"
           sleep 5
-          #m.channel.kick(player, "*BLAM*")
+          m.channel.kick(player, "*BLAM*")
           m.reply "*BLAM*"
           m.channel.action "watches %s's brain splatter across the wall." % player.nick
           break
@@ -92,5 +92,5 @@ end
 
 
 # AutoLoad
-# Zeta.config.plugins.plugins.push Plugins::RussianRoulette
+Zeta.config.plugins.plugins.push Plugins::RussianRoulette
 
