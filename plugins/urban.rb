@@ -20,35 +20,40 @@ module Plugins
     def query(m, query)
       return unless check_user(m)
       return unless check_channel(m)
-      m.user.notice "UD↦ #{search(query)}"
+      m.reply "UD↦ #{search(query)}"
     end
 
 
     def wotd(m)
       return unless check_user(m)
       return unless check_channel(m)
+      RestClient.proxy = ENV['http_proxy']
       url = URI.encode "http://www.urbandictionary.com/"
-      doc = Nokogiri.HTML(open url)
-      word = doc.at_css('.word').text.strip[0..500]
-      meaning = doc.at_css('.meaning').text.strip[0..500]
-      m.user.notice "UD↦ #{word} -- #{meaning}"
+      doc = Nokogiri.HTML(
+          RestClient.get(url)
+      )
+      word = doc.at_css('.word').text.strip[0..40]
+      meaning = doc.at_css('.meaning').text.strip[0..450] + "... \u263A"
+      m.reply "UD↦ #{word} -- #{meaning}"
     end
 
     private
     def search(query)
+      RestClient.proxy = ENV['http_proxy']
       url = URI.encode "http://api.urbandictionary.com/v0/define?term=#{query}"
       # Nokogiri.HTML(open url).at_css('.meaning').text.strip[0..500]
 
       # Load API data
       data = JSON.parse(
-          open(url).read
+          RestClient.get(url)
       )
 
       # Return if nothing is found
       return 'No Results found' if data['result_type'] == 'no_results'
 
       # Return first definition
-      data['list'].first['definition'].strip[0..500].gsub(/\r\n/, ' ')
+      string = data['list'].first['definition'].gsub(/\n/, ' ')
+      string[0..450] + "... \u263A"
     rescue => e
       e.message
     end

@@ -25,10 +25,11 @@ module Plugins
 
     private
     def query_movie(m)
+      RestClient.proxy = ENV['http_proxy']
       year = m[/:\d+/].gsub(/:/, '') if m[/:\d+/]
       movie = URI.encode(m.gsub(/:\d+/, ''))
       data = JSON.parse(
-          open("http://www.omdbapi.com/?t=#{movie}&y=#{year}").read
+          RestClient.get("http://www.omdbapi.com/?t=#{movie}&y=#{year}")
       )
       OpenStruct.new(
           title:       data['Title'],

@@ -12,8 +12,17 @@ module Plugins::DarkScience
     self.plugin_name = 'DarkScience API'
     self.help = '?finger <nick>, ?peek <#channel>, ?stats <nick>, ?quote, ?addquote <quote>, ?quote <id>'
 
+    # Triggers
     match /peek (.+)/, method: :peek
+    match /finger (.+)/, method: :finger
+    match /stats (.+)/, method: :stats
+    match /addquote (.+)/i, method: :addquote
+    match /quote (.+)/i, method: :quote
+    match 'quote', method: :randomquote
 
+
+    # Methods
+    #########
     def peek(msg, channel)
       return unless check_user(msg)
       return unless check_channel(msg)
@@ -21,6 +30,7 @@ module Plugins::DarkScience
 
       # JSON Request
       begin
+        RestClient.proxy = ENV['http_proxy']
         data = JSON.parse(
             RestClient.post(
                 'https://darchoods.net/api/irc/channel/view',
@@ -47,7 +57,6 @@ module Plugins::DarkScience
                 "Last Topic set by #{request.data.channel.topic.author} @ #{Time.at(request.data.channel.topic.time).strftime("%D")}"
     end
 
-    match /finger (.+)/, method: :finger
 
     def finger(msg, nickname)
       return unless check_user(msg)
@@ -56,6 +65,7 @@ module Plugins::DarkScience
 
       # JSON request
       begin
+        RestClient.proxy = ENV['http_proxy']
         data = JSON.parse(
             RestClient.post(
                 'https://darchoods.net/api/irc/user/view',
@@ -91,7 +101,6 @@ module Plugins::DarkScience
                 "Client: #{user['version']} ~ "
     end
 
-    match /stats (.+)/, method: :stats
 
     def stats(msg, nickname)
       return unless check_user(msg)
@@ -133,8 +142,6 @@ module Plugins::DarkScience
 
     end
 
-    match /addquote (.+)/i,  method: :addquote
-
     def addquote(m, quote)
       return unless check_user(m)
       return unless check_channel(m)
@@ -159,8 +166,6 @@ module Plugins::DarkScience
         m.reply 'QDB is unavailable right now'
       end
     end
-
-    match /quote (.+)/i,     method: :quote
 
     def quote(m, search)
       return unless check_user(m)
@@ -188,8 +193,6 @@ module Plugins::DarkScience
       end
 
     end
-
-    match "quote",           method: :randomquote
 
     def randomquote(m)
       return unless check_user(m)

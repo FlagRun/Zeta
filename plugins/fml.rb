@@ -21,8 +21,9 @@ module Plugins
 
     private
     def fetch_random_fml
+      RestClient.proxy = ENV['http_proxy']
       url = 'http://www.fmylife.com/random'
-      fml_story = Nokogiri.HTML(open(url)).at('div.article').text.strip
+      fml_story = Nokogiri.HTML(RestClient.get(url)).at('div.article').text.strip
       fml_story[/^Today, (.+) FML/]
     rescue => e
       e.message

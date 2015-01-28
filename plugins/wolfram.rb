@@ -18,6 +18,7 @@ module Plugins
       return unless check_user(msg)
       return unless check_channel(msg)
 
+      RestClient.proxy = ENV['http_proxy']
       url = URI.encode "http://api.wolframalpha.com/v2/query?input=#{query}&appid=#{Zsec.wolfram}&primary=true&format=plaintext"
       request = RestClient.get(url)
       data = Crack::XML.parse(request)

@@ -63,7 +63,6 @@ GEM
       tilt
     hashery (2.1.1)
     hashie (3.3.2)
-    http_proxy_from_env (0.0.2)
     httparty (0.13.3)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
@@ -350,7 +349,6 @@ DEPENDENCIES
   github_api
   haml
   hashie
-  http_proxy_from_env
   httparty
   humanize-bytes
   jruby-openssl
