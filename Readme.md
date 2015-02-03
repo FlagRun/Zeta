@@ -34,9 +34,10 @@ _Plugins_
 
 _Developer_
 ** Role Required: owner **
-* ?e code   // (alias: eval) Evaluate command
-* ?em code  // (alias: eval) Evaluate command send in msg
-* ?er code  // (alias: evalreply) Evaluate command and send to channel
+* ?die (msg) // Kills the bot
+* ?e  code   // (alias: eval) Evaluate command
+* ?em code   // (alias: eval) Evaluate command send in msg
+* ?er code   // (alias: evalreply) Evaluate command and send to channel
 
 ### Macros
 Macros are prefixed by a period and are loaded from locales/macros.yml
@@ -64,13 +65,12 @@ _Misc_
 * ?heavymetalise (message) - styles the vowles of the text
 * ?rainbow (text) - colorizes your text
 * ?eyerape (text) - even worse then rainbow
+* ?rr (nick) - Play a game of Russian Rullete
+* ?fml    - Returns a "F*ck My Life"
 
 _GifMe_
 * ?randomgif - grabs a random gif from gifme
 * ?gif (term) - returns the best match from gifme
-
-_Discordian_
-* ?ddate (date) - returns a discordian date
 
 _Movie_
 * ?movie (movie name) :year - the year is optional but must be prefixed with a colon
