@@ -19,7 +19,7 @@ Zignore = Hashie::Mash.new YAML.load_file($root_path + '/config/ignore.yml')
 Zusers  = Hashie::Mash.new YAML.load_file($root_path + '/config/users.yml')
 
 # Initilize the rest of the bot
-require_all "#{$root_path}/config/initializers/*.rb"
+require_all "#{$root_path}/lib/initializers/*.rb"
 
 Zeta = Cinch::Bot.new do
   configure do |c|
@@ -43,11 +43,20 @@ Zeta = Cinch::Bot.new do
   end
 end
 
+# Load Admin Plugins
+require_all "#{$root_path}/plugins/admin/*.rb"
+
 # Load Plugins
-require_all "#{$root_path}/plugins/**/*.rb"
+require_all "#{$root_path}/plugins/*.rb"
+
+# Require Network Specific Plugins
+require_all "#{$root_path}/plugins/network/#{Zconf.server.network}/*.rb"
 
 ## Start the bot  IF NOT IRB/RIPL
 unless defined?(IRB) || defined?(Ripl)
+  # Log all errors to /log/error.log
+  Zeta.loggers << Cinch::Logger::FormattedLogger.new(File.open("#{$root_path}/log/error.log", "a"))
+  Zeta.loggers.last.level = :error
   Zeta.start
 end
 
