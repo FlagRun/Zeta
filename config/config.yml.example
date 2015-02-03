@@ -8,7 +8,7 @@ bot:
 server:
   # bot channel
   channels: '#flagrun'
-  network: Darkscience
+  network: none
   hostname: irc.darkscience.net
   password:
   port: 6697
