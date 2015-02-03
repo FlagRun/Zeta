@@ -27,7 +27,6 @@ module Plugins
     def wotd(m)
       return unless check_user(m)
       return unless check_channel(m)
-      RestClient.proxy = ENV['http_proxy']
       url = URI.encode "http://www.urbandictionary.com/"
       doc = Nokogiri.HTML(
           RestClient.get(url)
@@ -39,7 +38,6 @@ module Plugins
 
     private
     def search(query)
-      RestClient.proxy = ENV['http_proxy']
       url = URI.encode "http://api.urbandictionary.com/v0/define?term=#{query}"
       # Nokogiri.HTML(open url).at_css('.meaning').text.strip[0..500]
 
@@ -52,7 +50,7 @@ module Plugins
       return 'No Results found' if data['result_type'] == 'no_results'
 
       # Return first definition
-      string = data['list'].first['definition'].gsub(/\n/, ' ')
+      string = data['list'].first['definition'].gsub(/\n/, ' ').gsub(/\n\r/, '')
       string[0..450] + "... \u263A"
     rescue => e
       e.message

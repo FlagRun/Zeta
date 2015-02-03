@@ -11,6 +11,7 @@ module Plugins
       # prefix: /^\?/
     )
 
+
     match /join (.+)/, method: :join
     def join(m, channel)
       return unless check_user(m, :operator)

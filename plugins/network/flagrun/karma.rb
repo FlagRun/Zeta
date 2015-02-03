@@ -31,7 +31,6 @@ module Plugins
     def karma(m, nick)
       return unless check_user(m)
       return unless check_channel(m)
-      return if msg.channel == '#darkscience'
       if @karma[nick]
         m.reply "Karma for #{nick}: #{@karma[nick]}."
       else
@@ -43,7 +42,6 @@ module Plugins
     def cheater(m, nick)
       return unless check_user(m, :operator)
       return unless check_channel(m)
-      return if msg.channel == '#darkscience'
       if @karma[nick]
         @karma.delete(nick)
         update_store
@@ -98,4 +96,4 @@ module Plugins
 end
 
 # AutoLoad
-# Zeta.config.plugins.plugins.push Plugins::Karma
+Zeta.config.plugins.plugins.push Plugins::Karma

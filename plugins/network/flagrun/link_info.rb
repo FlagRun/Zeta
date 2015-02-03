@@ -33,17 +33,17 @@
 # it under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Plugin for inspecting links pasted into channels.
-module Plugins
+module Plugins::Flagrun
   class LinkInfo
     include Cinch::Plugin
     include Cinch::Helpers
@@ -62,7 +62,6 @@ module Plugins
     def execute(msg, url)
       return unless check_user(msg)
       return unless check_channel(msg)
-      return unless msg.channel == '#flagrun' || msg.channel == '#flagworx'
       blacklist = DEFAULT_BLACKLIST.dup
       blacklist.concat(config[:blacklist]) if config[:blacklist]
 
@@ -86,5 +85,5 @@ end
 
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Plugins::LinkInfo
+Zeta.config.plugins.plugins.push Plugins::Flagrun::LinkInfo
 

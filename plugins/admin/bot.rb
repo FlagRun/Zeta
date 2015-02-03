@@ -9,7 +9,7 @@ module Admin
       # prefix: /^\?/
     )
 
-    match /nick (.+)/, method: :nick
+    match /changenick (.+)/, method: :nick
     def nick(m, nick)
       return unless check_user(m, :admin)
       bot.nick = nick
