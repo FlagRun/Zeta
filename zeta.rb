@@ -41,6 +41,17 @@ Zeta = Cinch::Bot.new do
     c.master            = Zconf.master
     c.plugins.prefix    = /^\?/
   end
+
+  # Execute on confirmation of connection
+  on :connect do
+
+    # Gain operator privileges if oper username and password are set in config
+    if Zconf.oper.username && Zconf.oper.password
+      @bot.oper(Zconf.oper.password, Zconf.oper.username)
+    end
+
+  end
+
 end
 
 # Load Admin Plugins
