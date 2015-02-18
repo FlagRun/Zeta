@@ -44,6 +44,7 @@ gem 'pdf-reader'
 gem 'faraday'
 gem 'humanize-bytes'
 gem 'crack'
+gem 'ipaddress'
 
 # API
 gem 'wolfram'
@@ -52,6 +53,10 @@ gem 'github_api'
 gem 'evalso'
 gem 'gist'
 gem 'discourse_api'
+
+# DNSBL
+gem 'dronebl.rb'
+gem 'dnsbl-client'
 
 # Background
 gem 'foreman'
