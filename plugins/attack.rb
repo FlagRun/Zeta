@@ -18,7 +18,10 @@ module Plugins
       super
     end
 
+    # Regex
     match /attack(?: (.+))?/, group: :attack
+
+    # Methods
     def execute(m, target=nil)
       return unless check_user(m)
       return unless check_channel(m)
@@ -31,12 +34,12 @@ module Plugins
       else
         random_attack!(m.channel.users, m.user.nick)
       end
-      m.channel.action output;
+      m.channel.action output
     end
 
     private
     def populate_attacks!
-      @attackdict.replace YAML::load_file(File.join(__dir__, '../locales/attack.yml')).map {|e| e.gsub(/<(\w+)>/, "%<#{'\1'.downcase}>s") }
+      @attackdict.replace load_locale('attack').map {|e| e.gsub(/<(\w+)>/, "%<#{'\1'.downcase}>s") }
     end
 
     def grab_random_nick(users)

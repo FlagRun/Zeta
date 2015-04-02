@@ -8,7 +8,10 @@ module Plugins
     self.plugin_name = 'DNS Blacklist'
     self.help = '?dnsbl <host>'
 
+    # Regex
     match /dnsbl (.+)/, method: :dnsbl_lookup
+
+    # Methods
     def dnsbl_lookup(m, host)
       return unless check_user(m)
       return unless check_channel(m)

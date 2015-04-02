@@ -25,7 +25,12 @@ module Plugins
     # :owner -- What to display for the "owner_name" field.
     # All fields in the text file must be surrounded by '<>', and lines can be commented out using '#'.
 
+    # Regex
     match 'info', use_prefix: false
+    match 'list plugins', method: :execute_list, use_prefix: false
+    match /^help (.+)$/i, method: :execute_help, use_prefix: false
+
+    # Methods
     def execute(m)
       return unless check_user(m)
       return unless check_channel(m)
@@ -58,7 +63,6 @@ module Plugins
       m.user.notice tf.parse
     end
 
-    match 'list plugins', method: :execute_list, use_prefix: false
     def execute_list(m)
       return unless check_user(m)
 
@@ -67,7 +71,6 @@ module Plugins
       m.user.notice("All #{list.size} currently loaded plugins for #{@bot.nick}:\n#{list.to_sentence}.\nTo view help for a plugin, use `/msg #{@bot.nick} help <plugin name>`.")
     end
 
-    match /^help (.+)$/i, method: :execute_help, use_prefix: false
     def execute_help(m, name)
       return unless check_user(m)
       list = {}

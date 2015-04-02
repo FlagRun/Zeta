@@ -15,7 +15,8 @@ module Plugins
 
     def initialize *args
       super
-      @macros = YAML::load_file($root_path + '/locales/macros.yml')
+      # @macros = YAML::load_file($root_path + '/locales/macros.yml')
+      @macros = load_locale 'macros'
     end
 
     match /reload/, method: :execute_reloadmacros, react_on: :private
@@ -23,7 +24,8 @@ module Plugins
       return unless check_user(m, :admin)
       # return unless check_channel(m)
       begin
-        @macros = YAML::load_file($root_path + '/locales/macros.yml')
+        # @macros = YAML::load_file($root_path + '/locales/macros.yml')
+        @macros = load_locale 'macros'
         m.user.notice "Macros have been reloaded."
       rescue
         m.user.notice "Reloading macros has failed: #{$!}"

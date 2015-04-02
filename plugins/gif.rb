@@ -27,7 +27,6 @@ module Plugins
     private
 
     def search(query)
-      RestClient.proxy = ENV['http_proxy']
       url = URI.encode "http://www.gifbin.com/search/#{query}/"
       doc = Nokogiri::HTML( RestClient.get(url) )
       e = doc.css('.thumbs li').length
@@ -37,7 +36,6 @@ module Plugins
     end
 
     def random
-      RestClient.proxy = ENV['http_proxy']
       url = URI.encode 'http://www.gifbin.com/random'
       doc = Nokogiri.HTML(RestClient.get(url))
       doc.css('div#gifcontainer a img').attribute('src').text

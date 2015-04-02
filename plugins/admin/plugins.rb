@@ -1,5 +1,3 @@
-require_relative '../../lib/helpers/check_user'
-
 module Plugins
   class PluginsAdmin
     include Cinch::Plugin
@@ -11,11 +9,13 @@ module Plugins
       # prefix: /^\?/
     )
 
+    # Regex
     match(/plugin load (\S+)(?: (\S+))?/, method: :load_plugin)
     match(/plugin unload (\S+)/, method: :unload_plugin)
     match(/plugin reload (\S+)(?: (\S+))?/, method: :reload_plugin)
     match(/plugin set (\S+) (\S+) (.+)$/, method: :set_option)
 
+    # Methods
     def load_plugin(m, plugin, mapping)
       return unless check_user(m, :admin)
       mapping ||= plugin.gsub(/(.)([A-Z])/) { |_|

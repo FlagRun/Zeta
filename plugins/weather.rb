@@ -52,7 +52,6 @@ module Plugins
     def hurricane(msg)
       return unless check_user(msg)
       return unless check_channel(msg)
-      RestClient.proxy = ENV['http_proxy']
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/currenthurricane/view.json"
       location = JSON.parse(
            RestClient.get(url)
@@ -72,7 +71,6 @@ module Plugins
     def almanac(msg,locale)
       return unless check_user(msg)
       return unless check_channel(msg)
-      RestClient.proxy = ENV['http_proxy']
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/almanac/q/#{locale}.json"
       location = JSON.parse(
            RestClient.get(url)
@@ -107,7 +105,6 @@ module Plugins
 
 
     def geolookup(locale)
-      RestClient.proxy = ENV['http_proxy']
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/geolookup/q/#{locale}.json"
       location = JSON.parse(
           RestClient.get(url)
@@ -118,7 +115,6 @@ module Plugins
     end
 
     def get_conditions(location)
-      RestClient.proxy = ENV['http_proxy']
       data = JSON.parse(
           # open("http://api.wunderground.com/api/#{Zsec.wunderground}/conditions#{location}.json").read
           RestClient.get("http://api.wunderground.com/api/#{Zsec.wunderground}/conditions#{location}.json")
@@ -156,17 +152,6 @@ module Plugins
     end
 
     def weather_summary(data)
-      ##
-      # Sample Summary using !forecast 00687
-      # Forecast for: Morovis, PR, US
-      # Latitude: 18.32682228, Longitude: -66.40519714
-      # Weather is Partly Cloudy, feels like 85 F (27.1 C)
-      # UV: 9.5, Humidity: 78%
-      # Wind: From the SE at 1.0 MPH Gusting to 5.0 MPH
-      # Direction: East, Degrees: 90
-      # Last Updated on June 4, 11:25 PM AST
-      # More Info: http://www.wunderground.com/US/PR/Morovis.html
-
       %Q{
           Forecast for: #{data.county}, #{data.country}
           Latitude: #{data.lat}, Longitude: #{data.lng}

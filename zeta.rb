@@ -13,13 +13,14 @@ require 'hashie'
 require 'recursive_open_struct'
 
 # Load Config Data
-Zconf   = Hashie::Mash.new YAML.load_file($root_path + '/config/config.yml')
-Zsec    = Hashie::Mash.new YAML.load_file($root_path + '/config/secret.yml')
-Zignore = Hashie::Mash.new YAML.load_file($root_path + '/config/ignore.yml')
-Zusers  = Hashie::Mash.new YAML.load_file($root_path + '/config/users.yml')
+Zconf   = Hashie::Mash.new(YAML.load_file($root_path + '/config/config.yml'))
+Zsec    = Hashie::Mash.new(YAML.load_file($root_path + '/config/secret.yml'))
+Zignore = Hashie::Mash.new(YAML.load_file($root_path + '/config/ignore.yml'))
+Zusers  = Hashie::Mash.new(YAML.load_file($root_path + '/config/users.yml' ))
 
 # Initilize the rest of the bot
 require_all "#{$root_path}/lib/initializers/*.rb"
+require_all "#{$root_path}/lib/helpers/*.rb"
 
 Zeta = Cinch::Bot.new do
   configure do |c|
@@ -61,12 +62,17 @@ require_all "#{$root_path}/plugins/admin/*.rb"
 require_all "#{$root_path}/plugins/*.rb"
 
 # Require Network Specific Plugins
-require_all "#{$root_path}/plugins/network/#{Zconf.server.network}/*.rb"
+begin
+  require_all "#{$root_path}/plugins/network/#{Zconf.server.network}/*.rb"
+rescue LoadError
+  Zeta.loggers.last.error '**** Unable to load network specific plugins ****'
+end
+
 
 ## Start the bot  IF NOT IRB/RIPL
 unless defined?(IRB) || defined?(Ripl)
   # Log all errors to /log/error.log
-  Zeta.loggers << Cinch::Logger::FormattedLogger.new(File.open("#{$root_path}/log/error.log", "a"))
+  Zeta.loggers << Cinch::Logger::FormattedLogger.new(File.open("#{$root_path}/log/error.log", 'a'))
   Zeta.loggers.last.level = :error
   Zeta.start
 end

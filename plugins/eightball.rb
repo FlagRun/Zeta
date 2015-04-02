@@ -8,6 +8,7 @@ module Plugins
         help:     "The Magic 8ball has all the answers!\nUsage: `?8ball [question? <question? <...>>]`",
         react_on: :channel)
 
+    # Variables
     @@eightball = [
         "It is certain",
         "It is decidedly so",
@@ -31,11 +32,14 @@ module Plugins
         "Very doubtful"
     ]
 
+    # Regex
+    match /8ball (.+)/
+
+    # Methods
     def shake!
       @@eightball.sample
     end
 
-    match /8ball (.+)/
     def execute(m, s)
       return unless check_channel(m)
       m.safe_reply @@eightball.sample, true

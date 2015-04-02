@@ -1,5 +1,3 @@
-require_relative '../../lib/helpers/check_user'
-
 module Plugins
   class ChannelAdmin
     include Cinch::Plugin
@@ -8,11 +6,16 @@ module Plugins
     set(
       plugin_name: 'ChannelAdmin',
       help: "Bot administrator-only private commands.\nUsage: `?join [channel]`; `?part [channel] <reason>`; `?quit [reason]`;",
-      # prefix: /^\?/
     )
 
-
+    # Regex
     match /join (.+)/, method: :join
+    match /part(?: (\S+))?(?: (.+))?/, method: :part, group: :part
+
+    # Listeners
+    listen_to :invite, method: :join_on_invite
+
+    # Methods
     def join(m, channel)
       return unless check_user(m, :operator)
       channel.split(", ").each {|ch|
@@ -21,7 +24,6 @@ module Plugins
       }
     end
 
-    match /part(?: (\S+))?(?: (.+))?/, method: :part, group: :part
     def part(m, channel=nil, msg=nil)
       return unless check_user(m, :operator)
       channel ||= m.channel.name
@@ -30,21 +32,10 @@ module Plugins
       @bot.handlers.dispatch :admin, m, "Parted #{channel}#{" - #{msg}" unless msg.nil?}", m.target
     end
 
-    match /die(?: (.+))?/, method: :quit, group: :quit
-    def quit(m, msg=nil)
-      return unless check_user(m, :master)
-      msg ||= m.user.nick
-      @bot.handlers.dispatch :admin, m, "I am being shut down NOW!#{" - Reason: " + msg unless msg.nil?}", m.target
-      sleep 2
-      bot.quit(msg)
-    end
-
-    listen_to :invite, method: :join_on_invite
     def join_on_invite(m)
       return unless check_user(m)
       Channel(m.channel).join rescue m.msg 'Could not join the channel you invited me too'
     end
-
 
   end
 

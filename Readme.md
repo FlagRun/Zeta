@@ -8,7 +8,7 @@ Zeta requires ruby >= 2.0.0 and rubygems. Installation beyond that is simple
 _Steps_
 * git clone https://github.com/flagrun/Zeta.git
 * bundle install
-* rename config files from \*.yml.example to \*.yml
+* move the example configs into the base directory
 * ruby ./zeta.rb
 
 _Plugins_

@@ -1,12 +1,15 @@
 # This is considered a dangerous plugin, use it only if you know what you are doing
-require_relative '../../lib/helpers/check_user'
-
 module Plugins
   class Oper
     include Cinch::Plugin
     include Cinch::Helpers
 
+    # Regex
     match 'operup', method: :oper_up
+    match /kill ([\S]+) (.+)/, method: :oper_kill
+    match /clearchan (.+) (true|yes)/, method: :oper_clearchan
+
+    # Methods
     def oper_up(m)
       return unless m.user.oper
       return unless check_user(m, :operator)
@@ -15,7 +18,6 @@ module Plugins
       end
     end
 
-    match /kill ([\S]+) (.+)/, method: :oper_kill
     def oper_kill(m, nick, message)
       return unless m.user.oper
       return if User(nick).oper?
@@ -24,7 +26,7 @@ module Plugins
       end
     end
 
-    match /clearchan (.+) (true|yes)/, method: :oper_clearchan
+
     def oper_clearchan(m, chan, confirm=false)
       return unless m.user.oper
       return unless check_user m, :admin

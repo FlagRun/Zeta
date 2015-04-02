@@ -6,10 +6,34 @@ module Admin
     set(
       plugin_name: "BotAdmin",
       help: "Bot administrator-only private commands.\nUsage: `~nick [channel]`;",
-      # prefix: /^\?/
     )
 
+    # Regex
     match /changenick (.+)/, method: :nick
+    match /mode (.+)/, method: :mode
+    match /die(?: (.+))?/, method: :quit, group: :quit
+
+    match /e (.+)/, method: :boteval
+    match /eval (.+)/, method: :boteval
+    match /ereturn (.+)/, method: :botevalreturn
+    match /er (.+)/, method: :botevalreturn
+    match /evalmsg (.+)/, method: :botevalmsg
+    match /em (.+)/, method: :botevalmsg
+
+    match /ignore (.+)/, method: :ignore_user
+    match /unignore (.+)/, method: :unignore_user
+
+    match /crash (.+)/, method: :ignore_channel
+    match /sleep (.+)/, method: :ignore_channel
+    match 'crash', method: :ignore_channel
+    match 'sleep', method: :ignore_channel
+
+    match /overide (.+)/, method: :unignore_channel
+    match /wake (.+)/, method: :unignore_channel
+    match 'overide', method: :unignore_channel
+    match 'wake', method: :unignore_channel
+
+    # Methods
     def nick(m, nick)
       return unless check_user(m, :admin)
       bot.nick = nick
@@ -18,14 +42,19 @@ module Admin
       end
     end
 
-    match /mode (.+)/, method: :mode
     def mode(m, nick)
       return unless check_user(m, :admin)
       bot.modes = m
     end
 
-    match /e (.+)/, method: :boteval
-    match /eval (.+)/, method: :boteval
+    def quit(m, msg=nil)
+      return unless check_user(m, :master)
+      msg ||= m.user.nick
+      @bot.handlers.dispatch :admin, m, "I am being shut down NOW!#{" - Reason: " + msg unless msg.nil?}", m.target
+      sleep 2
+      bot.quit(msg)
+    end
+
     def boteval(m, s)
       return unless check_user(m, :owner)
       eval(s)
@@ -33,8 +62,6 @@ module Admin
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
     end
 
-    match /ereturn (.+)/, method: :botevalreturn
-    match /er (.+)/, method: :botevalreturn
     def botevalreturn(m, s)
       return unless check_user(m, :owner)
       return m.reply eval(s)
@@ -42,8 +69,6 @@ module Admin
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
     end
 
-    match /evalmsg (.+)/, method: :botevalmsg
-    match /em (.+)/, method: :botevalmsg
     def botevalmsg(m, s)
       return unless check_user(m, :owner)
       return m.user.msg eval(s)
@@ -51,7 +76,6 @@ module Admin
       m.user.msg "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
     end
 
-    match /ignore (.+)/, method: :ignore_user
     def ignore_user(m, user)
       return m.reply("Must specify a user to ignore!") unless user
       return unless check_user(m, :operator)
@@ -63,7 +87,6 @@ module Admin
       end
     end
 
-    match /unignore (.+)/, method: :unignore_user
     def unignore_user(m, user)
       return unless check_user(m, :operator)
       if Zignore.users.split(' ').include?(user)
@@ -75,10 +98,6 @@ module Admin
       end
     end
 
-    match /crash (.+)/, method: :ignore_channel
-    match /sleep (.+)/, method: :ignore_channel
-    match "crash", method: :ignore_channel
-    match "sleep", method: :ignore_channel
     def ignore_channel(m, channel=nil)
       return unless check_user(m, :operator)
       if channel
@@ -90,10 +109,6 @@ module Admin
       end
     end
 
-    match /overide (.+)/, method: :unignore_channel
-    match /wake (.+)/, method: :unignore_channel
-    match "overide", method: :unignore_channel
-    match "wake", method: :unignore_channel
     def unignore_channel(m, channel=nil)
       return unless check_user(m, :operator)
       if channel
