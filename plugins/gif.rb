@@ -17,14 +17,6 @@ module Plugins
       @last_update = Time
     end
 
-    # Test
-    match 'resetcache', method: :resetcache
-    def resetcache(m)
-      @imgurray = Array
-      @last_update = Time
-      m.reply 'Resetting cache'
-    end
-
     match 'randomgif', method: :imgif
     match 'rgif', method: :imgif
     match 'imgif', method: :imgif
