@@ -33,5 +33,6 @@ oper:
   username:
   password:
 
-master:
-  nick: m00t
+master: m00t
+
+locale: en
