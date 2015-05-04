@@ -9,20 +9,29 @@ module Plugins
 
     # Author: blahed (https://github.com/blahed/gifbot)
     self.plugin_name = 'GIF'
-    self.help = '?randomgif | ?gifme <query>'
+    self.help = '?randomgif | ?rgif | ?gifme <query>'
 
-    match "randomgif", method: :randomgif
-    def randomgif(msg)
-      return unless check_user(msg)
-      return unless check_channel(msg)
-      msg.reply "GB↦ #{gifbin}" if gifbin != nil
+    def initialize(*args)
+      super
+      @imgurray = []
+      @last_update = Time
     end
 
-    match "imgif", method: :imgif
+    # Test
+    match 'resetcache', method: :resetcache
+    def resetcache(m)
+      @imgurray = Array
+      @last_update = Time
+      m.reply 'Resetting cache'
+    end
+
+    match 'randomgif', method: :imgif
+    match 'rgif', method: :imgif
+    match 'imgif', method: :imgif
     def imgif(msg)
-        return unless check_user(msg)
-        return unless check_channel(msg)
-        msg.reply "IMGUR↦ #{imgur}" if imgur != nil
+      return unless check_user(msg)
+      return unless check_channel(msg)
+      msg.reply "IMGUR↦ #{imgur}"
     end
 
     match /gifme (.+)/, method: :gifme
@@ -50,17 +59,24 @@ module Plugins
     end
 
     def imgur
-        # TODO: add caching support
+      # Cache results for 1 hour
+      if @imgurray.empty? || @last_update >= (Time.now + 3600)
         url = URI.encode('http://reddit.com/r/gifs.json')
         doc = JSON.load(open(url))
-        imgurray = []
-        doc['data']['children'].each_with_index do |post,index|
+
+        doc['data']['children'].each_with_index do |post, index|
           if doc['data']['children'][index]['data']['url'].to_s =~ /imgur/
-             imgurray << doc['data']['children'][index]['data']['url'].to_s
+            @imgurray << doc['data']['children'][index]['data']['url'].to_s
           end
         end
-      imgurray.sample
+        @last_update = Time.now
+        @imgurray.sample
+      else
+        @imgurray.sample
+      end
+
     end
+
   end
 end
 
