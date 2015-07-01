@@ -16,7 +16,7 @@ module Plugins
 
     # Default list of URL regexps to ignore.
     DEFAULT_ALLOWED = [/\.pdf$/i].freeze
-    FILE_SIZE_LIMIT = 2000000
+    FILE_SIZE_LIMIT = 4000000
 
 
     match %r{(https?://.*?)(?:\s|$|,|\.\s|\.$)}, :use_prefix => false

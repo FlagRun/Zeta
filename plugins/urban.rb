@@ -29,7 +29,8 @@ module Plugins
       return unless check_channel(m)
       url = URI.encode "http://www.urbandictionary.com/"
       doc = Nokogiri.HTML(
-          RestClient.get(url)
+          # RestClient.get(url)
+          open(url)
       )
       word = doc.at_css('.word').text.strip[0..40]
       meaning = doc.at_css('.meaning').text.strip[0..450] + "... \u263A"
@@ -43,14 +44,15 @@ module Plugins
 
       # Load API data
       data = JSON.parse(
-          RestClient.get(url)
+          #RestClient.get(url)
+          open(url).read
       )
 
       # Return if nothing is found
       return 'No Results found' if data['result_type'] == 'no_results'
 
       # Return first definition
-      string = data['list'].first['definition'].gsub(/\n/, ' ').gsub(/\n\r/, '')
+      string = data['list'].first['definition'].gsub(/\r|\n|\n\r/, ' ')
       string[0..450] + "... \u263A"
     rescue => e
       e.message
