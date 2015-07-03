@@ -37,7 +37,7 @@ module Plugins
       return unless check_user(m)
       return unless check_channel(m)
       return unless @macros.has_key?(macro)
-      parse(arguments, @macros[macro], m.channel, m.user)
+      parse(arguments.rstrip, @macros[macro], m.channel, m.user)
 
 
       # Guide to writing macros:

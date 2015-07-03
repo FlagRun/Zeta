@@ -17,7 +17,7 @@ module Plugins
       return unless check_channel(m)
 
       client = DNSBL::Client.new
-      query= client.lookup(host)
+      query = client.lookup(host.rstrip)
 
       if query.empty?
         m.reply "No Results Found (#{host})"
