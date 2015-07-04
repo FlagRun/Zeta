@@ -54,7 +54,8 @@ module Plugins
       return unless check_channel(msg)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/currenthurricane/view.json"
       location = JSON.parse(
-           RestClient.get(url)
+           # RestClient.get(url)
+           open(url).read
        )
       return msg.reply "No results found for #{query}." if location.nil?
       reply_msg = "∴ #{location['currenthurricane'][0]['stormInfo']['stormName_Nice']} " \
@@ -73,7 +74,8 @@ module Plugins
       return unless check_channel(msg)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/almanac/q/#{locale}.json"
       location = JSON.parse(
-           RestClient.get(url)
+           # RestClient.get(url)
+           open(url).read
        )
       return msg.reply "No results found for #{query}." if location.nil?
 
@@ -107,7 +109,8 @@ module Plugins
     def geolookup(locale)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/geolookup/q/#{locale}.json"
       location = JSON.parse(
-          RestClient.get(url)
+          # RestClient.get(url).force_encoding("UTF-8")
+          open(url).read
       )
       location['location']['l']
     rescue
