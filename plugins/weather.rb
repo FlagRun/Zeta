@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'persist'
 
 module Plugins
   # Forecast is a Cinch plugin for getting the weather forecast.
@@ -14,10 +15,17 @@ module Plugins
 
     match /forecast (.+)/, method: :forecast
     match /w (.+)/, method: :weather
+    match 'w', method: :weather
+    match /setw (.+)/, method: :set_location
     match /wx (.+)/, method: :weather
     match /weather (.+)/, method: :weather
     match /almanac (.+)/, method: :almanac
     match /hurricane/, method: :hurricane
+
+    def initialize(*args)
+      @store = Persist.new File.path($root_path + '/data/user/weather.pstore')
+      super
+    end
 
     def forecast(msg, query)
       return unless check_user(msg)
@@ -31,10 +39,17 @@ module Plugins
       msg.user.msg(weather_summary(data))
     end
 
-    def weather(msg, query)
+
+    def weather(msg, query=nil)
       return unless check_user(msg)
       return unless check_channel(msg)
-      location = geolookup(query)
+      if @store.key? msg.user.nick
+        location = geolookup(@store[msg.user.nick])
+      elsif query.nil?
+        return msg.reply 'No location set. !setw <location>'
+      else
+        location = geolookup(query)
+      end
       return msg.reply "No results found for #{query}." if location.nil?
 
       data = get_conditions(location)
@@ -47,6 +62,14 @@ module Plugins
                   "≈ Pressure: #{data.pressure_mb} mmHg " \
                   "≈ Wind: #{data.wind_mph} mph gusting to #{data.wind_gust_mph} mph ∴"
       msg.reply(reply_data)
+    end
+
+    def set_location(msg,query)
+      location = geolookup(query)
+      return msg.reply "No results found for #{query}." if location.nil?
+      @store[msg.user.nick] = query unless location.nil?
+      data = get_conditions(location)
+      msg.reply "Your location is now set to #{data.county}, #{data.country}!"
     end
 
     def hurricane(msg)

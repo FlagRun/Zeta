@@ -36,6 +36,7 @@ gem 'rest-client'
 gem 'haml'
 gem 'nokogiri'
 gem 'actionview'
+gem 'persist'
 
 gem 'recursive-open-struct'
 gem 'require_all'

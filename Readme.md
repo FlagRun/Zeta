@@ -81,7 +81,9 @@ _Urban Dictionary_
 
 _Weather_
 * ?w (location)
-* ?hurricane
+* ?wx (location)
+* ?setw (location) - Sets your current location so the bot will remember if you do ?w
+* ?hurricane - gets current hurricane activity
 * ?forecast (location)
 
 _PDF Info_
