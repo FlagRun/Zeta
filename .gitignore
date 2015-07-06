@@ -11,7 +11,8 @@ data/*.rb
 data/*.pstore
 data/dcc/*
 data/media/*
-data/user/*
+data/user/*.pstore
+data/user/*.yml
 log/*.log
 config/config.yml
 config/secret.yml
