@@ -10,7 +10,7 @@ module Plugins
 
     set(
         plugin_name: "Weather",
-        help: "Get the Weather?.\nUsage: `?weather`\nUsage: `?wx zip` `?w zip` `?forecast zip`",
+        help: "Get the Weather?.\nUsage: `?weather`\nUsage: `?wx zip` `?w zip` `?setw zip` `?forecast zip`",
     )
 
     match /forecast (.+)/, method: :forecast
@@ -43,7 +43,7 @@ module Plugins
     def weather(msg, query=nil)
       return unless check_user(msg)
       return unless check_channel(msg)
-      if @store.key? msg.user.nick
+      if @store.key?(msg.user.nick) && query.nil?
         location = geolookup(@store[msg.user.nick])
       elsif query.nil?
         return msg.reply 'No location set. !setw <location>'
