@@ -57,14 +57,16 @@ module Plugins
 
       #[ Clarkston, WA, United States | Cloudy | Temp: 34 F (1 C) | Humidity: 73% | Winds: 8 mph ]
       reply_data = "∴ #{data.county}, #{data.country} " \
-                  "≈ #{data.weather} #{data.feels_like} " \
+                  "≈ #{data.weather} #{data.temperature} " \
                   "≈ Humidity: #{data.relative_humidity} " \
-                  "≈ Pressure: #{data.pressure_mb} mmHg " \
-                  "≈ Wind: #{data.wind_mph} mph gusting to #{data.wind_gust_mph} mph ∴"
+                  "≈ Pressure: #{data.pressure_in} psi (#{data.pressure_mb} mmHg) " \
+                  "≈ Wind: #{data.wind} ≈ Alerts: #{data.alerts} ∴"
       msg.reply(reply_data)
     end
 
     def set_location(msg,query)
+      return unless check_user(msg)
+      return unless check_channel(msg)
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
       @store[msg.user.nick] = query unless location.nil?
@@ -142,10 +144,11 @@ module Plugins
 
     def get_conditions(location)
       data = JSON.parse(
-          open("http://api.wunderground.com/api/#{Zsec.wunderground}/conditions#{location}.json").read
+          open("http://api.wunderground.com/api/#{Zsec.wunderground}/alerts/conditions#{location}.json").read
           #RestClient.get("http://api.wunderground.com/api/#{Zsec.wunderground}/conditions#{location}.json")
       )
       current = data['current_observation']
+      alerts = data['alerts'].empty? ? 'none' : data['alerts'].map { |l| l['type'] }.join(',')
       location_data = current['display_location']
 
       OpenStruct.new(
@@ -159,6 +162,7 @@ module Plugins
           weather: current['weather'],
           temp_fahrenheit: current['temp_f'],
           temp_celcius: current['temp_c'],
+          temperature: current['temperature_string'],
           relative_humidity: current['relative_humidity'],
           feels_like: current['feelslike_string'],
           uv_level: current['UV'],
@@ -169,7 +173,10 @@ module Plugins
           wind_mph: current['wind_mph'],
           wind_gust_mph: current['wind_gust_mph'],
           wind_kph: current['wind_kph'],
+          pressure_in: current['pressure_in'],
           pressure_mb: current['pressure_mb'],
+
+          alerts: alerts,
 
           forecast_url: current['forecast_url']
       )
