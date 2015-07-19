@@ -3,7 +3,8 @@ require 'persist'
 
 module Plugins
   # Forecast is a Cinch plugin for getting the weather forecast.
-  # @author Jonah Ruiz <jonah@pixelhipsters.com>
+  # @original_author Jonah Ruiz <jonah@pixelhipsters.com>
+  # @author Liothen <liothen@flagrun.net>
   class Weather
     include Cinch::Plugin
     include Cinch::Helpers
@@ -22,11 +23,13 @@ module Plugins
     match /almanac (.+)/, method: :almanac
     match /hurricane/, method: :hurricane
 
+    #####
     def initialize(*args)
       @store = Persist.new File.path($root_path + '/data/user/weather.pstore')
       super
     end
 
+    # ?forecast <location>
     def forecast(msg, query)
       return unless check_user(msg)
       return unless check_channel(msg)
@@ -39,14 +42,14 @@ module Plugins
       msg.user.msg(weather_summary(data))
     end
 
-
+    # ?w <location>
     def weather(msg, query=nil)
       return unless check_user(msg)
       return unless check_channel(msg)
       if @store.key?(msg.user.nick) && query.nil?
         location = geolookup(@store[msg.user.nick])
       elsif query.nil?
-        return msg.reply 'No location set. !setw <location>'
+        return msg.reply 'No location set. ?setw <location>'
       else
         location = geolookup(query)
       end
@@ -64,6 +67,7 @@ module Plugins
       msg.reply(reply_data)
     end
 
+    # ?setw <location>
     def set_location(msg,query)
       return unless check_user(msg)
       return unless check_channel(msg)
@@ -74,6 +78,7 @@ module Plugins
       msg.reply "Your location is now set to #{data.county}, #{data.country}!"
     end
 
+    # ?hurricane
     def hurricane(msg)
       return unless check_user(msg)
       return unless check_channel(msg)
@@ -94,6 +99,7 @@ module Plugins
       msg.reply(reply_msg)
     end
 
+    # ?almanac <location>
     def almanac(msg,locale)
       return unless check_user(msg)
       return unless check_channel(msg)
@@ -130,7 +136,7 @@ module Plugins
     end
 
 
-
+    # -private
     def geolookup(locale)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/geolookup/q/#{locale}.json"
       location = JSON.parse(
