@@ -37,7 +37,7 @@ module Plugins
       return unless check_user(m)
       return unless check_channel(m)
       return unless @macros.has_key?(macro)
-      parse(arguments.rstrip, @macros[macro], m.channel, m.user)
+      parse(arguments.to_s.rstrip, @macros[macro], m.channel, m.user)
 
 
       # Guide to writing macros:
@@ -90,7 +90,7 @@ module Plugins
         case params['sent_as']
         when 'action' then channel.action replace_tokens(input, macro.to_s, channel, user)
         else
-          channel.msg replace_tokens(input, macro.to_s, channel, user)
+          channel.send replace_tokens(input, macro.to_s, channel, user)
         end
       end
     end

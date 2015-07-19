@@ -28,7 +28,7 @@ module Plugins
       return reload_meme(m) if query == 'reload'
       return m.reply('Unknown meme - Use ?m help') unless @meme.has_key?(query)
 
-      m.reply "M → #{@meme[query].sample}"
+      m.reply "Got Meme? → #{@meme[query].sample}"
     end
 
     # Private
