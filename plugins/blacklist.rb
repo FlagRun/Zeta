@@ -10,6 +10,7 @@ module Plugins
 
     # Regex
     match /dnsbl (.+)/, method: :dnsbl_lookup
+    match /blacklist (.+)/, method: :dnsbl_lookup
 
     # Methods
     def dnsbl_lookup(m, host)
