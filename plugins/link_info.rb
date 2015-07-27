@@ -43,7 +43,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Plugin for inspecting links pasted into channels.
-module Plugins::Flagrun
+module Plugins
   class LinkInfo
     include Cinch::Plugin
     include Cinch::Helpers
@@ -70,11 +70,11 @@ module Plugins::Flagrun
       html = Nokogiri::HTML(open(url))
 
       if node = html.at_xpath("html/head/title")
-        msg.reply(node.text)
+        msg.reply(node.text.gsub(/\r|\n|\n\r/, ' '))
       end
 
       if node = html.at_xpath('html/head/meta[@name="description"]')
-        msg.reply(node[:content].lines.first(3).join)
+        msg.reply(node[:content].lines.first(3).join.gsub(/\r|\n|\n\r/, ' '))
       end
     rescue => e
       error "#{e.class.name}: #{e.message}"
@@ -85,5 +85,5 @@ end
 
 
 # AutoLoad
-Zeta.config.plugins.plugins.push Plugins::Flagrun::LinkInfo
+Zeta.config.plugins.plugins.push Plugins::LinkInfo
 
