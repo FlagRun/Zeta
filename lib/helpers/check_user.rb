@@ -12,19 +12,26 @@ module Cinch
           return true if Zusers.owner.split(' ').include? m.user.authname
           return true if Zusers.admin.split(' ').include? m.user.authname
         when :operator || :o
+          return true if m.user.oper?
           return true if Zusers.owner.split(' ').include?(m.user.authname)
           return true if Zusers.admin.split(' ').include?(m.user.authname)
           return false if Zignore.users.split(' ').include? m.user.nick
           return true if Zusers.operator.split(' ').include? m.user.authname
         when :voice || :v
+          return true if m.user.oper?
           return true if Zusers.owner.split(' ').include?(m.user.authname)
           return true if Zusers.admin.split(' ').include?(m.user.authname)
           return false if Zignore.users.split(' ').include? m.user.nick
           return true if Zusers.operator.split(' ').include? m.user.authname
           return true if Zusers.voice.split(' ').include? m.user.authname
         when :nobody
-          return false if m.user.authname == nil
+          return true if m.user.oper?
           return false if Zignore.users.split(' ').include? m.user.nick
+          if m.user.authname == nil
+            # Let people know they are not identified
+            m.user.notice('You Must Be Identified With Services!', true)
+            return false
+          end
           true
         else
           false
