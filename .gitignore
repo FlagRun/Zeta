@@ -19,3 +19,4 @@ config/secret.yml
 config/users.yml
 config/ignore.yml
 *.pstore
+db/*.db
