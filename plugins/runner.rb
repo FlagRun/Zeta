@@ -5,6 +5,8 @@ class Plugins::Runner
   include Cinch::Plugin
   include Cinch::Helpers
 
+  enable_acl
+
   set(
       plugin_name: "Runner",
       help: "Run a program though eval.so!\nUsage: `?run [lang] <expression>` `?langs`",
@@ -20,8 +22,6 @@ class Plugins::Runner
   # Params:
   # +m+:: +Cinch::Message+ object
   def langs(m)
-    return unless check_user(m)
-    return unless check_channel(m)
     m.safe_reply "Available languages: #{Evalso.languages.keys.join(', ')}"
   end
 
@@ -31,8 +31,6 @@ class Plugins::Runner
   # +lang+:: The language for code to be evaluated with
   # +code+:: The code to be evaluated
   def eval(m, lang, code)
-    return unless check_user(m)
-    return unless check_channel(m)
     res = Evalso.run(language: lang, code: code)
     # Default to stdout, fall back to stderr.
     output = res.stdout

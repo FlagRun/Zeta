@@ -3,6 +3,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl
+
     self.plugin_name = 'DragonBall Z!'
     self.help = "It's Over Nine Thousand!"
 
@@ -18,8 +20,6 @@ module Plugins
 
     # Methods
     def randomquote(msg)
-      return unless check_user(msg)
-      return unless check_channel(msg)
       msg.reply @sample['over9k'].sample
     end
 

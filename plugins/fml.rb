@@ -6,6 +6,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl
+
     set(
         plugin_name: "FuckMyLife",
         help: "Get a random FML.\nUsage: `?fml`",
@@ -14,8 +16,6 @@ module Plugins
     match /fml/
 
     def execute(m)
-      return unless check_user(m)
-      return unless check_channel(m)
       m.reply fetch_random_fml, true
     end
 

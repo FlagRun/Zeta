@@ -10,6 +10,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl
+
     set(
       plugin_name: "Botinfo",
       help: "Notices you information about me.\nUsage: `/msg <nick> info`\nUsage: `/msg <nick> list plugins`",
@@ -32,9 +34,6 @@ module Plugins
 
     # Methods
     def execute(m)
-      return unless check_user(m)
-      return unless check_channel(m)
-
       tags = {
         bot_name: @bot.nick,
         cinch_version: Cinch::VERSION,
@@ -64,7 +63,6 @@ module Plugins
     end
 
     def execute_list(m)
-      return unless check_user(m)
 
       list = []
       @bot.plugins.each {|p| list << p.class.plugin_name };
@@ -72,7 +70,6 @@ module Plugins
     end
 
     def execute_help(m, name)
-      return unless check_user(m)
       list = {}
       @bot.plugins.each {|p| list[p.class.plugin_name.downcase] = {name: p.class.plugin_name, help: p.class.help} };
       return m.user.notice("Help for \"#{name}\" could not be found.") if !list.has_key?(name.downcase)

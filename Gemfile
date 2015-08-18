@@ -8,6 +8,7 @@ gem 'cinch-quotes'
 
 # Database
 gem 'sequel'
+gem 'sqlite3'
 gem 'pg'
 
 # Platform specific gems

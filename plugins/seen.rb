@@ -1,0 +1,41 @@
+module Plugins
+  class Seen
+    class SeenStruct < Struct.new(:who, :where, :what, :time)
+      def to_s
+        "[#{time.asctime}] #{who} was seen in #{where} saying #{what}"
+      end
+    end
+
+    include Cinch::Plugin
+    include Cinch::Helpers
+
+    enable_acl()
+
+    listen_to :channel
+    match /seen (.+)/
+
+    def initialize(*args)
+      super
+      @users = {}
+    end
+
+    def listen(m)
+      @users[m.user.nick] = SeenStruct.new(m.user, m.channel, m.message, Time.now)
+    end
+
+    def execute(m, nick)
+      if nick == @bot.nick
+        m.reply 'You are a Stupid human!'
+      elsif nick == m.user.nick
+        m.reply "Unfortunately, I see an idiot by the name of #{m.user.nick}"
+      elsif @users.key?(nick)
+        m.reply @users[nick].to_s
+      else
+        m.reply "I haven't seen #{nick}"
+      end
+    end
+  end
+end
+
+# AutoLoad
+Zeta.config.plugins.plugins.push Plugins::Seen

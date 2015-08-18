@@ -6,6 +6,7 @@ module Plugins
   class Gif
     include Cinch::Plugin
     include Cinch::Helpers
+    enable_acl
 
     # Author: blahed (https://github.com/blahed/gifbot)
     self.plugin_name = 'GIF'
@@ -21,15 +22,11 @@ module Plugins
     match 'rgif', method: :imgif
     match 'imgif', method: :imgif
     def imgif(msg)
-      return unless check_user(msg)
-      return unless check_channel(msg)
       msg.reply "IMGUR↦ #{imgur}"
     end
 
     match /gifme (.+)/, method: :gifme
     def gifme(msg,query)
-      return unless check_user(msg)
-      return unless check_channel(msg)
       msg.reply "GB↦ #{search(query)}"
     end
 

@@ -7,6 +7,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl
+
     set(
         plugin_name: 'UrbanDictionary',
         help: "Urban Dictionary -- Grabs a term from urbandictionary.com.\nUsage: `?urban <term>`; `?wotd`; `!?woty`"
@@ -18,15 +20,11 @@ module Plugins
     match "ud",         method: :wotd
 
     def query(m, query)
-      return unless check_user(m)
-      return unless check_channel(m)
       m.reply "UD↦ #{search(query)}"
     end
 
 
     def wotd(m)
-      return unless check_user(m)
-      return unless check_channel(m)
       url = URI.encode "http://www.urbandictionary.com/"
       doc = Nokogiri.HTML(
           # RestClient.get(url)

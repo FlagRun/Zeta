@@ -7,6 +7,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl
+
      set(
       plugin_name: 'Random Attacker',
       help: 'Attacks a user with a random attack.\nUsage: `?attack <nick or phrase>`; `<nick or phrase>` may be omitted for a random attack on a random nick.',
@@ -23,8 +25,6 @@ module Plugins
 
     # Methods
     def execute(m, target=nil)
-      return unless check_user(m)
-      return unless check_channel(m)
       target = target.rstrip
       target = m.user.nick if !target.nil? && target.match(/(\bmy\b|\b#{@bot.nick}\S*\b|\b\S*self\b)/i)
       target.gsub(/(\bmy\b|\b#{@bot.nick}\S*\b|\b\S*self\b)/i,m.user.nick+"'s") if !target.nil?;

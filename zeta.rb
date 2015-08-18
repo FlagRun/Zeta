@@ -15,8 +15,6 @@ require 'recursive_open_struct'
 # Load Config Data
 Zconf   = Hashie::Mash.new(YAML.load_file($root_path + '/config/config.yml'))
 Zsec    = Hashie::Mash.new(YAML.load_file($root_path + '/config/secret.yml'))
-Zignore = Hashie::Mash.new(YAML.load_file($root_path + '/config/ignore.yml'))
-Zusers  = Hashie::Mash.new(YAML.load_file($root_path + '/config/users.yml' ))
 
 # Initilize the rest of the bot
 require_all "#{$root_path}/lib/initializers/*.rb"
@@ -25,11 +23,11 @@ require_all "#{$root_path}/lib/helpers/*.rb"
 Zeta = Cinch::Bot.new do
   configure do |c|
     c.nick                      = Zconf.bot.nick
-    c.nicks                     = Zconf.bot.nicks.split(' ')
+    c.nicks                     = Zconf.bot.nicks.split(',')
     c.user                      = Zconf.bot.username
     c.realname                  = Zconf.bot.realname
-    c.sasl.username             = Zconf.sasl.username
-    c.sasl.password             = Zconf.sasl.password
+    c.sasl.username             = Zconf.server.sasl.username
+    c.sasl.password             = Zconf.server.sasl.password
     c.server                    = Zconf.server.hostname
     c.password                  = Zconf.server.password
     c.port                      = Zconf.server.port
@@ -39,7 +37,7 @@ Zeta = Cinch::Bot.new do
 
     c.modes             = Zconf.server.modes.split(' ')
     c.channels          = Zconf.server.channels.split(' ')
-    c.master            = Zconf.master
+    c.master            = Zconf.bot.master.nick
     c.plugins.prefix    = /^\?/
   end
 
@@ -47,8 +45,8 @@ Zeta = Cinch::Bot.new do
   on :connect do
 
     # Gain operator privileges if oper username and password are set in config
-    if Zconf.oper.username && Zconf.oper.password
-      @bot.oper(Zconf.oper.password, Zconf.oper.username)
+    if Zconf.server.oper.username && Zconf.server.oper.password
+      @bot.oper(Zconf.server.oper.password, Zconf.server.oper.username)
     end
 
   end

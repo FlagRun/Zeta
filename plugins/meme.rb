@@ -3,6 +3,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl
+
     set(
         plugin_name: "MeMe",
         help:        "Display a meme?.\nUsage: `?m <meme>`",
@@ -22,8 +24,6 @@ module Plugins
     def find_meme(m, query)
       query.strip!
 
-      return unless check_user(m)
-      return unless check_channel(m)
       return help_meme(m) if query == 'help'
       return reload_meme(m) if query == 'reload'
       return m.reply('Unknown meme - Use ?m help') unless @meme.has_key?(query)

@@ -13,6 +13,7 @@ module Plugins
   class Rainbow
     include Cinch::Plugin
     include Cinch::Helpers
+    enable_acl
 
     set plugin_name: "Rainbow", help: "Rainbowificates your text.\nUsage: `?rainbow [text]`.\nUsage: `?eyerape [text]`.", suffix: /$/
 
@@ -43,8 +44,6 @@ module Plugins
     match /rainbow (.+)/, method: :execute_rainbow
 
     def execute_rainbow(m, string)
-      return unless check_user(m)
-      return unless check_channel(m)
       m.reply(rainbowification(string), false)
     end
 
@@ -53,8 +52,6 @@ module Plugins
     match /eyerape (.+)/, method: :execute_eyerape
 
     def execute_eyerape(m, string)
-      return unless check_user(m)
-      return unless check_channel(m)
       m.reply(eyerapeification(string), false)
     end
 

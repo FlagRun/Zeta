@@ -5,6 +5,7 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
     include ActionView::Helpers::DateHelper
+    enable_acl
 
 
     self.plugin_name = 'Wolfram Alpha plugin'
@@ -15,9 +16,6 @@ module Plugins
     match /calc (.+)/, method: :calculate
 
     def calculate(msg, query)
-      return unless check_user(msg)
-      return unless check_channel(msg)
-
       url = URI.encode "http://api.wolframalpha.com/v2/query?input=#{query}&appid=#{Zsec.wolfram}&primary=true&format=plaintext"
       # request = RestClient.get(url)
       request = open(url).read

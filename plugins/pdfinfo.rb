@@ -10,6 +10,8 @@ module Plugins
     include Cinch::Helpers
     include ActionView::Helpers::DateHelper
 
+    enable_acl
+
     self.plugin_name = 'PDF Information'
     self.help = 'This plugin will check a url for a pdf link and fetch metadata from it'
 
@@ -22,8 +24,6 @@ module Plugins
     match %r{(https?://.*?)(?:\s|$|,|\.\s|\.$)}, :use_prefix => false
 
     def execute(msg, url)
-      return unless check_user(msg)
-      return unless check_channel(msg)
 
       allowedlist = DEFAULT_ALLOWED.dup
       allowedlist.concat(config[:blacklist]) if config[:blacklist]

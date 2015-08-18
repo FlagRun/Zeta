@@ -3,6 +3,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl(:admin)
+
     set(
       plugin_name: 'PluginsAdmin',
       help: "Bot administrator-only private commands.\nUsage: `~join [channel]`; `~part [channel] <reason>`; `~quit [reason]`;",
@@ -17,7 +19,6 @@ module Plugins
 
     # Methods
     def load_plugin(m, plugin, mapping)
-      return unless check_user(m, :admin)
       mapping ||= plugin.gsub(/(.)([A-Z])/) { |_|
         $1 + "_" + $2
       }.downcase # we downcase here to also catch the first letter
@@ -48,7 +49,6 @@ module Plugins
     end
 
     def unload_plugin(m, plugin)
-      return unless check_user(m, :admin)
       begin
         plugin_class = Plugins.const_get(plugin)
       rescue NameError
@@ -85,13 +85,11 @@ module Plugins
     end
 
     def reload_plugin(m, plugin, mapping)
-      return unless check_user(m, :admin)
       unload_plugin(m, plugin)
       load_plugin(m, plugin, mapping)
     end
 
     def set_option(m, plugin, option, value)
-      return unless check_user(m, :admin)
       begin
         const = Plugins.const_get(plugin)
       rescue NameError

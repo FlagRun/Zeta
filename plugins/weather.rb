@@ -8,6 +8,7 @@ module Plugins
   class Weather
     include Cinch::Plugin
     include Cinch::Helpers
+    enable_acl
 
     set(
         plugin_name: "Weather",
@@ -31,8 +32,6 @@ module Plugins
 
     # ?forecast <location>
     def forecast(msg, query)
-      return unless check_user(msg)
-      return unless check_channel(msg)
       location = geolookup(query)
       return msg.reply "No results found for #{query}." if location.nil?
 
@@ -44,10 +43,9 @@ module Plugins
 
     # ?w <location>
     def weather(msg, query=nil)
-      return unless check_user(msg)
-      return unless check_channel(msg)
-      if @store.key?(msg.user.nick) && query.nil?
-        location = geolookup(@store[msg.user.nick])
+      u = find_user(msg)
+      if u.location && query.nil?
+        location = geolookup(u.location)
       elsif query.nil?
         return msg.reply 'No location set. ?setw <location>'
       else
@@ -69,19 +67,16 @@ module Plugins
 
     # ?setw <location>
     def set_location(msg,query)
-      return unless check_user(msg)
-      return unless check_channel(msg)
       location = geolookup(query)
+      u = find_user(msg)
       return msg.reply "No results found for #{query}." if location.nil?
-      @store[msg.user.nick] = query unless location.nil?
+      Zuser.where(id: u.id).update(location: query) unless location.nil?
       data = get_conditions(location)
       msg.reply "Your location is now set to #{data.county}, #{data.country}!"
     end
 
     # ?hurricane
     def hurricane(msg)
-      return unless check_user(msg)
-      return unless check_channel(msg)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/currenthurricane/view.json"
       location = JSON.parse(
            # RestClient.get(url)
@@ -101,8 +96,6 @@ module Plugins
 
     # ?almanac <location>
     def almanac(msg,locale)
-      return unless check_user(msg)
-      return unless check_channel(msg)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/almanac/q/#{locale}.json"
       location = JSON.parse(
            # RestClient.get(url)

@@ -3,6 +3,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl
+
     set(
      plugin_name: 'Movie',
      help: 'Movie Plots \nUsage: `?movie <name of movie>`;',
@@ -11,8 +13,6 @@ module Plugins
 
     match /movie (.*)/, method: :find_movie
     def find_movie(m, movie)
-      return unless check_user(m)
-      return unless check_channel(m)
       data = query_movie(movie)
       if data && data.response == 'True'
         m.reply "Movie ⊥ #{data.title} (#{data.year}) <#{data.rated}> #{data.plot.to_s.strip[0..800]} [www.imdb.com/title/#{data.imdbid}/]"

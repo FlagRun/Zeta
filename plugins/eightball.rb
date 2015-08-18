@@ -3,6 +3,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl
+
     set(
         plugin_name: "8ball",
         help:     "The Magic 8ball has all the answers!\nUsage: `?8ball [question? <question? <...>>]`",
@@ -41,7 +43,6 @@ module Plugins
     end
 
     def execute(m, s)
-      return unless check_channel(m)
       m.safe_reply @@eightball.sample, true
     end
 

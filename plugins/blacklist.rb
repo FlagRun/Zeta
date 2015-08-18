@@ -5,6 +5,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl
+
     self.plugin_name = 'DNS Blacklist'
     self.help = '?dnsbl <host>'
 
@@ -14,9 +16,6 @@ module Plugins
 
     # Methods
     def dnsbl_lookup(m, host)
-      return unless check_user(m)
-      return unless check_channel(m)
-
       client = DNSBL::Client.new
       query = client.lookup(host.rstrip)
 

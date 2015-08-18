@@ -3,6 +3,8 @@ module Plugins
     include Cinch::Plugin
     include Cinch::Helpers
 
+    enable_acl(:operator)
+
     set(
       plugin_name: 'ChannelAdmin',
       help: "Bot administrator-only private commands.\nUsage: `?join [channel]`; `?part [channel] <reason>`; `?quit [reason]`;",
@@ -17,7 +19,6 @@ module Plugins
 
     # Methods
     def join(m, channel)
-      return unless check_user(m, :operator)
       channel.split(", ").each {|ch|
         Channel(ch).join
         @bot.handlers.dispatch :admin, m, "Attempt to join #{ch.split[0]} by #{m.user.nick}...", m.target
@@ -25,7 +26,6 @@ module Plugins
     end
 
     def part(m, channel=nil, msg=nil)
-      return unless check_user(m, :operator)
       channel ||= m.channel.name
       msg ||= m.user.nick
       Channel(channel).part(msg) if channel
@@ -33,7 +33,6 @@ module Plugins
     end
 
     def join_on_invite(m)
-      return unless check_user(m)
       Channel(m.channel).join rescue m.msg 'Could not join the channel you invited me too'
     end
 

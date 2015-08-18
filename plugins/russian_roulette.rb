@@ -1,9 +1,10 @@
-require_relative '../lib/helpers/check_user'
+require_relative '../lib/helpers/acl'
 
 module Plugins
   class RussianRoulette
     include Cinch::Plugin
     include Cinch::Helpers
+    enable_acl
 
     set plugin_name: "Russian Roulette",
         help: "In Soviet Russia, boolet shoots YOU!\nUsage: ?rr <nick>",
@@ -34,9 +35,6 @@ module Plugins
     match /rr(?: (.+))?/, method: :russian
 
     def russian(m, nick)
-      return unless check_user(m)
-      return unless check_channel(m)
-
       return if m.channel == '#darkscience' || m.channel == '#bots'
 
       #return m.reply "I am sorry comrade, but I do not have pistol on me." unless check_user(m.channel, @bot)

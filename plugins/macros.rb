@@ -1,11 +1,13 @@
 # coding: utf-8
 require 'yaml'
-require_relative '../lib/helpers/check_user'
+require_relative '../lib/helpers/acl'
 
 module Plugins
   class Macros
     include Cinch::Plugin
     include Cinch::Helpers
+
+    enable_acl
 
     attr_reader :macros
 
@@ -34,8 +36,6 @@ module Plugins
 
     match /(\w+)(?: (.+))?/, method: :execute_macro, group: :macro
     def execute_macro m, macro, arguments
-      return unless check_user(m)
-      return unless check_channel(m)
       return unless @macros.has_key?(macro)
       parse(arguments.to_s.rstrip, @macros[macro], m.channel, m.user)
 

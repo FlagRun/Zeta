@@ -11,6 +11,7 @@ module Plugins
   class Silly
     include Cinch::Plugin
     include Cinch::Helpers
+    enable_acl
 
     set(
         plugin_name: "Silly",
@@ -72,8 +73,6 @@ module Plugins
     match /xmas (\S+)/, method: :xmas
 
     def xmas(m, tz = nil)
-      return unless check_user(m)
-      return unless check_channel(m)
       tz ||= "-00:00"
       tz = tzparser(tz)
       begin
@@ -96,8 +95,6 @@ module Plugins
     match /newyear (\S+)/, method: :newyear
 
     def newyear(m, tz = nil)
-      return unless check_user(m)
-      return unless check_channel(m)
       tz ||= "-00:00"
       tz = tzparser(tz)
       begin
@@ -120,8 +117,6 @@ module Plugins
     match /tz (\S+)/, method: :tz
 
     def tz(m, tz = nil)
-      return unless check_user(m)
-      return unless check_channel(m)
       tz ||= "-00:00"
       tz = tzparser(tz)
       begin
@@ -137,8 +132,6 @@ module Plugins
     match "mayan", method: :mayan
 
     def mayan(m)
-      return unless check_user(m)
-      return unless check_channel(m)
       msd = (Date.today.jd - Date.new(1, 1, 1).jd) + 1137142
       lc = {
           baktun: (msd - (msd % 144000)) / 144000,
@@ -154,8 +147,6 @@ module Plugins
     match /heavymetalize (.+)/, method: :heavymetalize
 
     def heavymetalize(m, s)
-      return unless check_user(m)
-      return unless check_channel(m)
       m.reply s.tr('AEIOUaeiouyYWwXx', 'ÄËÏÖÜäëïöüÿŸẄẅẌẍ')
     end
 
