@@ -1,8 +1,12 @@
+require 'action_view'
 module Plugins
   class Seen
     class SeenStruct < Struct.new(:who, :where, :what, :time)
+      include ActionView::Helpers::DateHelper
       def to_s
-        "[#{time.asctime}] #{who} was seen in #{where} saying #{what}"
+        # "[#{time.asctime}] #{who} was seen in #{where} last saying #{what}"
+        time_ago = time_ago_in_words(Time.at(time))
+        "[ \x1F#{where.to_s.upcase}\x0F ] \x0304#{who}\x0F: \"\x0303#{what[0..300]}\x0F\" \x02#{time_ago}\x0F ago"
       end
     end
 
@@ -24,6 +28,7 @@ module Plugins
     end
 
     def execute(m, nick)
+      nick.rstrip!
       if nick == @bot.nick
         m.reply 'You are a Stupid human!'
       elsif nick == m.user.nick
