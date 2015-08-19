@@ -4,7 +4,7 @@ locale: en
 # Bot
 bot:
   nick: zeta
-  nicks: 'zeta, crom'
+  nicks: 'zeta,crom'
   username: zeta
   realname: zeta
 
@@ -16,7 +16,8 @@ bot:
   # Master Block
   master:
     nickname: you
-    hostmask: 'you!you@you.com'
+    password: 'youneedthis'
+    hostmask: 'you!you@you.com' # not used currently
 
 # Database
 db: 'sqlite://db/zeta.db'
@@ -35,13 +36,14 @@ server:
   max_messages: 10
   messages_per_second: 4.0
 
-  services: # Unused ATM
+  services:
     chanserv: true
     nickserv: true
     memoserv: true
     rpgserv:  false
     botserv:  true
     hostserv: true
+    operserv: true
 
   sasl:
     username:
