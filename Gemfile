@@ -62,3 +62,4 @@ gem 'dnsbl-client'
 
 # Background
 gem 'foreman'
+gem 'sys-proctable'
