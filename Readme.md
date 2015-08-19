@@ -9,10 +9,20 @@ _Steps_
 * git clone https://github.com/flagrun/Zeta.git
 * bundle install
 * move the example configs into the base directory
+* ruby ./migrate.rb (just the first time
 * ruby ./zeta.rb
+* after bot is currently running send your bot a message ?master (masterpass)
 
 _Plugins_
 All plugins are automatically loaded that are in the plugins directory
+
+# Upgrade
+_Steps_
+* git pull
+* bundle
+* update config files to new examples
+* ruby ./migrate.rb
+* ruby ./zeta.rb
 
 ## Commands
 roles: owner,admin,operator,halfop,voice,nobody
@@ -39,6 +49,27 @@ _Developer_
 * ?em code   // (alias: eval) Evaluate command send in msg
 * ?er code   // (alias: evalreply) Evaluate command and send to channel
 
+_Ignore_
+** Role Required: operator **
+* ?ignore (user)
+* ?unignore (user)
+
+_Channel_
+** Role Required: operator **
+* ?disable (channel) // can omit channel to use current
+* ?enable  (channel) // enalbed a channel that has been disabled
+
+_Access_
+** Role Required: voice **
+* ?setaccess (user) (level) // Levels: nobody,voice,halfop,operator,admin,owner,founder
+* ?access (user) // Show current access level
+
+_Uptime_
+** Role Required: admin **
+* ?uptime    // Bot uptime
+* ?sysuptime // grabs the uptime from current system
+* ?users     // shows users currently logged into shell
+
 ### Macros
 Macros are prefixed by a period and are loaded from locales/macros.yml
 example. typing in ".dnf" in channel will cause the bot to respond with "Duke Nukem Forever came out. Your argument is invalid."
@@ -54,6 +85,9 @@ _Utility_
 _Code Runner_
 * ?run (lang) (code)
 * ?langs - lists all of the languages that are supported
+
+_Seen_
+* ?seen (user)
 
 _Misc_
 * ?attack (target)
