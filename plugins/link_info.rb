@@ -70,7 +70,7 @@ module Plugins
       html = Nokogiri::HTML(open(url))
 
       if node = html.at_xpath("html/head/title")
-        msg.reply(node.text.gsub(/\r|\n|\n\r/, ' '))
+        msg.reply(node.text.lstrip.gsub(/\r|\n|\n\r/, ' '))
       end
 
       if node = html.at_xpath('html/head/meta[@name="description"]')
