@@ -12,7 +12,6 @@ module Plugins
     # Methods
     def oper_up(m)
       return unless m.user.oper
-      return unless check_user(m, :operator)
       if Zconf.oper.username && Zconf.oper.password
         @bot.oper(Zconf.oper.password, Zconf.oper.username)
       end
@@ -26,10 +25,8 @@ module Plugins
       end
     end
 
-
     def oper_clearchan(m, chan, confirm=false)
       return unless m.user.oper
-      return unless check_user m, :admin
 
       if confirm == 'yes' || confirm == 'true'
         Channel(chan).join

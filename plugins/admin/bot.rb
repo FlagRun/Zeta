@@ -11,8 +11,8 @@ module Admin
     )
 
     # Regex
-    match /changenick (.+)/, method: :nick
-    match /mode (.+)/, method: :mode
+    match /set nick (.+)/, method: :nick
+    match /set mode (.+)/, method: :mode
     match /die(?: (.+))?/, method: :quit, group: :quit
 
 
