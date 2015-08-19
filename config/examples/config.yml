@@ -1,38 +1,54 @@
-# bot name
+# Plugin Locale's
+locale: en
+
+# Bot
 bot:
   nick: zeta
-  nicks: 'Bota Botaa'
+  nicks: 'zeta, crom'
   username: zeta
   realname: zeta
 
+  # Auth Types are Channel/DB/BOTH
+  auth:
+    type: db
+    channel: nil
+
+  # Master Block
+  master:
+    nickname: you
+    hostmask: 'you!you@you.com'
+
+# Database
+db: 'sqlite://db/zeta.db'
+
+# Server Block
 server:
   # bot channel
-  channels: '#flagrun'
-  network: none
-  hostname: irc.darkscience.net
+  channels: '#bots'
+  network: darkscience
+  hostname: indigo.darkscience.net
+#  hostname: irc.flagrun.net
   password:
   port: 6697
   ssl: true
-  modes: '+b'
-  max_messages: 5
-  messages_per_second: 0.5
+  modes: '+B'
+  max_messages: 10
+  messages_per_second: 4.0
 
-  services:
-    chanserv: t
-    nickserv: t
-    memoserv: f
-    rpgserv:  f
-    botserv:  f
-    hostserv: f
+  services: # Unused ATM
+    chanserv: true
+    nickserv: true
+    memoserv: true
+    rpgserv:  false
+    botserv:  true
+    hostserv: true
 
-sasl:
-  username:
-  password:
+  sasl:
+    username:
+    password:
 
-oper:
-  username:
-  password:
+  oper:
+    username:
+    password:
 
-master: m00t
 
-locale: en
