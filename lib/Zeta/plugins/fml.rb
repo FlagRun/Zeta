@@ -1,0 +1,3 @@
+class Plugins::Fml
+
+end

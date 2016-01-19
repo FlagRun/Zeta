@@ -1,0 +1,3 @@
+module Plugins
+
+end

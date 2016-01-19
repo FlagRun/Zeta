@@ -1,0 +1,3 @@
+class Plugins::Snooper
+
+end
