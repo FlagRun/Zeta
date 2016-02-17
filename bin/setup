@@ -6,3 +6,8 @@ set -vx
 bundle install
 
 # Do any other automated setup that you need to do here
+mkdir -p ~/.zeta/cache
+
+end
+Dir.mkdir( File.join(Dir.home, ".zeta"), 0700)
+Dir.mkdir(File.join(Dir.home, ".zeta", 'cache'), 0700)

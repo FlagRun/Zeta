@@ -1,10 +1,10 @@
-require 'admin/channels'
-require 'admin/eval'
-require 'admin/fifo'
-require 'admin/oper'
-require 'admin/plugins'
-require 'admin/users'
-
-module Admin
-
-end
+module Admin; end
+require 'Zeta/admin/channels'
+require 'Zeta/admin/eval'
+require 'Zeta/admin/fifo'
+require 'Zeta/admin/oper'
+require 'Zeta/admin/plugins'
+require 'Zeta/admin/users'
+require 'Zeta/admin/autojoin'
+require 'Zeta/admin/ignore'
+require 'Zeta/admin/bot'

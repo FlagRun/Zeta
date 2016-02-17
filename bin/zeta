@@ -1,38 +1,9 @@
-#!/bin/env ruby
-require 'daemons'
-require 'cinch'
+#!/usr/bin/env ruby
 require 'Zeta'
+require 'daemons'
 
 # Deamonize this process
-Daemons.daemonize
+# Daemons.daemonize
 
-# Setup The Bot
-Bot = Cinch::Bot.new do
-  configure do |c|
-    c.nick                      = Config.nick
-    c.nicks                     = Config.nicks.split(',')
-    c.user                      = Config.username
-    c.realname                  = Config.realname
-    c.sasl.username             = Config.sasl.username
-    c.sasl.password             = Config.sasl.password
-    c.server                    = Config.server.hostname
-    c.password                  = Config.server.password
-    c.port                      = Config.server.port
-    c.ssl.use                   = Config.server.ssl
-    c.max_messages              = Config.server.max_messages
-    c.messages_per_second       = Config.server.messages_per_second
-    c.modes                     = Config.server.modes.split(' ')
-    c.channels                  = Zconf.server.channels.split(' ')
-    c.plugins.prefix            = /^\?/
-  end
-
-  # Execute on confirmation of connection
-  on :connect do
-    # Gain operator privileges if oper username and password are set in config
-    if Config.oper.username && Config.oper.password
-      @bot.oper(Config.server.oper.password, Config.server.oper.username)
-    end
-
-  end
-
-end
+# Start Zeta
+Bot.start

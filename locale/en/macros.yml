@@ -1,0 +1,98 @@
+emergency: http://www.emergencyyodel.com/
+dnf: Duke Nukem Forever came out. Your argument is invalid.
+pmf: http://programming-motherfucker.com/
+goku: BITCH I LOOK LIKE GOKU
+anime: ANIME SWAG I'M FLYIN' LIKE GOKU
+punch:
+  sent_as: action
+  type: random
+  lines:
+  - "punches [in] in the dick"
+  - "hulk smashes [in] in the dick"
+  - "falcon punches [in] in the dick"
+  - "uppercuts [in] in the dick"
+  - "punches [in] in the face"
+  - "elbow drops [in] in the dick"
+  - "karate chops [in] in the dick"
+  - "double punches [in] in the dick and face"
+alart:
+  type: random
+  lines:
+  - /!\ cap/(ALART)[in] /!\
+  - /// cap/(ALART)[in] ///
+  - /// cap/(ALART)[in] \\\
+bod:
+  - "[in] should go eat a bag full of DICKS!!!!"
+hi5:
+  - "[in] (from [self]): http://www.ihighfive.com/"
+geg:
+  type: random
+  lines:
+  - "top geg http://i.imgur.com/DlLsdA2.png"
+  - "got geg? http://i.imgur.com/DlLsdA2.png"
+  - "hey it geg http://i.imgur.com/KwW7Mde.png"
+  - "hey it geg http://cl.ly/image/1M010v0U1o34"
+  - "GEG'ed http://cl.ly/image/1M010v0U1o34"
+drink:
+  sent_as: action
+  type: random
+  lines:
+  - gets [in] a dr pepper
+  - gets [in] a coke
+  - gets [in] a pepsi
+  - gets [in] a glass of Sussex Golden ginger ale
+  - gets [in] a glass of Canada Dry ginger ale
+  - gets [in] a can of TaB
+  - gets [in] a can of Mtn Dew
+  - gets [in] a can of Fresca
+  - gets [in] a can of Snapple
+  - gets [in] a can of A&W Root Beer
+  - gets [in] a can of Orange Crush
+juggernaut:
+  type: random
+  lines:
+  - Silly bitch, your weapons cannot harm me!
+  - Don't you know who the fuck I am?
+  - I'm the Juggernaut, bitch!
+  - Got my pimp cane, bitch!
+  - I'll beat the shit out ya, Charles
+  - This is a Dodge.
+  - I'm ketchup, motherfucker.
+  - I'm made of Laffy Taffy.
+  - I'm going kill him, and rape him, and eat his fuckin' costume.
+  - Comb your beard. I don't wanna hear that shit.
+  - I'm a part-time stripper and I do hair.
+  - I'm the Juggernaut, bitch, and I gots a bitch wit me!
+  - I wonder what the fuck is on tv tonight.
+  - What up, mon ami?
+  - Initiate laser dodging!
+  - Not as long as I'm wearin' these Jamaican colors!
+  - My breasts are good for something.
+  - Jugg's gotcha!
+  - And in this corner the welterweight champion The Juggernaut, bitch! Why the fuck
+    is this shit fallin'?
+  - I like yo raincoat!
+  - Optimus muthafuckin' Prime?!
+fact:
+  type: random
+  lines:
+  - Go to the kitchen, [in].
+  - Go back to the kitchen, [in].
+  - Stop walking into walls, [in].
+  - Make me a sandwich, [in].
+  - ! '[in]: Home Economics is that way.'
+  - ! '[in]: Go and lose ten pounds--no, wait, make it 50.'
+  - Be quiet [in], the adults are talking.
+  - How cute [in], you think your opinion matters.
+  - Looks like [in] is our new village bicycle.
+  - ! '[in], please remove your muffin top from this room.'
+  - ! '[in], cover up your god damn face. It''s revolting.'
+  - Great, [in] is here. Out of the way everyone, thunder thighs is in the room.
+  - Hey [in], why are you online. There is no laptop in the kitchen.
+  - ! '[in] warms the cockles of my heart, MUA HA HA HA HA!'
+  - Hey, hey, [in], I have a better idea. EAT A FUCKING DICK YOU SMELLY CUNT!
+  - ! '[in], if I have sex with you without permission, is it rape or shoplifting?'
+  - Why didn't you get those breast implants, [in]?
+  - ! '[in], I love you.'
+haha: HA! HA! I'm using the (INTERNET)[in]!!!1
+judgement: JAJUMENTO DESU NO!

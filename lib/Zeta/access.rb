@@ -2,12 +2,12 @@ module Cinch
   module Plugin
 
     module ClassMethods
-      def enable_acl(lvl= :nobody)
-        hook(:pre, :for => [:match], :method => lambda { |m| check?(m,lvl) })
+      def enable_acl(lvl= :nobody, secure_chan=false)
+        hook(:pre, :for => [:match], :method => lambda { |m| check?(m,lvl,secure_chan) })
       end
     end
 
-    def check?(m, lvl)
+    def check?(m, lvl, secure_chan)
       # Make sure we are actually getting a channel object
       if m.class == Cinch::Channel
         channel = m
@@ -32,37 +32,52 @@ module Cinch
       end
 
       # Check Channel status
-      return false if Blacklist.channels.contain? channel
+      return false if Blacklist.channels.include? channel.to_s
 
       # Check Ignore status
-      return false if Blacklist.users.contain? user
+      return false if Blacklist.users.include? user.to_s
+
+      # Only check if user has permission in the secure channel
+      channel = Channel(Config.secure_channel.to_s) if secure_chan
 
       # Authorization method
-      if Config.auth_mode == 'channel'
+      if Config.secure_mode == 'channel'
         # Check lvl privilege
         case lvl
-          when :q # Owner
-            return true if channel.owner.include? user
-          when :a # Admin
+          when :O, :oper
+            return true if user.oper
+            false
+          when :q, :owner # Owner
+            return true if channel.owners.include? user
+            false
+          when :a, :admin # Admin
             return true if channel.admins.include? user
-          when :o # Op
+            false
+          when :o, :op # Op
             return true if channel.ops.include? user
-          when :h # Half-Op
+            false
+          when :h, :halfop # Half-Op
             return true if channel.half_ops.include? user
-          when :v # Voice
+            false
+          when :v, :voice # Voice
             return true if channel.voiced.include? user
-          when :nobdoy
+            false
+          when :nobody
             return true
           else
             return false
         end
-      elsif Config.auth_mode == 'identify'
+      elsif Config.secure_mode == 'identify'
         # TODO
         # Require you to identify with bot before usage
-      elsif Config.auth_mode == 'hostmask'
+      elsif Config.secure_mode == 'hostmask'
         # TODO
         # Require hostmask
       end
+    end
+
+    def log2chan(msg, level=:notice)
+      Channel(Config.log_channel.to_s).send "[#{level.to_s}] #{msg}"
     end
 
   end
