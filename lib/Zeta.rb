@@ -1,6 +1,7 @@
 module Zeta; end
 
 require 'Zeta/version'
+require 'Zeta/gems'
 require 'Zeta/cache'
 require 'Zeta/config'
 require 'Zeta/access'

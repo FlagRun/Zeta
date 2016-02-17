@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    Zeta (0.0.1)
+    zetabot (0.0.7)
       actionview
       chronic
       chronic_duration
@@ -271,11 +271,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  Zeta!
   bundler (~> 1.11)
   irbtools
   rake (~> 10.0)
   rspec (~> 3.0)
+  zetabot!
 
 BUNDLED WITH
    1.11.2

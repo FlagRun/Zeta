@@ -58,8 +58,12 @@ module Plugins
 
     def load_seen
       if File.exists?(File.join(Dir.home, '.zeta', 'cache', 'seen.rb'))
-        File.open(File.join(Dir.home, '.zeta', 'cache', 'seen.rb')) do |file|
-          return Marshal.load(file)
+        begin
+          File.open(File.join(Dir.home, '.zeta', 'cache', 'seen.rb')) do |file|
+            return Marshal.load(file)
+          end
+        rescue
+          return Hash.new
         end
       else
         return Hash.new

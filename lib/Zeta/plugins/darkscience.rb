@@ -1,7 +1,6 @@
 require 'uri'
 require 'net/http'
 require 'ostruct'
-require 'action_view'
 
 module Plugins
   class DarkScience

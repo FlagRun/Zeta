@@ -1,7 +1,7 @@
 require 'dnsbl/client'
 
 module Plugins
-  class DNSBL
+  class DNSBlacklist
     include Cinch::Plugin
     include Cinch::Helpers
 
@@ -33,4 +33,4 @@ module Plugins
 end
 
 # AutoLoad
-Bot.config.plugins.plugins.push Plugins::DNSBL
+Bot.config.plugins.plugins.push Plugins::DNSBlacklist
