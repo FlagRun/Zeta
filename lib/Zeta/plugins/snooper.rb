@@ -26,6 +26,7 @@
 require 'video_info'
 require 'mechanize'
 require 'action_view'
+require 'timeout'
 
 module Plugins
   class Snooper
@@ -121,7 +122,17 @@ module Plugins
 
     def match_other(msg,url)
       begin
-        html = Mechanize.start { |m| Nokogiri::HTML(m.get(url).content, nil, 'utf-8') }
+        html = Mechanize.start { |m|
+          # Timeout longwinded pages
+          m.max_history = 1
+          m.read_timeout = 4
+          m.max_file_buffer = 2_097_152
+
+          # Parse the HTML
+          Timeout::timeout(12) { Nokogiri::HTML(m.get(url).content, nil, 'utf-8') }
+        }
+
+        # Reply Blocks
         if node = html.at_xpath("html/head/title")
           msg.reply("‡ #{node.text.lstrip.gsub(/\r|\n|\n\r/, ' ')[0..300]}")
         end
@@ -131,9 +142,13 @@ module Plugins
         end
 
         info "[200] #{msg.user} - #{url}"
+      rescue Timeout::Error
+        error "[408] #{msg.user} - #{url}"
+        msg.reply 'URL was forced Timed out'
       rescue => e
         error e
         error "[404] #{msg.user} - #{url}"
+        msg.safe_reply 'I am unable to load that URL'
       end
     end
 
