@@ -19,7 +19,7 @@ module Plugins
       # Rescue incase something goes wrong
       begin
         debug 'Query: ' + query
-        url = URI.encode "http://api.wolframalpha.com/v2/query?input=#{query}&appid=#{ENV['ZETA_WOLFRAM']}&primary=true&format=plaintext"
+        url = URI.encode "http://api.wolframalpha.com/v2/query?input=#{query}&appid=#{Config.secrets[:wolfram]}&primary=true&format=plaintext"
         request = open(url).read
         data = Crack::XML.parse(request)
         pod0 = data['queryresult']['pod'][0]['subpod']['plaintext'].strip
@@ -31,7 +31,7 @@ module Plugins
         elsif pod0.length > 400
           m.user.send("#{pod0} #{pod1}", true)
         else
-          m.reply "#{pod0} #{pod1}"
+          m.reply "#{pod0} = #{pod1}"
         end
       rescue
         m.reply 'Unable to get a results'
