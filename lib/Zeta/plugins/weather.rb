@@ -58,8 +58,9 @@ module Plugins
       #[ Clarkston, WA, United States | Cloudy | Temp: 34 F (1 C) | Humidity: 73% | Winds: 8 mph ]
       reply_data = "∴ #{data.county}, #{data.country} " \
                   "≈ #{data.weather} #{data.temperature} " \
+                  "≈ Feels like #{data.feels_like} " \
                   "≈ Humidity: #{data.relative_humidity} " \
-                  "≈ Pressure: #{data.pressure_in} psi (#{data.pressure_mb} mmHg) " \
+                  "≈ Pressure: #{data.pressure_in} psi (#{data.pressure_mb} mb) " \
                   "≈ Wind: #{data.wind} ≈ Alerts: #{data.alerts} ∴"
       msg.reply(reply_data)
     end
@@ -131,7 +132,6 @@ module Plugins
     def geolookup(locale)
       url = URI.encode "http://api.wunderground.com/api/#{Config.secrets[:wunderground]}/geolookup/q/#{locale}.json"
       location = JSON.parse(
-          # RestClient.get(url).force_encoding("UTF-8")
           open(url).read
       )
       location['location']['l']
@@ -142,7 +142,6 @@ module Plugins
     def get_conditions(location)
       data = JSON.parse(
           open("http://api.wunderground.com/api/#{Config.secrets[:wunderground]}/alerts/conditions#{location}.json").read
-          #RestClient.get("http://api.wunderground.com/api/#{Zsec.wunderground}/conditions#{location}.json")
       )
       current = data['current_observation']
       alerts = data['alerts'].empty? ? 'none' : data['alerts'].map { |l| l['type'] }.join(',')

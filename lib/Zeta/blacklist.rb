@@ -1,4 +1,4 @@
-BlackListStruct = Struct.new :channels, :users, :plugins
+BlackListStruct = Struct.new :channels, :users, :plugins, :urls, :masks
 
 # Load Cached
 if File.exists?(File.join(Dir.home, '.zeta', 'cache', 'blacklist.rb'))
@@ -6,7 +6,7 @@ if File.exists?(File.join(Dir.home, '.zeta', 'cache', 'blacklist.rb'))
     Blacklist = Marshal.load(file)
   end
 else
-  Blacklist = BlackListStruct.new([], [], [])
+  Blacklist = BlackListStruct.new([], [], [], [], [])
 end
 
 
@@ -21,5 +21,7 @@ def clear_blacklist()
   Blacklist.users = []
   Blacklist.plugins = []
   Blacklist.channels = []
+  Blacklist.urls = []
+  Blacklist.masks = []
   File.delete(File.join(Dir.home, '.zeta', 'cache', 'blacklist.rb'))
 end

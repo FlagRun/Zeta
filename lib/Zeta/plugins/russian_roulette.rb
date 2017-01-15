@@ -30,17 +30,18 @@ module Plugins
       @games = []
     end
 
-    match /rr(?: (.+))?/, method: :russian
+    # match /rr(?: (.+))?/, method: :russian
+    match 'rr', method: :russian
 
-    def russian(m, nick)
+    def russian(m)
       #return m.reply "I am sorry comrade, but I do not have pistol on me." unless check_user(m.channel, @bot)
-      return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)
+      # return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)
 
       # player setup
-      player = User(nick) || m.user
-      player = m.user if player == @bot
+      player = m.user
+      # player = m.user if player == @bot
       # be nice, don't force the game on the starter unless the user actually exists in the channel.
-      return m.reply "I am terribly sorry %s, but I don't know %s." % [m.user.nick, player.nick] unless m.channel.users.include?(player)
+      # return m.reply "I am terribly sorry %s, but I don't know %s." % [m.user.nick, player.nick] unless m.channel.users.include?(player)
 
       # start game
       @games << m.channel.name

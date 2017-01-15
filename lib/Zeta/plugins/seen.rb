@@ -29,6 +29,8 @@ module Plugins
     end
 
     def listen(m)
+      return if m.channel == '#staff'
+      return if m.channel == '#netops'
       @users[m.user.nick] = SeenStruct.new(m.user, m.channel, m.message, Time.now)
     end
 

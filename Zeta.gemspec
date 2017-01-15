@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/flagrun/Zeta"
   spec.license       = "MIT"
   spec.bindir        = 'bin'
-  spec.executables   = %w{zeta zeta-setup}
+  spec.executables   = %w{zetabot}
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.

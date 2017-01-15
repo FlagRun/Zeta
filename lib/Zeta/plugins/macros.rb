@@ -19,7 +19,7 @@ module Plugins
       @macros = load_locale 'macros'
     end
 
-    match /reload/, method: :execute_reloadmacros, react_on: :private
+    match /\.reload/, method: :execute_reloadmacros, react_on: :private
     def execute_reloadmacros m
       return unless check_user(m, :admin)
       # return unless check_channel(m)
@@ -32,7 +32,7 @@ module Plugins
       end
     end
 
-    match /m (\w+)(?: (.+))?/, method: :execute_macro, group: :macro
+    match /\.(\w+)(?: (.+))?/, method: :execute_macro, group: :macro
     def execute_macro m, macro, arguments
       return unless @macros.has_key?(macro)
       parse(arguments.to_s.rstrip, @macros[macro], m.channel, m.user)

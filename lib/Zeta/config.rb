@@ -26,6 +26,7 @@ ConfigStruct = Struct.new(
                          :secure_channel,
                          :secure_host,
                          :options,
+                         :debug,
                          :secrets
 )
 # Initialize Config

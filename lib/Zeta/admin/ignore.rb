@@ -21,8 +21,6 @@ module Admin
 
     match 'ignorelist', method: :ignore_list
 
-    match 'sync', method: :sync
-
     def finalize
       save_blacklist()
     end
@@ -99,10 +97,6 @@ module Admin
       m.reply "Currently ignored users are: #{Blacklist.users.join(', ')}"
     end
 
-    def sync(m)
-      save_blacklist()
-      m.action_reply 'is now synced!'
-    end
 
   end
 end

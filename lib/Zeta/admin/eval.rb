@@ -18,18 +18,21 @@ module Admin
     match /em (.+)/, method: :botevalmsg
 
     def boteval(m, s)
+      return unless Config.debug
       eval(s)
     rescue => e
       m.user.send "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
     end
 
     def botevalreturn(m, s)
+      return unless Config.debug
       return m.reply eval(s)
     rescue => e
       m.user.send "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
     end
 
     def botevalmsg(m, s)
+      return unless Config.debug
       return m.user.msg eval(s)
     rescue => e
       m.user.send "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]

@@ -4,21 +4,19 @@ module Admin
     include Cinch::Helpers
 
     # Listeners
-    listen_to :invite, method: :invited
+    listen_to :invite, method: :join_and_notify
 
     enable_acl(:nobody)
 
+
     # Methods
-    def invited(m)
-      if Config.options.dig :join_on_invite
-        # return false if Blacklist.users.include? m.user.nick.to_s
-        # return false if Blacklist.channels.include? m.channel.to_s
-
+    def join_and_notify(m)
+      if Config.options.key? :join_on_invite
         log2chan("#{m.user.nick} has requested me join #{m.channel}", :notice)
-
         Channel(m.channel).join
       end
     end
+
   end
 end
 

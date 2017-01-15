@@ -10,6 +10,7 @@ module Admin
     match 'operup', method: :oper_up
     match /kill ([\S]+) (.+)/, method: :oper_kill
     match /clearchan (.+) (true|yes)/, method: :oper_clearchan
+    match /omode (.+)/, method: :operserv_mode
 
     # Methods
     def oper_up(m)
@@ -20,6 +21,7 @@ module Admin
 
     def oper_kill(m, nick, message)
       return if User(nick).oper?
+      message = message || 'We do not condone such behavior!'
       if @bot.irc.send("KILL #{nick} #{message}")
         m.reply "#{nick}: has been killed by #{m.user.nick} for #{message}"
       end
@@ -42,6 +44,10 @@ module Admin
         m.safe_reply "#{chan} has been cleared, #{number_killed} clients killed"
 
       end
+    end
+
+    def operserv_mode(m, modes)
+      User('OperServ').send("MODE #{m.channel} #{modes}")
     end
 
   end

@@ -3,7 +3,7 @@ require 'Zeta'
 require 'daemons'
 
 # Deamonize this process
-# Daemons.daemonize
+#Daemons.daemonize
 
 # Start Zeta
 Bot.start

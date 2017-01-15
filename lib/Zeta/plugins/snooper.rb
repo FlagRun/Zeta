@@ -64,6 +64,9 @@ module Plugins
       # Parse URI
       p = URI(url)
 
+      # Disregaurd on blacklist
+      return if Blacklist.urls.include? p.host
+
       # API key lookup
       VideoInfo.provider_api_keys = { youtube: Config.secrets[:google] }
 

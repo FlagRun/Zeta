@@ -7,6 +7,8 @@ module Cinch
       end
     end
 
+    Spam = Struct.new(:nick, :time)
+
     def check?(m, lvl, secure_chan)
       # Make sure we are actually getting a channel object
       if m.class == Cinch::Channel
@@ -28,7 +30,10 @@ module Cinch
 
       # Oper Overide
       if Config.oper_overide
-        return true if user.oper
+        if user.oper
+          user.refresh
+          return true
+        end
       end
 
       # Check Channel status
@@ -45,7 +50,10 @@ module Cinch
         # Check lvl privilege
         case lvl
           when :O, :oper
-            return true if user.oper
+            if user.oper
+              user.refresh
+              return true
+            end
             false
           when :q, :owner # Owner
             return true if channel.owners.include? user
