@@ -47,11 +47,11 @@ module Plugins
         session_start_date: @started_at.strftime("%A, %B %e, %Y, at %l:%M:%S %P"),
         total_channels: @bot.channels.length,
         total_users: proc {
-          users = [];
+          users = []
           @bot.channels.each {|c|
               c.users.each {|u| users << u[0].nick
             }
-          };
+          }
           users.uniq.size
         }.call,
         uptime: ChronicDuration.output(Time.now.to_i - @started_at.to_i)

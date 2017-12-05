@@ -11,7 +11,8 @@ module Plugins
     attr_reader :macros
 
     set plugin_name: "Macros", help: "Macro's are prefixed by a <dot> example .dnf",
-        react_on: :channel
+        react_on: :channel,
+        prefix: /^\./
 
     def initialize *args
       super
@@ -19,7 +20,7 @@ module Plugins
       @macros = load_locale 'macros'
     end
 
-    match /\.reload/, method: :execute_reloadmacros, react_on: :private
+    match /reload/, method: :execute_reloadmacros, react_on: :private
     def execute_reloadmacros m
       return unless check_user(m, :admin)
       # return unless check_channel(m)
@@ -32,7 +33,7 @@ module Plugins
       end
     end
 
-    match /\.(\w+)(?: (.+))?/, method: :execute_macro, group: :macro
+    match /(\w+)(?: (.+))?/, method: :execute_macro, group: :macro
     def execute_macro m, macro, arguments
       return unless @macros.has_key?(macro)
       parse(arguments.to_s.rstrip, @macros[macro], m.channel, m.user)

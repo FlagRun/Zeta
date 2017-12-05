@@ -140,9 +140,9 @@ module Plugins
           msg.reply("‡ #{node.text.lstrip.gsub(/\r|\n|\n\r/, ' ')[0..300]}")
         end
 
-        if node = html.at_xpath('html/head/meta[@name="description"]')
-          msg.reply("» #{node[:content].lines.first(3).join.gsub(/\r|\n|\n\r/, ' ')[0..300]}")
-        end
+        # if node = html.at_xpath('html/head/meta[@name="description"]')
+        #   msg.reply("» #{node[:content].lines.first(3).join.gsub(/\r|\n|\n\r/, ' ')[0..300]}")
+        # end
 
         info "[200] #{msg.user} - #{url}"
       rescue Timeout::Error

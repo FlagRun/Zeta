@@ -1,5 +1,8 @@
 require 'ostruct'
 require 'persist'
+require 'open-uri'
+require 'json'
+require 'unitwise'
 
 module Plugins
   # Forecast is a Cinch plugin for getting the weather forecast.
@@ -15,7 +18,6 @@ module Plugins
         help: "Get the Weather?.\nUsage: `?weather`\nUsage: `?wx zip` `?w zip` `?setw zip` `?forecast zip`",
     )
 
-    match /forecast (.+)/, method: :forecast
     match /w (.+)/, method: :weather
     match 'w', method: :weather
     match /setw (.+)/, method: :set_location
@@ -26,61 +28,61 @@ module Plugins
 
     #####
     def initialize(*args)
-      @store = Persist.new( File.join(Dir.home, '.zeta', 'cache', 'weather.pstore') )
+      @api_src = %w{wu noaa darksky owm}
+      @store = Persist.new(File.join(Dir.home, '.zeta', 'cache', 'weather.pstore'))
       super
-    end
-
-    # ?forecast <location>
-    def forecast(msg, query)
-      location = geolookup(query)
-      return msg.reply "No results found for #{query}." if location.nil?
-
-      data = get_conditions(location)
-      return msg.reply 'Problem getting data. Try again later.' if data.nil?
-
-      msg.user.msg(weather_summary(data))
     end
 
     # ?w <location>
     def weather(msg, query=nil)
+      # Pull data source and scrub query
+      # Lookup user from pstore
       if !@store[msg.user.to_s].nil? && query.nil?
-        location = geolookup(@store[msg.user.to_s])
+        stored_location, stored_source = @store[msg.user.to_s].split('::')
+        stored_source = @api_src.include?(stored_source) ? stored_source : 'wu'
+        data = send("#{stored_source}_src", stored_location)
+        # location = geolookup(@store[msg.user.to_s])
+        # data = wunderground_src(stored_location, false)
       elsif query.nil?
-        return msg.reply 'No location set. ?setw <location>'
+        return msg.reply 'No location set. ?setw <location> :(wu|darkscy|noaa|apixu|owm)'
       else
-        location = geolookup(query)
+        # data = wu_src(query, true)
+        src = query[/:\w+/].gsub(/:/, '') if query[/:\w+/]
+        query = query.gsub(/:\w+/, '').strip if query
+        true_src = @api_src.include?(src) ? src : 'wu'
+        data = send("#{true_src}_src", query)
       end
-      return msg.reply "No results found for #{query}." if location.nil?
-
-      data = get_conditions(location)
-      return msg.reply 'Problem getting data. Try again later.' if data.nil?
-
-      #[ Clarkston, WA, United States | Cloudy | Temp: 34 F (1 C) | Humidity: 73% | Winds: 8 mph ]
-      reply_data = "∴ #{data.county}, #{data.country} " \
-                  "≈ #{data.weather} #{data.temperature} " \
-                  "≈ Feels like #{data.feels_like} " \
-                  "≈ Humidity: #{data.relative_humidity} " \
-                  "≈ Pressure: #{data.pressure_in} psi (#{data.pressure_mb} mb) " \
-                  "≈ Wind: #{data.wind} ≈ Alerts: #{data.alerts} ∴"
-      msg.reply(reply_data)
+      return msg.reply "No results found for #{query} with #{true_src} source." if data.nil?
+      # return msg.reply 'Problem getting data. Try again later.' if data.nil?
+      msg.reply(data.reply)
     end
 
     # ?setw <location>
-    def set_location(msg,query)
-      location = geolookup(query)
-      return msg.reply "No results found for #{query}." if location.nil?
-      @store[msg.user.to_s] = query unless location.nil?
-      data = get_conditions(location)
-      msg.reply "Your location is now set to #{data.county}, #{data.country}!"
+    def set_location(msg, query)
+      # Establish source
+      src = query[/:\w+/].gsub(/:/, '') if query[/:\w+/]
+      query = query.gsub(/:\w+/, '').strip if query
+
+      # Sanity Check
+      true_src = @api_src.include?(src) ? src : 'wu'
+      data = send("#{true_src}_src", query)
+
+      # Error
+      return msg.reply "No results found for #{query}." if data.nil?
+
+      # Store and display general location
+      serial_location = "#{query}::#{src}"
+      @store[msg.user.to_s] = serial_location unless data.nil?
+      msg.reply "Your location is now set to #{data.ac.name}, #{data.ac.c}!"
     end
 
     # ?hurricane
     def hurricane(msg)
       url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/currenthurricane/view.json"
       location = JSON.parse(
-           # RestClient.get(url)
-           open(url).read
-       )
+          # RestClient.get(url)
+          open(url).read
+      )
       return msg.reply "No results found for #{query}." if location.nil?
       reply_msg = "∴ #{location['currenthurricane'][0]['stormInfo']['stormName_Nice']} " \
                   "(#{location['currenthurricane'][0]['stormInfo']['stormNumber']}) "\
@@ -94,12 +96,13 @@ module Plugins
     end
 
     # ?almanac <location>
-    def almanac(msg,locale)
-      url = URI.encode "http://api.wunderground.com/api/#{Config.secrets[:wunderground]}/almanac/q/#{locale}.json"
+    def almanac(msg, locale)
+      autocomplete = JSON.parse(open(URI.encode("http://autocomplete.wunderground.com/aq?query=#{locale}")).read)
+      url = URI.encode("http://api.wunderground.com/api/#{Config.secrets[:wunderground]}/almanac/#{autocomplete['RESULTS'][0]['l']}.json")
       location = JSON.parse(
-           # RestClient.get(url)
-           open(url).read
-       )
+          # RestClient.get(url)
+          open(url).read
+      )
       return msg.reply "No results found for #{query}." if location.nil?
 
       time = Time.now()
@@ -129,69 +132,163 @@ module Plugins
 
 
     # -private
-    def geolookup(locale)
-      url = URI.encode "http://api.wunderground.com/api/#{Config.secrets[:wunderground]}/geolookup/q/#{locale}.json"
-      location = JSON.parse(
-          open(url).read
+    private
+    #### Weather Sources
+    # Weather Underground - https://wunderground.com
+    def wu_src(location)
+      # Fuzzy location lookup
+      ac = JSON.parse(
+          open(URI.encode("https://autocomplete.wunderground.com/aq?query=#{location}")).read,
+          object_class: OpenStruct
       )
-      location['location']['l']
-    rescue
-      nil
-    end
+      return nil if ac.RESULTS.empty?
 
-    def get_conditions(location)
+      ac = ac.RESULTS[0]
+      geolookup = JSON.parse(
+          open(URI.encode("https://api.wunderground.com/api/#{Config.secrets[:wunderground]}/geolookup/#{ac.l}.json")).read,
+          object_class: OpenStruct
+      ).location.l rescue nil
+
+      # Get Data
       data = JSON.parse(
-          open("http://api.wunderground.com/api/#{Config.secrets[:wunderground]}/alerts/conditions#{location}.json").read
+          open("https://api.wunderground.com/api/#{Config.secrets[:wunderground]}/alerts/conditions#{geolookup}.json").read,
+          object_class: OpenStruct
       )
-      current = data['current_observation']
-      alerts = data['alerts'].empty? ? 'none' : data['alerts'].map { |l| l['type'] }.join(',')
-      location_data = current['display_location']
 
-      OpenStruct.new(
-          county: location_data['full'],
-          country: location_data['country'],
+      debug "DATA: #{data}"
+      data.ac = ac
+      current = data.current_observation
+      alerts = data.alerts.empty? ? 'none' : data.alerts.map {|l| l['type']}.join(',')
+      pressure_si = Unitwise((current.pressure_in.to_f)+14.7, '[psi]').convert_to('kPa').to_f.round(2)
 
-          lat: location_data['latitude'],
-          lng: location_data['longitude'],
-
-          observation_time: current['observation_time'],
-          weather: current['weather'],
-          temp_fahrenheit: current['temp_f'],
-          temp_celcius: current['temp_c'],
-          temperature: current['temperature_string'],
-          relative_humidity: current['relative_humidity'],
-          feels_like: current['feelslike_string'],
-          uv_level: current['UV'],
-
-          wind: current['wind_string'],
-          wind_direction: current['wind_dir'],
-          wind_degrees: current['wind_degrees'],
-          wind_mph: current['wind_mph'],
-          wind_gust_mph: current['wind_gust_mph'],
-          wind_kph: current['wind_kph'],
-          pressure_in: current['pressure_in'],
-          pressure_mb: current['pressure_mb'],
-
-          alerts: alerts,
-
-          forecast_url: current['forecast_url']
-      )
-    rescue
-      nil
+      data.reply = "WU ∴ #{ac.name}, #{ac.c} " \
+                  "≈ #{current.weather} #{current.temperature_string} " \
+                  "≈ Feels like #{current.feelslike_string} " \
+                  "≈ Humidity: #{current.relative_humidity} " \
+                  "≈ Pressure: #{current.pressure_in} psi (#{pressure_si} kPa) " \
+                  "≈ Wind: #{current.wind_string} ≈ Alerts: #{alerts} ∴"
+      return data
+    # rescue
+    #   return nil
     end
 
-    def weather_summary(data)
-      %Q{
-          Forecast for: #{data.county}, #{data.country}
-          Latitude: #{data.lat}, Longitude: #{data.lng}
-          Weather is #{data.weather}, #{data.feels_like}
-          UV: #{data.uv_level}, Humidity: #{data.relative_humidity}
-          Wind: #{data.wind}
-          Direction: #{data.wind_direction}, Degrees: #{data.wind_degrees},
-          #{data.observation_time}
-          More Info: #{data.forecast_url}}
-    rescue
-      'Problem fetching the weather summary. Try again later.'
+    # Open Weather map - https://openweathermap.org/api
+    def owm_src(location)
+      ac = JSON.parse(
+          open(URI.encode("http://maps.googleapis.com/maps/api/geocode/json?address=#{location}")).read,
+          object_class: OpenStruct
+      )
+
+      return nil if ac.results.nil? ## Unable to locate
+
+      ac = ac.results[0]
+      lat = ac.geometry.location.lat
+      lon = ac.geometry.location.lng
+
+      # Get Data
+      data = JSON.parse(
+          open(
+              URI.encode("https://api.openweathermap.org/data/2.5/weather?lat=#{lat}&lon=#{lon}&APPID=#{Config.secrets[:owm]}")
+          ).read,
+          object_class: OpenStruct
+      )
+
+      temp = Unitwise(data.main.temp, 'K') # Data is given in kelvin
+      pressure = Unitwise((data.main.pressure.to_f/10)+101, 'kPa')
+      wind = Unitwise(data.wind.speed, 'kilometer')
+
+      data.reply = "OWM ∴ #{ac.formatted_address} " \
+                  "≈ #{data.weather[0].description},  #{temp.convert_to('[degF]').to_i.round(2)} F (#{temp.convert_to('Cel').to_i.round(2)} C) " \
+                  "≈ Humidity: #{data.main.humidity}% " \
+                  "≈ Pressure: #{pressure.convert_to('[psi]').to_f.round(2)} psi (#{pressure.convert_to('kPa').to_f} kPa) " \
+                  "≈ Wind: #{wind.convert_to('mile').to_i.round(2)} mph (#{wind.to_i.round(2)} km/h) ∴"
+
+      return data
+
+    end
+
+    # DarkSky - https://darksky.net/dev
+    def darksky_src(location)
+      ac = JSON.parse(
+          open(URI.encode("http://maps.googleapis.com/maps/api/geocode/json?address=#{location}")).read,
+          object_class: OpenStruct
+      )
+      return nil if ac.results.nil? ## Unable to locate
+
+      ac = ac.results[0]
+      lat = ac.geometry.location.lat
+      lon = ac.geometry.location.lng
+
+      data = JSON.parse(
+          open(
+              URI.encode("https://api.darksky.net/forecast/#{Config.secrets[:darksky]}/#{lat},#{lon}")
+          ).read,
+          object_class: OpenStruct
+      )
+      data.ac = ac
+      current = data.currently
+      alerts = data.alerts.count rescue 0
+      c = Unitwise(current.temperature, '[degF]').convert_to('Cel').to_i
+      c_feels = Unitwise(current.apparentTemperature, '[degF]').convert_to('Cel').to_i
+      p = Unitwise((current.pressure.to_f/10)+101, 'kPa')
+      gusts = Unitwise(current.windGust, 'mile').convert_to('kilometer').to_i
+
+      tempstring = "#{current.temperature.to_i} F (#{c} C)"
+      feelslike = "#{current.apparentTemperature.to_i} F (#{c_feels} C)"
+
+      data.reply = "DS ∴ #{ac.formatted_address} " \
+                  "≈ #{current.summary} #{tempstring} " \
+                  "≈ Feels like #{feelslike} " \
+                  "≈ Humidity: #{current.relative_humidity} " \
+                  "≈ Pressure: #{p.convert_to('[psi]').to_f.round(2)} psi (#{p.to_f} kPa) " \
+                  "≈ Wind: gusts upto #{current.windGust} mph (#{gusts} km/h) ≈ Alerts: #{alerts} ∴"
+
+        return data
+      # rescue
+      #   return nil
+    end
+
+    # NOAA - https://graphical.weather.gov/xml/
+    def noaa_src(location)
+      ac = JSON.parse(
+          open(URI.encode("http://maps.googleapis.com/maps/api/geocode/json?address=#{location}")).read,
+          object_class: OpenStruct
+      )
+      return nil if ac.results.nil? ## Unable to locate
+
+      ac = ac.results[0]
+      lat = ac.geometry.location.lat
+      lon = ac.geometry.location.lng
+
+      stations = JSON.parse(
+          open(URI.encode("https://api.weather.gov/points/#{lat},#{lon}/stations/")).read
+      ) rescue nil
+
+      return nil if stations.nil? ## Unable to find station. probably not in the USA
+
+      parsed = JSON.parse(
+          open(URI.encode("#{stations['observationStations'][0]}/observations/current")).read,
+          object_class: OpenStruct
+      )
+
+
+      data = parsed.properties
+      data.ac = ac
+      f = data.temperature.value * 9/5
+      temp = "#{f.round(2)} F (#{data.temperature.value.to_i.round(2)} C) "
+      wind = "Gusts: #{data.windGust.value} avg: #{data.windSpeed.value.to_i.round(2)}"
+      feelslike = "#{data.windChill.value.to_i.round(2)} C"
+      pressure = Unitwise(data.barometricPressure.value.to_f+101325, 'Pa')
+
+      data.reply = "NOAA ∴ #{ac.formatted_address} " \
+                  "≈ #{data.textDescription} #{temp} " \
+                  "≈ Feels like #{feelslike} " \
+                  "≈ Humidity: #{data.relativeHumidity.value.round(2)} " \
+                  "≈ Pressure: #{pressure.convert_to('[psi]').to_f.round(2)} psi (#{pressure.convert_to('kPa').to_f} kPa) " \
+                  "≈ Wind: #{wind} ≈ Alerts:  ∴"
+      return data
+    # rescue
+    #   data.reply = "Error fetching data"
     end
 
   end

@@ -34,8 +34,8 @@ module Plugins
     match 'rr', method: :russian
 
     def russian(m)
-      #return m.reply "I am sorry comrade, but I do not have pistol on me." unless check_user(m.channel, @bot)
-      # return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)
+      return m.reply "I am sorry comrade, but I do not have pistol on me." unless m.channel.ops.include?(@bot)
+      return m.user.notice "Sorry comrade, but there is already game going on." if @games.include?(m.channel.name)
 
       # player setup
       player = m.user
@@ -47,7 +47,9 @@ module Plugins
       @games << m.channel.name
 
       turns, round_location = Array.new(2) { |i| Random.new.rand(1..6) }
-      m.channel.action "starts a %d-turn game of Russian Roulette with %s." % [turns, player.nick]
+      m.channel.action "takes #{player.nick} into the back room for a #{turns} turn game"
+      m.action_reply "pulls out her pistol"
+      # m.channel.action "starts a %d-turn game of Russian Roulette with %s." % [turns, player.nick]
 
       phrases = PHRASES.dup.shuffle
 
@@ -56,20 +58,24 @@ module Plugins
       turns.times do |chamber|
         return end_game(m.channel, true) unless m.channel.users.include?(player)
         if round_location == chamber.succ
-          m.reply "*click*"
+          player.notice "*click*"
           sleep 5
           m.channel.kick(player, "*BLAM*")
-          m.reply "*BLAM*"
-          m.channel.action "watches %s's brain splatter across the wall." % player.nick
+          m.channel.action "walks back into the room *Alone*"
           break
         else
           phrase = phrases.pop
-          m.reply "*click* %s" % phrase
+          player.notice "*click* %s" % phrase
         end
         sleep 5
       end
 
-      m.reply "Looks like you get to live another day." if turns < round_location
+      if turns < round_location
+        m.channel.action "walks back into the room with #{player}"
+        m.reply "Looks like you get to live another day."
+        m.channel.voice(player) # Voice the player because they survived
+      end
+
       sleep 1 if turns < round_location
       end_game(m.channel)
     end

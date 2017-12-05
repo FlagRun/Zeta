@@ -30,9 +30,12 @@ module Cinch
 
       # Oper Overide
       if Config.oper_overide
-        if user.oper
-          user.refresh
-          return true
+        # Do Not overide in #services
+        unless channel.to_s == "#services"
+          if user.oper
+            user.refresh
+            return true
+          end
         end
       end
 

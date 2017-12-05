@@ -29,7 +29,7 @@ module Plugins
       movie = URI.encode(m.gsub(/:\d+/, ''))
       data = JSON.parse(
           # RestClient.get("http://www.omdbapi.com/?t=#{movie}&y=#{year}")
-          open("http://www.omdbapi.com/?t=#{movie}&y=#{year}").read
+          open("http://www.omdbapi.com/?t=#{movie}&y=#{year}&apikey=#{Config.secrets[:omdb]}").read
       )
       OpenStruct.new(
           title:       data['Title'],

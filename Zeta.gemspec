@@ -34,6 +34,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'daemons'
   spec.add_dependency 'destructor'
+  spec.add_dependency 'tzinfo'
+  spec.add_dependency 'unitwise'
 
   spec.add_dependency 'cinch'
   spec.add_dependency 'cinch-cooldown'
