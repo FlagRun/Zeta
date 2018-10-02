@@ -159,13 +159,13 @@ module Plugins
       data.ac = ac
       current = data.current_observation
       alerts = data.alerts.empty? ? 'none' : data.alerts.map {|l| l['type']}.join(',')
-      pressure_si = Unitwise((current.pressure_in.to_f)+14.7, '[psi]').convert_to('kPa').to_f.round(2)
+      # pressure_si = Unitwise((current.pressure_in.to_f)+14.7, '[psi]').convert_to('kPa').to_f.round(2)
 
       data.reply = "WU ∴ #{ac.name}, #{ac.c} " \
                   "≈ #{current.weather} #{current.temperature_string} " \
                   "≈ Feels like #{current.feelslike_string} " \
                   "≈ Humidity: #{current.relative_humidity} " \
-                  "≈ Pressure: #{current.pressure_in} psi (#{pressure_si} kPa) " \
+                  "≈ Pressure: #{current.pressure_in} in/Hg (#{current.pressure_mb} mbar) " \
                   "≈ Wind: #{current.wind_string} ≈ Alerts: #{alerts} ∴"
       return data
     # rescue
@@ -200,7 +200,7 @@ module Plugins
       data.reply = "OWM ∴ #{ac.formatted_address} " \
                   "≈ #{data.weather[0].description},  #{temp.convert_to('[degF]').to_i.round(2)} F (#{temp.convert_to('Cel').to_i.round(2)} C) " \
                   "≈ Humidity: #{data.main.humidity}% " \
-                  "≈ Pressure: #{pressure.convert_to('[psi]').to_f.round(2)} psi (#{pressure.convert_to('kPa').to_f} kPa) " \
+                  "≈ Pressure: #{pressure.convert_to('[psi]').to_f.round(2)} in/Hg (#{data.main.pressure} mbar) " \
                   "≈ Wind: #{wind.convert_to('mile').to_i.round(2)} mph (#{wind.to_i.round(2)} km/h) ∴"
 
       return data
@@ -240,7 +240,7 @@ module Plugins
                   "≈ #{current.summary} #{tempstring} " \
                   "≈ Feels like #{feelslike} " \
                   "≈ Humidity: #{current.relative_humidity} " \
-                  "≈ Pressure: #{p.convert_to('[psi]').to_f.round(2)} psi (#{p.to_f} kPa) " \
+                  "≈ Pressure: #{p.convert_to('[psi]').to_f.round(2)} in/Hg (#{current.pressure} mbar) " \
                   "≈ Wind: gusts upto #{current.windGust} mph (#{gusts} km/h) ≈ Alerts: #{alerts} ∴"
 
         return data
@@ -284,7 +284,7 @@ module Plugins
                   "≈ #{data.textDescription} #{temp} " \
                   "≈ Feels like #{feelslike} " \
                   "≈ Humidity: #{data.relativeHumidity.value.round(2)} " \
-                  "≈ Pressure: #{pressure.convert_to('[psi]').to_f.round(2)} psi (#{pressure.convert_to('kPa').to_f} kPa) " \
+                  "≈ Pressure: #{pressure.convert_to('[psi]').to_f.round(2)} in/Hg (#{pressure.convert_to('kPa').to_f} mbar) " \
                   "≈ Wind: #{wind} ≈ Alerts:  ∴"
       return data
     # rescue
