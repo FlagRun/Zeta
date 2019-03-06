@@ -1,41 +1,144 @@
-# Zeta
+# Zbot
+Cinch IRC bot written with plenty of help. I will not claim any of the plugins
+And will try to get the correct credits in source
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/Zeta`. To experiment with that code, run `bin/console` for an interactive prompt.
+# Installation
+Zeta requires ruby >= 2.5.0 and rubygems. Installation beyond that is simple
 
-TODO: Delete this and the text above, and describe your gem
+_Steps_
+* gem install zetabot
+* zetabot
 
-## Installation
+_Plugins_
+All plugins are automatically loaded that are in the plugins directory
 
-Add this line to your application's Gemfile:
+# Upgrade
+_Steps_
+* git pull
+* bundle
+* update config files to new examples
+* ruby ./migrate.rb
+* ruby ./zeta.rb
 
-```ruby
-gem 'Zeta'
-```
+## Commands
+roles: owner,admin,operator,halfop,voice,nobody
+prefix: ?
 
-And then execute:
+### Admin
+_Channel_
+** Role Required: admin/owner **
+* ?join (\#channel) - admin
+* ?part (\#channel) - admin
+* ?quit (\#channel) - owner
 
-    $ bundle
+_Plugins_
+** Role Required: admin **
+* ?plugin load   (plugin)
+* ?plugin unload (plugin)
+* ?plugin reload (plugin)
+* ?plugin set    (plugin)
 
-Or install it yourself as:
+_Developer_
+** Role Required: owner **
+* ?die (msg) // Kills the bot
+* ?e  code   // (alias: eval) Evaluate command
+* ?em code   // (alias: eval) Evaluate command send in msg
+* ?er code   // (alias: evalreply) Evaluate command and send to channel
 
-    $ gem install Zeta
+_Ignore_
+** Role Required: operator **
+* ?ignore (user)
+* ?unignore (user)
 
-## Usage
+_Channel_
+** Role Required: operator **
+* ?disable (channel) // can omit channel to use current
+* ?enable  (channel) // enalbed a channel that has been disabled
 
-TODO: Write usage instructions here
+_Access_
+** Role Required: voice **
+* ?setaccess (user) (level) // Levels: nobody,voice,halfop,operator,admin,owner,founder
+* ?access (user) // Show current access level
 
-## Development
+_Uptime_
+** Role Required: admin **
+* ?uptime    // Bot uptime
+* ?sysuptime // grabs the uptime from current system
+* ?users     // shows users currently logged into shell
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### Macros
+Macros are prefixed by a period and are loaded from locales/macros.yml
+example. typing in ".dnf" in channel will cause the bot to respond with "Duke Nukem Forever came out. Your argument is invalid."
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### FIFO
+Zeta will open a named pipe under bot/zeta.io messages sent to this pipe will be directly sent to the irc server
 
-## Contributing
+### Plugins
+_Utility_
+* ?calc (query) - Returns a wolframalpha solution
+* ?wiki (term) - Returns a wikipedia entry
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/Zeta.
+_Code Runner_
+* ?run (lang) (code)
+* ?langs - lists all of the languages that are supported
 
+_Seen_
+* ?seen (user)
 
-## License
+_Misc_
+* ?attack (target)
+* ?info (plugin)
+* ?fnord
+* ?xmas - days till christmas
+* ?mayan - current day in the mayan calendar
+* ?newyear - days until new years
+* ?heavymetalise (message) - styles the vowles of the text
+* ?rainbow (text) - colorizes your text
+* ?eyerape (text) - even worse then rainbow
+* ?rr (nick) - Play a game of Russian Rullete
+* ?fml    - Returns a "F*ck My Life"
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+_GifMe_
+* ?randomgif - grabs a random gif from gifme
+* ?gif (term) - returns the best match from gifme
 
+_Movie_
+* ?movie (movie name) :year - the year is optional but must be prefixed with a colon
+
+_Urban Dictionary_
+* ?ud (definition) - returns a definition
+* ?wotd - World of the day
+
+_Weather_
+* ?w (location)
+* ?wx (location)
+* ?setw (location) - Sets your current location so the bot will remember if you do ?w
+* ?hurricane - gets current hurricane activity
+* ?forecast (location)
+
+_PDF Info_
+This plugin grabs the metadata from a pdf that is linked in channel
+
+_DBZ_
+responds when you say certain keywords
+
+### Network Specific Plugins
+#### FlagRun Networks
+_URL Grabber_
+Grabs metadata from url in channel
+
+#### DarkScience
+
+_API_
+* ?finger (nick) - pulls nickname information from the DarkScience API
+* ?stats (nick) - pulls statistics information for a nick from the DarkScience API
+* ?peek (channel) - pulls channel information from Darkscience API
+
+_QDB_
+* ?addquote (text) - submits quote to DarkScience API
+* ?quote (id) - grabs the quote matching that ID for the specific channel
+* ?quote - grabs random quote for channel
+
+_LibSecure_
+** only works in \#libsecure channel **
+* ?latest - grabs the latest post from libsecure

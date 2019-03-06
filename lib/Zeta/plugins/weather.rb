@@ -39,17 +39,17 @@ module Plugins
       # Lookup user from pstore
       if !@store[msg.user.to_s].nil? && query.nil?
         stored_location, stored_source = @store[msg.user.to_s].split('::')
-        stored_source = @api_src.include?(stored_source) ? stored_source : 'wu'
+        stored_source = @api_src.include?(stored_source) ? stored_source : 'darksky'
         data = send("#{stored_source}_src", stored_location)
         # location = geolookup(@store[msg.user.to_s])
         # data = wunderground_src(stored_location, false)
       elsif query.nil?
-        return msg.reply 'No location set. ?setw <location> :(wu|darkscy|noaa|apixu|owm)'
+        return msg.reply 'No location set. ?setw <location> :(darksky|noaa|apixu|owm)'
       else
         # data = wu_src(query, true)
         src = query[/:\w+/].gsub(/:/, '') if query[/:\w+/]
         query = query.gsub(/:\w+/, '').strip if query
-        true_src = @api_src.include?(src) ? src : 'wu'
+        true_src = @api_src.include?(src) ? src : 'darksky'
         data = send("#{true_src}_src", query)
       end
       return msg.reply "No results found for #{query} with #{true_src} source." if data.nil?
@@ -64,7 +64,7 @@ module Plugins
       query = query.gsub(/:\w+/, '').strip if query
 
       # Sanity Check
-      true_src = @api_src.include?(src) ? src : 'wu'
+      true_src = @api_src.include?(src) ? src : 'darksky'
       data = send("#{true_src}_src", query)
 
       # Error
@@ -76,106 +76,13 @@ module Plugins
       msg.reply "Your location is now set to #{data.ac.name}, #{data.ac.c}!"
     end
 
-    # ?hurricane
-    def hurricane(msg)
-      url = URI.encode "http://api.wunderground.com/api/#{Zsec.wunderground}/currenthurricane/view.json"
-      location = JSON.parse(
-          # RestClient.get(url)
-          open(url).read
-      )
-      return msg.reply "No results found for #{query}." if location.nil?
-      reply_msg = "∴ #{location['currenthurricane'][0]['stormInfo']['stormName_Nice']} " \
-                  "(#{location['currenthurricane'][0]['stormInfo']['stormNumber']}) "\
-                  "≈ Category #{location['currenthurricane'][0]['Current']['SaffirSimpsonCategory']} " \
-                  "≈ Wind #{location['currenthurricane'][0]['Current']['WindSpeed']['Mph']} mph " \
-                  "(#{location['currenthurricane'][0]['Current']['WindSpeed']['Kph']} kph) " \
-                  "≈ Wind Gust #{location['currenthurricane'][0]['Current']['WindGust']['Mph']} mph " \
-                  "(#{location['currenthurricane'][0]['Current']['WindGust']['Kph']} kph) " \
-                  "≈ #{location['currenthurricane'][0]['Current']['Time']['pretty']} ∴"
-      msg.reply(reply_msg)
-    end
-
-    # ?almanac <location>
-    def almanac(msg, locale)
-      autocomplete = JSON.parse(open(URI.encode("http://autocomplete.wunderground.com/aq?query=#{locale}")).read)
-      url = URI.encode("http://api.wunderground.com/api/#{Config.secrets[:wunderground]}/almanac/#{autocomplete['RESULTS'][0]['l']}.json")
-      location = JSON.parse(
-          # RestClient.get(url)
-          open(url).read
-      )
-      return msg.reply "No results found for #{query}." if location.nil?
-
-      time = Time.now()
-
-      data = OpenStruct.new(
-          date: time.strftime('%B, %d %Y (%A) '),
-          airport: location['almanac']['airport_code'],
-          high_norm_f: location['almanac']['temp_high']['normal']['F'],
-          high_norm_c: location['almanac']['temp_high']['normal']['C'],
-          high_record_y: location['almanac']['temp_high']['recordyear'],
-          high_record_f: location['almanac']['temp_high']['record']['F'],
-          high_record_c: location['almanac']['temp_high']['normal']['C'],
-          low_norm_f: location['almanac']['temp_low']['normal']['F'],
-          low_norm_c: location['almanac']['temp_low']['normal']['C'],
-          low_record_y: location['almanac']['temp_low']['recordyear'],
-          low_record_f: location['almanac']['temp_low']['record']['F'],
-          low_record_c: location['almanac']['temp_low']['normal']['C'],
-      )
-
-      reply_msg = "∴ Almanac #{data.date} ≈ Airport #{data.airport} " \
-              "≈ Normal #{data.high_norm_f} F (#{data.high_norm_c} C) | #{data.low_norm_f} F (#{data.low_norm_c} C) " \
-              "≈ High #{data.high_record_f} F (#{data.high_record_c} C) [#{data.high_record_y}] " \
-              "≈ Low #{data.low_record_f} F (#{data.low_record_c} C) [#{data.low_record_y}] ∴"
-
-      msg.reply(reply_msg)
-    end
-
-
     # -private
     private
-    #### Weather Sources
-    # Weather Underground - https://wunderground.com
-    def wu_src(location)
-      # Fuzzy location lookup
-      ac = JSON.parse(
-          open(URI.encode("https://autocomplete.wunderground.com/aq?query=#{location}")).read,
-          object_class: OpenStruct
-      )
-      return nil if ac.RESULTS.empty?
-
-      ac = ac.RESULTS[0]
-      geolookup = JSON.parse(
-          open(URI.encode("https://api.wunderground.com/api/#{Config.secrets[:wunderground]}/geolookup/#{ac.l}.json")).read,
-          object_class: OpenStruct
-      ).location.l rescue nil
-
-      # Get Data
-      data = JSON.parse(
-          open("https://api.wunderground.com/api/#{Config.secrets[:wunderground]}/alerts/conditions#{geolookup}.json").read,
-          object_class: OpenStruct
-      )
-
-      debug "DATA: #{data}"
-      data.ac = ac
-      current = data.current_observation
-      alerts = data.alerts.empty? ? 'none' : data.alerts.map {|l| l['type']}.join(',')
-      # pressure_si = Unitwise((current.pressure_in.to_f)+14.7, '[psi]').convert_to('kPa').to_f.round(2)
-
-      data.reply = "WU ∴ #{ac.name}, #{ac.c} " \
-                  "≈ #{current.weather} #{current.temperature_string} " \
-                  "≈ Feels like #{current.feelslike_string} " \
-                  "≈ Humidity: #{current.relative_humidity} " \
-                  "≈ Pressure: #{current.pressure_in} in/Hg (#{current.pressure_mb} mbar) " \
-                  "≈ Wind: #{current.wind_string} ≈ Alerts: #{alerts} ∴"
-      return data
-    # rescue
-    #   return nil
-    end
 
     # Open Weather map - https://openweathermap.org/api
     def owm_src(location)
       ac = JSON.parse(
-          open(URI.encode("http://maps.googleapis.com/maps/api/geocode/json?address=#{location}")).read,
+          open(URI.encode("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}")).read,
           object_class: OpenStruct
       )
 
@@ -194,13 +101,14 @@ module Plugins
       )
 
       temp = Unitwise(data.main.temp, 'K') # Data is given in kelvin
-      pressure = Unitwise((data.main.pressure.to_f/10)+101, 'kPa')
+      pressure = Unitwise(data.main.pressure.to_f, 'mbar')
       wind = Unitwise(data.wind.speed, 'kilometer')
 
       data.reply = "OWM ∴ #{ac.formatted_address} " \
                   "≈ #{data.weather[0].description},  #{temp.convert_to('[degF]').to_i.round(2)} F (#{temp.convert_to('Cel').to_i.round(2)} C) " \
                   "≈ Humidity: #{data.main.humidity}% " \
-                  "≈ Pressure: #{pressure.convert_to('[psi]').to_f.round(2)} in/Hg (#{data.main.pressure} mbar) " \
+                  "≈ Pressure: #{pressure.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
+                  "(#{pressure.convert_to("kPa").to_f.round(2)} kPa) " \
                   "≈ Wind: #{wind.convert_to('mile').to_i.round(2)} mph (#{wind.to_i.round(2)} km/h) ∴"
 
       return data
@@ -210,7 +118,7 @@ module Plugins
     # DarkSky - https://darksky.net/dev
     def darksky_src(location)
       ac = JSON.parse(
-          open(URI.encode("http://maps.googleapis.com/maps/api/geocode/json?address=#{location}")).read,
+          open(URI.encode("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}")).read,
           object_class: OpenStruct
       )
       return nil if ac.results.nil? ## Unable to locate
@@ -230,7 +138,7 @@ module Plugins
       alerts = data.alerts.count rescue 0
       c = Unitwise(current.temperature, '[degF]').convert_to('Cel').to_i
       c_feels = Unitwise(current.apparentTemperature, '[degF]').convert_to('Cel').to_i
-      p = Unitwise((current.pressure.to_f/10)+101, 'kPa')
+      p = Unitwise(current.pressure.to_f, 'mbar')
       gusts = Unitwise(current.windGust, 'mile').convert_to('kilometer').to_i
 
       tempstring = "#{current.temperature.to_i} F (#{c} C)"
@@ -240,7 +148,8 @@ module Plugins
                   "≈ #{current.summary} #{tempstring} " \
                   "≈ Feels like #{feelslike} " \
                   "≈ Humidity: #{current.relative_humidity} " \
-                  "≈ Pressure: #{p.convert_to('[psi]').to_f.round(2)} in/Hg (#{current.pressure} mbar) " \
+                  "≈ Pressure: #{p.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
+                  "(#{p.convert_to("kPa").to_f.round(2)} kPa) " \
                   "≈ Wind: gusts upto #{current.windGust} mph (#{gusts} km/h) ≈ Alerts: #{alerts} ∴"
 
         return data
@@ -251,7 +160,7 @@ module Plugins
     # NOAA - https://graphical.weather.gov/xml/
     def noaa_src(location)
       ac = JSON.parse(
-          open(URI.encode("http://maps.googleapis.com/maps/api/geocode/json?address=#{location}")).read,
+          open(URI.encode("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}")).read,
           object_class: OpenStruct
       )
       return nil if ac.results.nil? ## Unable to locate
@@ -278,13 +187,14 @@ module Plugins
       temp = "#{f.round(2)} F (#{data.temperature.value.to_i.round(2)} C) "
       wind = "Gusts: #{data.windGust.value} avg: #{data.windSpeed.value.to_i.round(2)}"
       feelslike = "#{data.windChill.value.to_i.round(2)} C"
-      pressure = Unitwise(data.barometricPressure.value.to_f+101325, 'Pa')
+      pressure = Unitwise(data.barometricPressure.value.to_f, 'Pa')
 
       data.reply = "NOAA ∴ #{ac.formatted_address} " \
                   "≈ #{data.textDescription} #{temp} " \
                   "≈ Feels like #{feelslike} " \
                   "≈ Humidity: #{data.relativeHumidity.value.round(2)} " \
-                  "≈ Pressure: #{pressure.convert_to('[psi]').to_f.round(2)} in/Hg (#{pressure.convert_to('kPa').to_f} mbar) " \
+                  "≈ Pressure: #{pressure.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
+                  "(#{pressure.convert_to("kPa").to_f.round(2)} kPa) " \
                   "≈ Wind: #{wind} ≈ Alerts:  ∴"
       return data
     # rescue

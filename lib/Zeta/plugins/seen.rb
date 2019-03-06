@@ -6,7 +6,6 @@ module Plugins
       def to_s
         # "[#{time.asctime}] #{who} was seen in #{where} last saying #{what}"
         time_ago = time_ago_in_words(Time.at(time))
-        # "[ \x1F#{where.to_s.upcase}\x0F ] \x0304#{who}\x0F: \"\x0303#{what[0..300]}\x0F\" \x02#{time_ago}\x0F ago"
         if where.to_s.upcase == 'STAFF' || where.to_s.upcase == 'SERVICES'
           return ''
         end
