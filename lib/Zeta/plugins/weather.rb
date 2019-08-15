@@ -143,12 +143,11 @@ module Plugins
       gusts = Unitwise(current.windGust, 'mile').convert_to('kilometer').to_i
 
       tempstring = "#{current.temperature.to_i} F (#{c} C)"
-      # feelslike = "#{current.apparentTemperature.to_i} F (#{c_feels} C)"
 
       data.reply = "DS ∴ #{ac.formatted_address} " \
                   "≈ #{Time.at(current.time).strftime("%a %D %l:%M %P")} " \
                   "≈ #{current.summary} #{tempstring} " \
-                  "≈ Humidity: #{current.relative_humidity} " \
+                  "≈ Humidity: #{current.humidity * 100}% " \
                   "≈ Pressure: #{p.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
                   "(#{p.convert_to("kPa").to_f.round(2)} kPa) " \
                   "≈ Wind: gusts upto #{current.windGust} mph (#{gusts} km/h) ≈ Alerts: #{alerts} ∴"
