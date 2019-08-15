@@ -105,6 +105,7 @@ module Plugins
       wind = Unitwise(data.wind.speed, 'kilometer')
 
       data.reply = "OWM ∴ #{ac.formatted_address} " \
+                  "≈ #{Time.now.change(offset: data.timezone).strftime("%a %D %l:%M %P")} " \
                   "≈ #{data.weather[0].description},  #{temp.convert_to('[degF]').to_i.round(2)} F (#{temp.convert_to('Cel').to_i.round(2)} C) " \
                   "≈ Humidity: #{data.main.humidity}% " \
                   "≈ Pressure: #{pressure.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
@@ -142,11 +143,11 @@ module Plugins
       gusts = Unitwise(current.windGust, 'mile').convert_to('kilometer').to_i
 
       tempstring = "#{current.temperature.to_i} F (#{c} C)"
-      feelslike = "#{current.apparentTemperature.to_i} F (#{c_feels} C)"
+      # feelslike = "#{current.apparentTemperature.to_i} F (#{c_feels} C)"
 
       data.reply = "DS ∴ #{ac.formatted_address} " \
+                  "≈ #{Time.at(current.time).strftime("%a %D %l:%M %P")} " \
                   "≈ #{current.summary} #{tempstring} " \
-                  "≈ Feels like #{feelslike} " \
                   "≈ Humidity: #{current.relative_humidity} " \
                   "≈ Pressure: #{p.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
                   "(#{p.convert_to("kPa").to_f.round(2)} kPa) " \
