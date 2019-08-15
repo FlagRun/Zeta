@@ -3,6 +3,7 @@ require 'persist'
 require 'open-uri'
 require 'json'
 require 'unitwise'
+require 'tzinfo'
 
 module Plugins
   # Forecast is a Cinch plugin for getting the weather forecast.
@@ -105,7 +106,7 @@ module Plugins
       wind = Unitwise(data.wind.speed, 'kilometer')
 
       data.reply = "OWM ∴ #{ac.formatted_address} " \
-                  "≈ #{Time.now.change(offset: data.timezone).strftime("%a %D %l:%M %P")} " \
+                  "≈ #{(Time.now.utc + data.timezone.seconds).strftime("%c") } " \
                   "≈ #{data.weather[0].description},  #{temp.convert_to('[degF]').to_i.round(2)} F (#{temp.convert_to('Cel').to_i.round(2)} C) " \
                   "≈ Humidity: #{data.main.humidity}% " \
                   "≈ Pressure: #{pressure.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
@@ -145,7 +146,7 @@ module Plugins
       tempstring = "#{current.temperature.to_i} F (#{c} C)"
 
       data.reply = "DS ∴ #{ac.formatted_address} " \
-                  "≈ #{Time.at(current.time).strftime("%a %D %l:%M %P")} " \
+                  "≈ #{ TZInfo::Timezone.get(data.timezone).now.strftime("%c") } " \
                   "≈ #{current.summary} #{tempstring} " \
                   "≈ Humidity: #{current.humidity * 100}% " \
                   "≈ Pressure: #{p.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
