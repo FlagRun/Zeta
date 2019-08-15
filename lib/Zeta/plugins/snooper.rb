@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# == Author
+# == Original Author
 # Marvin Gülker (Quintus)
 #
 # == Modification author
@@ -23,6 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Plugin for inspecting links pasted into channels.
+# F
 require 'video_info'
 require 'mechanize'
 require 'action_view'
@@ -88,7 +89,7 @@ module Plugins
     def match_youtube(msg, url)
       if Config.secrets[:google]
         video = VideoInfo.new(url)
-        msg.reply "#{Format(:red, 'YouTube ')}∴ #{video.title} ( #{Format(:green, Time.at(video.duration).strftime("%H:%M:%S"))} )"
+        msg.reply "#{Format(:red, 'YouTube ')}∴ #{video.title} ( #{Format(:green, Time.at(video.duration).utc.strftime("%H:%M:%S"))} )"
       else
         match_other(msg, url)
       end
@@ -96,7 +97,7 @@ module Plugins
     end
 
     def match_github(msg, url)
-      # TODO parse github url
+      # TODO: parse github url
     end
 
     def match_imgur(msg, url)
@@ -105,20 +106,20 @@ module Plugins
 
       # Query Data
       data = JSON.parse(
-          RestClient.get("https://api.imgur.com/3/image/#{id[1]}", { Authorization: "Client-ID #{Config.secrets[:imgur_id]}" })
-      )
+          RestClient.get("https://api.imgur.com/3/image/#{id[1]}", 
+                         { Authorization: "Client-ID #{Config.secrets[:imgur_id]}" }
+                        )
+        )
       return 'Unable to query imgur' unless defined?(data)
+
       i = Hashie::Mash.new(data)
 
       # SET Not Safe For Work
-      if i.data.nsfw
-        nsf = "[#{Format(:red, 'NSFW')}]"
-      else
-        nsf = "[#{Format(:green, 'SAFE')}]"
-      end
+      nsf = i.data.nsfw ? "[#{Format(:red, 'NSFW')}]" : "[#{Format(:green, 'SAFE')}]"
 
       # Trigger reply message
-      msg.reply("#{Format(:purple, 'IMGUR')} #{nsf} ∴ [#{Format(:yellow, i.data.type)}] #{i.data.width}x#{i.data.height} "\
+      msg.reply("#{Format(:purple, 'IMGUR')} #{nsf} "\
+              "∴ [#{Format(:yellow, i.data.type)}] #{i.data.width}x#{i.data.height} "\
               "∴ Views: #{ i.data.views.to_s} ∴ #{i.data.title ? i.data.title[0..100] : 'No Title'} "\
               "∴ Posted #{time_ago_in_words(Time.at(i.data.datetime))} ago")
     end
@@ -126,7 +127,7 @@ module Plugins
     def match_other(msg,url)
       begin
         html = Mechanize.start { |m|
-          # Timeout longwinded pages
+          # Timeout long winded pages
           m.max_history = 1
           m.read_timeout = 4
           m.max_file_buffer = 2_097_152
