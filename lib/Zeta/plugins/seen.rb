@@ -1,17 +1,8 @@
 require 'action_view'
 module Plugins
   class Seen
-    class SeenStruct < Struct.new(:who, :where, :what, :time)
-      include ActionView::Helpers::DateHelper
-      def to_s
-        # "[#{time.asctime}] #{who} was seen in #{where} last saying #{what}"
-        time_ago = time_ago_in_words(Time.at(time))
-        if where.to_s.upcase == 'STAFF' || where.to_s.upcase == 'SERVICES'
-          return ''
-        end
-        "Seen ∴ \x0304#{who}\x0F was last seen talking in \x1F#{where.to_s.upcase}\x0F \x02#{time_ago}\x0F ago."
-      end
-    end
+    include ActionView::Helpers::DateHelper
+    class SeenStruct < Struct.new(:who, :where, :time); end
 
     include Cinch::Plugin
     include Cinch::Helpers
@@ -32,9 +23,8 @@ module Plugins
     end
 
     def listen(m)
-      return if m.channel == '#staff'
-      return if m.channel == '#netops'
-      @users[m.user.nick] = SeenStruct.new(m.user, m.channel, m.message, Time.now)
+      return if m.channel == '#services'
+      @users[m.user.nick] = SeenStruct.new(m.user, m.channel, Time.now)
     end
 
     def execute(m, nick)
@@ -43,10 +33,11 @@ module Plugins
         m.reply 'You are a Stupid human!'
       elsif nick == m.user.nick
         m.reply "Unfortunately, I see an idiot by the name of #{m.user.nick}"
-      elsif @users.key?(nick)
-        m.reply @users[nick].to_s
+      elsif @users.key?(nick) && (@users[nick].where == m.channel)
+        time_ago = time_ago_in_words(Time.at(@users[nick].time))
+        m.reply "Seen ∴ \x0304#{@users[nick].who}\x0F was last seen talking in here about \x02#{time_ago}\x0F ago."
       else
-        m.reply "I haven't seen #{nick}"
+        m.reply "I haven't seen #{nick} say anything yet!"
       end
     end
 
