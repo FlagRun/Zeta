@@ -15,8 +15,8 @@ module Plugins
     enable_acl
 
     set(
-        plugin_name: "Weather",
-        help: "Get the Weather?.\nUsage: `?weather`\nUsage: `?wx zip` `?w zip` `?setw zip` `?forecast zip`",
+      plugin_name: "Weather",
+      help: "Get the Weather?.\nUsage: `?weather`\nUsage: `?wx zip` `?w zip` `?setw zip` `?forecast zip`",
     )
 
     match /w (.+)/, method: :weather
@@ -35,7 +35,7 @@ module Plugins
     end
 
     # ?w <location>
-    def weather(msg, query=nil)
+    def weather(msg, query = nil)
       # Pull data source and scrub query
       # Lookup user from pstore
       if !@store[msg.user.to_s].nil? && query.nil?
@@ -53,7 +53,9 @@ module Plugins
         true_src = @api_src.include?(src) ? src : 'darksky'
         data = send("#{true_src}_src", query)
       end
+
       return msg.reply "No results found for #{query} with #{true_src} source." if data.nil?
+
       # return msg.reply 'Problem getting data. Try again later.' if data.nil?
       msg.reply(data.reply)
     end
@@ -82,9 +84,12 @@ module Plugins
 
     # Open Weather map - https://openweathermap.org/api
     def owm_src(location)
+      location = CGI.escape(location)
+
       ac = JSON.parse(
-          open(URI.encode("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}")).read,
-          object_class: OpenStruct
+        open(
+          "https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}"
+        ).read, object_class: OpenStruct
       )
 
       return nil if ac.results.nil? ## Unable to locate
@@ -95,10 +100,8 @@ module Plugins
 
       # Get Data
       data = JSON.parse(
-          open(
-              URI.encode("https://api.openweathermap.org/data/2.5/weather?lat=#{lat}&lon=#{lon}&APPID=#{Config.secrets[:owm]}")
-          ).read,
-          object_class: OpenStruct
+        open("https://api.openweathermap.org/data/2.5/weather?lat=#{lat}&lon=#{lon}&APPID=#{Config.secrets[:owm]}"
+        ).read, object_class: OpenStruct
       )
 
       temp = Unitwise(data.main.temp, 'K') # Data is given in kelvin
@@ -106,22 +109,23 @@ module Plugins
       wind = Unitwise(data.wind.speed, 'kilometer')
 
       data.reply = "OWM ∴ #{ac.formatted_address} " \
-                  "≈ #{(Time.now.utc + data.timezone.seconds).strftime("%c") } " \
+                  "≈ #{(Time.now.utc + data.timezone.seconds).strftime("%c")} " \
                   "≈ #{data.weather[0].description},  #{temp.convert_to('[degF]').to_i.round(2)} F (#{temp.convert_to('Cel').to_i.round(2)} C) " \
-                  "≈ Humidity: #{data.main.humidity}% " \
+                  "≈ Humidity: #{data.main.humidity.to_i.round(2)}% " \
                   "≈ Pressure: #{pressure.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
                   "(#{pressure.convert_to("kPa").to_f.round(2)} kPa) " \
                   "≈ Wind: #{wind.convert_to('mile').to_i.round(2)} mph (#{wind.to_i.round(2)} km/h) ∴"
 
       return data
-
     end
 
     # DarkSky - https://darksky.net/dev
     def darksky_src(location)
+      location = CGI.escape(location)
+
       ac = JSON.parse(
-          open(URI.encode("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}")).read,
-          object_class: OpenStruct
+        open("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}").read,
+        object_class: OpenStruct
       )
       return nil if ac.results.nil? ## Unable to locate
 
@@ -130,10 +134,8 @@ module Plugins
       lon = ac.geometry.location.lng
 
       data = JSON.parse(
-          open(
-              URI.encode("https://api.darksky.net/forecast/#{Config.secrets[:darksky]}/#{lat},#{lon}")
-          ).read,
-          object_class: OpenStruct
+        open("https://api.darksky.net/forecast/#{Config.secrets[:darksky]}/#{lat},#{lon}").read,
+        object_class: OpenStruct
       )
       data.ac = ac
       current = data.currently
@@ -146,23 +148,25 @@ module Plugins
       tempstring = "#{current.temperature.to_i} F (#{c} C)"
 
       data.reply = "DS ∴ #{ac.formatted_address} " \
-                  "≈ #{ TZInfo::Timezone.get(data.timezone).now.strftime("%c") } " \
+                  "≈ #{TZInfo::Timezone.get(data.timezone).now.strftime("%c")} " \
                   "≈ #{current.summary} #{tempstring} " \
-                  "≈ Humidity: #{current.humidity * 100}% " \
+                  "≈ Humidity: #{(current.humidity * 100).round(2)}% " \
                   "≈ Pressure: #{p.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
                   "(#{p.convert_to("kPa").to_f.round(2)} kPa) " \
                   "≈ Wind: gusts upto #{current.windGust} mph (#{gusts} km/h) ≈ Alerts: #{alerts} ∴"
 
-        return data
+      return data
       # rescue
       #   return nil
     end
 
     # NOAA - https://graphical.weather.gov/xml/
     def noaa_src(location)
+      location = CGI.escape(location)
+
       ac = JSON.parse(
-          open(URI.encode("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}")).read,
-          object_class: OpenStruct
+        open("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}").read,
+        object_class: OpenStruct
       )
       return nil if ac.results.nil? ## Unable to locate
 
@@ -171,20 +175,19 @@ module Plugins
       lon = ac.geometry.location.lng
 
       stations = JSON.parse(
-          open(URI.encode("https://api.weather.gov/points/#{lat},#{lon}/stations/")).read
+        open("https://api.weather.gov/points/#{lat},#{lon}/stations/").read
       ) rescue nil
 
       return nil if stations.nil? ## Unable to find station. probably not in the USA
 
       parsed = JSON.parse(
-          open(URI.encode("#{stations['observationStations'][0]}/observations/current")).read,
-          object_class: OpenStruct
+        open("#{CGI.escape(stations['observationStations'][0])}/observations/current").read,
+        object_class: OpenStruct
       )
-
 
       data = parsed.properties
       data.ac = ac
-      f = data.temperature.value * 9/5
+      f = data.temperature.value * 9 / 5
       temp = "#{f.round(2)} F (#{data.temperature.value.to_i.round(2)} C) "
       wind = "Gusts: #{data.windGust.value} avg: #{data.windSpeed.value.to_i.round(2)}"
       feelslike = "#{data.windChill.value.to_i.round(2)} C"
@@ -198,13 +201,11 @@ module Plugins
                   "(#{pressure.convert_to("kPa").to_f.round(2)} kPa) " \
                   "≈ Wind: #{wind} ≈ Alerts:  ∴"
       return data
-    # rescue
-    #   data.reply = "Error fetching data"
+      # rescue
+      #   data.reply = "Error fetching data"
     end
-
   end
 end
-
 
 # AutoLoad
 Bot.config.plugins.plugins.push Plugins::Weather
