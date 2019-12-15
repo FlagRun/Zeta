@@ -1,4 +1,5 @@
 require 'crack'
+require 'cgi'
 
 module Plugins
   class Wolfram
@@ -16,14 +17,16 @@ module Plugins
     match /calc (.+)/, method: :calculate
 
     def calculate(m, query)
-      # Rescue incase something goes wrong
+      # Rescue in case something goes wrong
       begin
-        debug 'Query: ' + query
-        url = URI.encode "http://api.wolframalpha.com/v2/query?input=#{query}&appid=#{Config.secrets[:wolfram]}&primary=true&format=plaintext"
+        url = "http://api.wolframalpha.com/v2/query?input=#{CGI.escape(query)}&appid=#{Config.secrets[:wolfram]}&primary=true&format=plaintext"
         request = open(url).read
+
         data = Crack::XML.parse(request)
+
         pod0 = data['queryresult']['pod'][0]['subpod']['plaintext'].strip
         pod1 = data['queryresult']['pod'][1]['subpod']['plaintext'].strip
+
         return 'Unable to get a results' if pod0.nil?
 
         if pod1.lines.count > 2
@@ -37,8 +40,6 @@ module Plugins
         m.reply 'Unable to get a results'
       end
     end
-
-  ####
   end
 end
 
