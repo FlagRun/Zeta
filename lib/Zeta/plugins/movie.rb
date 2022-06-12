@@ -25,11 +25,14 @@ module Plugins
 
     private
     def query_movie(m)
+      parser = URI::Parser.new
+
       year = m[/:\d+/].gsub(/:/, '') if m[/:\d+/]
-      movie = URI.encode(m.gsub(/:\d+/, ''))
+      movie = parser.escape(m.gsub(/:\d+/, ''))
+
       data = JSON.parse(
           # RestClient.get("http://www.omdbapi.com/?t=#{movie}&y=#{year}")
-          open("http://www.omdbapi.com/?t=#{movie}&y=#{year}&apikey=#{Config.secrets[:omdb]}").read
+        RestClient.get("http://www.omdbapi.com/?t=#{movie}&y=#{year}&apikey=#{Config.secrets[:omdb]}").body
       )
       OpenStruct.new(
           title:       data['Title'],

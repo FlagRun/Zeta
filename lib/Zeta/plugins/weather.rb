@@ -87,9 +87,9 @@ module Plugins
       location = CGI.escape(location)
 
       ac = JSON.parse(
-        open(
+        RestClient.get(
           "https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}"
-        ).read, object_class: OpenStruct
+        ).body, object_class: OpenStruct
       )
 
       return nil if ac.results.nil? ## Unable to locate
@@ -100,8 +100,8 @@ module Plugins
 
       # Get Data
       data = JSON.parse(
-        open("https://api.openweathermap.org/data/2.5/weather?lat=#{lat}&lon=#{lon}&APPID=#{Config.secrets[:owm]}"
-        ).read, object_class: OpenStruct
+        RestClient.get("https://api.openweathermap.org/data/2.5/weather?lat=#{lat}&lon=#{lon}&APPID=#{Config.secrets[:owm]}"
+        ).body, object_class: OpenStruct
       )
 
       temp = Unitwise(data.main.temp, 'K') # Data is given in kelvin
@@ -124,7 +124,7 @@ module Plugins
       location = CGI.escape(location)
 
       ac = JSON.parse(
-        open("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}").read,
+        RestClient.get("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}").body,
         object_class: OpenStruct
       )
       return nil if ac.results.nil? ## Unable to locate
@@ -134,7 +134,7 @@ module Plugins
       lon = ac.geometry.location.lng
 
       data = JSON.parse(
-        open("https://api.darksky.net/forecast/#{Config.secrets[:darksky]}/#{lat},#{lon}").read,
+        RestClient.get("https://api.darksky.net/forecast/#{Config.secrets[:darksky]}/#{lat},#{lon}").body,
         object_class: OpenStruct
       )
       data.ac = ac
@@ -165,7 +165,7 @@ module Plugins
       location = CGI.escape(location)
 
       ac = JSON.parse(
-        open("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}").read,
+        RestClient.get("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}").body,
         object_class: OpenStruct
       )
       return nil if ac.results.nil? ## Unable to locate
@@ -175,13 +175,13 @@ module Plugins
       lon = ac.geometry.location.lng
 
       stations = JSON.parse(
-        open("https://api.weather.gov/points/#{lat},#{lon}/stations/").read
+        RestClient.get("https://api.weather.gov/points/#{lat},#{lon}/stations/").body
       ) rescue nil
 
       return nil if stations.nil? ## Unable to find station. probably not in the USA
 
       parsed = JSON.parse(
-        open("#{CGI.escape(stations['observationStations'][0])}/observations/current").read,
+        RestClient.get("#{CGI.escape(stations['observationStations'][0])}/observations/current").body,
         object_class: OpenStruct
       )
 

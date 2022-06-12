@@ -20,7 +20,7 @@ module Plugins
       # Rescue in case something goes wrong
       begin
         url = "http://api.wolframalpha.com/v2/query?input=#{CGI.escape(query)}&appid=#{Config.secrets[:wolfram]}&primary=true&format=plaintext"
-        request = open(url).read
+        request = RestClient.get(url).body
 
         data = Crack::XML.parse(request)
 

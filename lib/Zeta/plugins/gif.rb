@@ -33,8 +33,10 @@ module Plugins
     private
 
     def search(query)
-      url = URI.encode "http://www.gifbin.com/search/#{query}/"
-      doc = Nokogiri::HTML( open(url) )
+      parser = URI::Parser.new
+      url = parser.escape "http://www.gifbin.com/search/#{query}/"
+
+      doc = Nokogiri::HTML( RestClient.get(url).body )
       e = doc.css('.thumbs li').length
       return "No Results Found" if e == 0
       result = doc.css('.thumbs li')[rand(e)].css('a img').attribute('src').text.gsub(/tn_/, '')
@@ -42,16 +44,20 @@ module Plugins
     end
 
     def gifbin
-      url = URI.encode 'http://www.gifbin.com/random'
-      doc = Nokogiri.HTML(open url)
+      parser = URI::Parser.new
+
+      url = parser.escape 'http://www.gifbin.com/random'
+      doc = Nokogiri.HTML(RestClient.get(url).body)
       doc.css('div#gifcontainer a img').attribute('src').text
     end
 
     def imgur
       # Cache results for 1 hour
       if @imgurray.empty? || @last_update >= (Time.now + 3600)
-        url = URI.encode('http://reddit.com/r/gifs.json')
-        doc = JSON.load(open(url))
+        parser = URI::Parser.new
+
+        url = parser.escape('http://reddit.com/r/gifs.json')
+        doc = JSON.load(RestClient.get(url).body)
 
         doc['data']['children'].each_with_index do |post, index|
           if doc['data']['children'][index]['data']['url'].to_s =~ /imgur/

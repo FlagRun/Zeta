@@ -51,8 +51,9 @@ module Plugins
           react_on: :channel
 
     def execute(msg, url)
+      parser = URI::Parser.new
       url = "http://#{url}" unless url=~/^https?:\/\//
-      url = URI.encode(url)
+      url = parser.escape(url)
 
       # Ignore items on blacklist
       # blacklist = DEFAULT_BLACKLIST.dup

@@ -23,10 +23,11 @@ module Plugins
 
 
     def wotd(m)
-      url = URI.encode "http://www.urbandictionary.com/"
+      parser = URI::Parser.new
+      url = parser.escape("http://www.urbandictionary.com/")
+
       doc = Nokogiri.HTML(
-          # RestClient.get(url)
-          open(url)
+          RestClient.get(url).body
       )
       word = doc.at_css('.word').text.strip[0..40]
       meaning = doc.at_css('.meaning').text.strip[0..450] + "... \u263A"
@@ -35,13 +36,12 @@ module Plugins
 
     private
     def search(query)
-      url = URI.encode "http://api.urbandictionary.com/v0/define?term=#{query}"
-      # Nokogiri.HTML(open url).at_css('.meaning').text.strip[0..500]
+      parser = URI::Parser.new
+      url = parser.escape "http://api.urbandictionary.com/v0/define?term=#{query}"
 
       # Load API data
       data = JSON.parse(
-          #RestClient.get(url)
-          open(url).read
+          RestClient.get(url).body
       )
 
       # Return if nothing is found
