@@ -22,8 +22,10 @@ module Plugins
     private
     def fetch_random_fml
       url = 'http://www.fmylife.com/random'
-      # fml_story = Nokogiri.HTML(RestClient.get(url)).at('div.article').text.strip
-      fml_story = Nokogiri.HTML(RestClient.get(url).body).at('div.article').text.strip
+
+      html_body = RestClient.get(url).body
+
+      fml_story = Nokogiri.HTML(html_body).at('article').text.strip
       fml_story[/^Today, (.+) FML/]
     rescue => e
       e.message
