@@ -9,7 +9,7 @@ module Plugins
 
     set(
         plugin_name: 'UrbanDictionary',
-        help: "Urban Dictionary -- Grabs a term from urbandictionary.com.\nUsage: `?urban <term>`; `?wotd`; `!?woty`"
+        help: "Urban Dictionary -- Grabs a term from urbandictionary.com.\nUsage: `?ud <term>`; `?wotd`;"
     )
 
     match /urban (.*)/, method: :query
