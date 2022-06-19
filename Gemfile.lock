@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zetabot (2.0.9)
+    zetabot (2.1.0)
       actionview
       chronic
       chronic_duration
