@@ -42,13 +42,13 @@ GEM
   remote: https://rubygems.org/
   specs:
     Ascii85 (1.1.0)
-    actionview (7.0.3)
-      activesupport (= 7.0.3)
+    actionview (7.0.4.1)
+      activesupport (= 7.0.4.1)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    activesupport (7.0.3)
+    activesupport (7.0.4.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -153,7 +153,7 @@ GEM
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     humanize-bytes (2.2.0)
-    i18n (1.10.0)
+    i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     interactive_editor (0.0.11)
       spoon (>= 0.0.1)
@@ -205,7 +205,7 @@ GEM
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
-    minitest (5.15.0)
+    minitest (5.17.0)
     mkfifo (0.1.1)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -215,7 +215,7 @@ GEM
       connection_pool (~> 2.2)
     net_http_timeout_errors (0.3.5)
     netrc (0.11.0)
-    nokogiri (1.13.6-x86_64-darwin)
+    nokogiri (1.14.0-x86_64-linux)
       racc (~> 1.4)
     numerizer (0.1.1)
     oauth2 (1.4.9)
@@ -240,7 +240,7 @@ GEM
       ttfunk
     persist (1.0.0)
     public_suffix (4.0.7)
-    racc (1.6.0)
+    racc (1.6.2)
     rack (2.2.3.1)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
@@ -288,7 +288,7 @@ GEM
     tilt (2.0.10)
     time-lord (1.0.1)
     ttfunk (1.7.0)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
       unf_ext
@@ -313,7 +313,7 @@ GEM
       nokogiri
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   bundler (~> 2.3)
