@@ -29,7 +29,7 @@ module Plugins
 
     #####
     def initialize(*args)
-      @api_src = %w{wu noaa darksky owm}
+      @api_src = %w{noaa owm}
       @store = Persist.new(File.join(Dir.home, '.zeta', 'cache', 'weather.pstore'))
       super
     end
@@ -40,17 +40,17 @@ module Plugins
       # Lookup user from pstore
       if !@store[msg.user.to_s].nil? && query.nil?
         stored_location, stored_source = @store[msg.user.to_s].split('::')
-        stored_source = @api_src.include?(stored_source) ? stored_source : 'darksky'
+        stored_source = @api_src.include?(stored_source) ? stored_source : 'owm'
         data = send("#{stored_source}_src", stored_location)
         # location = geolookup(@store[msg.user.to_s])
         # data = wunderground_src(stored_location, false)
       elsif query.nil?
-        return msg.reply 'No location set. ?setw <location> :(darksky|noaa|apixu|owm)'
+        return msg.reply 'No location set. ?setw <location> :(noaa|owm)'
       else
         # data = wu_src(query, true)
         src = query[/:\w+/].gsub(/:/, '') if query[/:\w+/]
         query = query.gsub(/:\w+/, '').strip if query
-        true_src = @api_src.include?(src) ? src : 'darksky'
+        true_src = @api_src.include?(src) ? src : 'owm'
         data = send("#{true_src}_src", query)
       end
 
@@ -67,7 +67,7 @@ module Plugins
       query = query.gsub(/:\w+/, '').strip if query
 
       # Sanity Check
-      true_src = @api_src.include?(src) ? src : 'darksky'
+      true_src = @api_src.include?(src) ? src : 'owm'
       data = send("#{true_src}_src", query)
 
       # Error
@@ -117,47 +117,6 @@ module Plugins
                   "≈ Wind: #{wind.convert_to('mile').to_i.round(2)} mph (#{wind.to_i.round(2)} km/h) ∴"
 
       return data
-    end
-
-    # DarkSky - https://darksky.net/dev
-    def darksky_src(location)
-      location = CGI.escape(location)
-
-      ac = JSON.parse(
-        RestClient.get("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}").body,
-        object_class: OpenStruct
-      )
-      return nil if ac.results.nil? ## Unable to locate
-
-      ac = ac.results[0]
-      lat = ac.geometry.location.lat
-      lon = ac.geometry.location.lng
-
-      data = JSON.parse(
-        RestClient.get("https://api.darksky.net/forecast/#{Config.secrets[:darksky]}/#{lat},#{lon}").body,
-        object_class: OpenStruct
-      )
-      data.ac = ac
-      current = data.currently
-      alerts = data.alerts.count rescue 0
-      c = Unitwise(current.temperature, '[degF]').convert_to('Cel').to_i
-      c_feels = Unitwise(current.apparentTemperature, '[degF]').convert_to('Cel').to_i
-      p = Unitwise(current.pressure.to_f, 'mbar')
-      gusts = Unitwise(current.windGust, 'mile').convert_to('kilometer').to_i
-
-      tempstring = "#{current.temperature.to_i} F (#{c} C)"
-
-      data.reply = "DS ∴ #{ac.formatted_address} " \
-                  "≈ #{TZInfo::Timezone.get(data.timezone).now.strftime("%c")} " \
-                  "≈ #{current.summary} #{tempstring} " \
-                  "≈ Humidity: #{(current.humidity * 100).round(2)}% " \
-                  "≈ Pressure: #{p.convert_to('[in_i\'Hg]').to_f.round(2)} in/Hg " \
-                  "(#{p.convert_to("kPa").to_f.round(2)} kPa) " \
-                  "≈ Wind: gusts upto #{current.windGust} mph (#{gusts} km/h) ≈ Alerts: #{alerts} ∴"
-
-      return data
-      # rescue
-      #   return nil
     end
 
     # NOAA - https://graphical.weather.gov/xml/

@@ -27,6 +27,8 @@ ConfigStruct = Struct.new(
                          :secure_host,
                          :options,
                          :debug,
+                         :quotes_api_key,
+                         :quotes_api_url,
                          :secrets
 )
 # Initialize Config

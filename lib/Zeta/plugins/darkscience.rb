@@ -34,7 +34,7 @@ module Plugins
             RestClient.post(
                 'https://darchoods.net/api/irc/channel/view',
                 {
-                  auth_token: Config.secrets[:darkscience],
+                  auth_token: Config.quotes_api_key,
                   channel: chan,
                 }
             )
@@ -67,7 +67,7 @@ module Plugins
             RestClient.post(
                 'https://darchoods.net/api/irc/user/view',
                 {
-                  auth_token: Config.secrets[:darkscience],
+                  auth_token: Config.quotes_api_key,
                   username: nick,
                 }
             )
@@ -106,9 +106,9 @@ module Plugins
       begin
         data = JSON.parse(
             RestClient.post(
-                'https://darchoods.net/api/irc/user/view',
+                "https://#{Config.quotes_api_url}/api/irc/user/view",
                 {
-                  auth_token: Config.secrets[:darkscience],
+                  auth_token: Config.quotes_api_key,
                   username: nick,
                 }
             )
@@ -141,9 +141,9 @@ module Plugins
       begin
         request = JSON.parse(
             RestClient.post(
-                'https://darchoods.net/api/qdb/create',
+              "https://#{Config.quotes_api_url}/api/qdb/create",
                 {
-                  auth_token: Config.secrets[:darkscience],
+                  auth_token: Config.quotes_api_key,
                   channel: m.channel,
                   author: m.user,
                   quote: quote
@@ -164,9 +164,9 @@ module Plugins
       begin
         request = JSON.parse(
             RestClient.post(
-                'https://darchoods.net/api/qdb/search/byId',
+              "https://#{Config.quotes_api_url}/api/qdb/search/byId",
                 {
-                  auth_token: Config.secrets[:darkscience],
+                  auth_token: Config.quotes_api_key,
                   channel: m.channel,
                   quote_id: search
                 }
@@ -189,8 +189,8 @@ module Plugins
       begin
         request = JSON.parse(
             RestClient.post(
-                'https://darchoods.net/api/qdb/random',
-                { auth_token: Config.secrets[:darkscience],
+              "https://#{Config.quotes_api_url}/api/qdb/random",
+                { auth_token: Config.quotes_api_key,
                   channel: m.channel
                 }
             )
