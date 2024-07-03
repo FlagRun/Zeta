@@ -152,7 +152,7 @@ module Plugins
         )
         quote = Hashie::Mash.new(request)
 
-        m.reply "Quote ##{quote.data.quote.quote_id} added by #{m.user}!"
+        m.reply "Quote ##{quote.response.quote.quote_id} added by #{m.user}!"
       rescue RestClient::Unauthorized
         m.action_reply "isn't currently authorized to do that"
       rescue
@@ -174,9 +174,9 @@ module Plugins
         )
         quote = Hashie::Mash.new(request)
 
-        return m.reply 'There is no quote by that ID' unless quote.data.quote
+        return m.reply 'There is no quote by that ID' unless quote.response.quote
 
-        m.reply "QDB##{quote.data.quote.quote_id}: #{quote.data.quote.content}"
+        m.reply "QDB##{quote.response.quote.quote_id}: #{quote.response.quote.content}"
       rescue RestClient::Unauthorized
         m.action_reply "isn't currently authorized to do that"
       rescue
@@ -197,7 +197,7 @@ module Plugins
         )
         quote = Hashie::Mash.new(request)
 
-        m.reply "QDB##{quote.data.quote.quote_id}: #{quote.data.quote.content}"
+        m.reply "QDB##{quote.response.quote.quote_id}: #{quote.response.quote.content}"
       rescue RestClient::Unauthorized
         m.action_reply "isn't currently authorized to do that"
       rescue
