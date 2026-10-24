@@ -42,4 +42,11 @@ RSpec.describe Plugins::UrbanDictionary do
     say 'bob', '.wotd'
     expect(replies).to eq(["UD↦ yeet -- to throw... \u263A"])
   end
+
+  it 'shows the word of the day for a bare .ud' do
+    stub_request(:get, 'http://www.urbandictionary.com/')
+      .to_return(body: '<div class="word">yeet</div><div class="meaning">to throw</div>')
+    say 'bob', '.ud'
+    expect(replies).to eq(["UD↦ yeet -- to throw... \u263A"])
+  end
 end

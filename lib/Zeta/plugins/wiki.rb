@@ -35,8 +35,8 @@ module Plugins
 
     def wiki(term)
       # URI Encode
-      term = URI.encode_www_form_component(term).gsub("+", "%20")
-      url = "https://en.wikipedia.org/w/index.php?search=#{term}"
+      query = URI.encode_www_form_component(term).gsub("+", "%20")
+      url = "https://en.wikipedia.org/w/index.php?search=#{query}"
 
       # Truncate text and url if they are too long
       text = Cinch::Toolbox.truncate(get_def(term, url), @max_length)

@@ -28,4 +28,9 @@ RSpec.describe Plugins::DNSBlacklist do
     say 'bob', '.dnsbl 192.0.2.1'
     expect(replies).to eq(['No Results Found (192.0.2.1)'])
   end
+
+  it 'documents itself in the help listing' do
+    say 'bob', '.help dns blacklist'
+    expect(notices_to('bob')).to eq(["Help for \x02DNS Blacklist\x0F:", '?dnsbl <host>'])
+  end
 end

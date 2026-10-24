@@ -15,4 +15,9 @@ RSpec.describe Plugins::DBZ do
     say 'bob', 'over 8999'
     expect(replies).to be_empty
   end
+
+  it 'shows its help under its plugin name' do
+    say 'bob', '.help dragonball z!'
+    expect(notices_to('bob')).to eq(["Help for \x02DragonBall Z!\x0F:", "It's Over Nine Thousand!"])
+  end
 end

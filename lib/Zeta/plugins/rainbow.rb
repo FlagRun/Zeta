@@ -18,7 +18,7 @@ module Plugins
     set plugin_name: "Rainbow", help: "Rainbowificates your text.\nUsage: `?rainbow [text]`.\nUsage: `?eyerape [text]`.", suffix: /$/
 
     def rainbowification(s)
-      s.gsub(/\x03([0-9]{2}(,[0-9]{2})?)?/, "") # Because total function abuse.
+      s = s.gsub(/\x03([0-9]{2}(,[0-9]{2})?)?/, "") # Because total function abuse.
       colour = %w{04 07 08 09 10 06 13}
       i = Random.new.rand(0..colour.size-1);
       new_string = ""
@@ -31,7 +31,7 @@ module Plugins
 
     def eyerapeification(s)
       sd = s.dup
-      sd.gsub(/\x03([0-9]{2}(,[0-9]{2})?)?/, "") # Because total function abuse.
+      sd = sd.gsub(/\x03([0-9]{2}(,[0-9]{2})?)?/, "") # Because total function abuse.
       colour = %w{04 07 08 09 10 06 13}
       offset = Random.new.rand(0..colour.size-1)
       sd = "\x02" + sd.upcase.split(" ").map { |c|

@@ -23,6 +23,16 @@ RSpec.describe Plugins::Silly do
       expect(replies).to eq(['bob: THIS IS HALLOWEEN!'])
     end
 
+    it 'answers to .halloweve too' do
+      travel_to(Time.utc(2026, 10, 31, 12)) { say 'bob', '.halloweve' }
+      expect(replies).to eq(['bob: THIS IS HALLOWEEN!'])
+    end
+
+    it 'rolls over to next Halloween once it has passed' do
+      travel_to(Time.utc(2026, 11, 1, 12)) { say 'bob', '.halloween' }
+      expect(replies).to eq(["bob: There's 12 months 3 days 12 hours until Hallow's Eve!"])
+    end
+
     it 'counts down to Halloween in a timezone' do
       travel_to(Time.utc(2026, 10, 30, 12)) { say 'bob', '.halloween -5' }
       expect(replies).to eq(["bob: There's 17 hours until Hallow's Eve!"])
@@ -43,6 +53,13 @@ RSpec.describe Plugins::Silly do
     it 'defaults to UTC' do
       travel_to(Time.utc(2026, 1, 1)) { say 'bob', '.tz' }
       expect(replies).to eq(['bob: 2026-01-01 00:00:00 UTC'])
+    end
+
+    %w[123 5:123 +5:300].each do |offset|
+      it "rejects the over-long offset #{offset}" do
+        say 'bob', ".tz #{offset}"
+        expect(replies).to eq(['bob: A valid timezone was not supplied.'])
+      end
     end
 
     %w[tz xmas halloween newyear].each do |cmd|
@@ -81,14 +98,23 @@ RSpec.describe Plugins::Silly do
     expect(replies).to eq(['Ïrön Mäïdën'])
   end
 
+  # The comebacks are picked at random; given enough tries every one shows up.
   it 'responds to bot insults' do
     say 'bob', 'what a stupid bot'
     expect(replies.size).to eq(1)
+
+    80.times { say 'bob', 'you dumb bot' }
+    expect(replies.uniq).to match_array(['Stupid human!', 'Dumb human!', 'Stupid meatbag.',
+                                         'Silly human, your insults cannot harm me!', 'get rekt', 'u fkn w0t m8'])
   end
 
   it 'responds to feature requests' do
     say 'bob', 'I have a feature request'
-    expect(replies).to contain_exactly(satisfy { |r| r.match?(/user error|intended|WONTFIX|PEBKAC|10T/) })
+    expect(replies.size).to eq(1)
+
+    80.times { say 'bob', 'feature request: more cowbell' }
+    expect(replies.uniq).to match_array(['user error.', 'working as intended', 'Status: WONTFIX',
+                                         'PEBKAC issue', 'ID:10T Error'])
   end
 
   describe 'poking' do

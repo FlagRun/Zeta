@@ -17,9 +17,10 @@ module Admin
 
     # Methods
     def nick(m, nick)
+      old_nick = @bot.nick
       bot.nick = nick
       synchronize(:nickchange) do
-        @bot.handlers.dispatch :admin, m, "My nick got changed from #{@bot.last_nick} to #{@bot.nick} by #{m.user.nick}", m.target
+        @bot.handlers.dispatch :admin, m, "My nick got changed from #{old_nick} to #{nick} by #{m.user.nick}", m.target
       end
     end
 

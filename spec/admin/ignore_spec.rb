@@ -40,7 +40,7 @@ RSpec.describe Admin::Ignore do
   it 'lists ignored users' do
     Blacklist.users.push('bob', 'carol')
     say 'opal', '.ignorelist'
-    expect(replies).to eq(['Currently ignored users are: bob, carol'])
+    expect(replies).to eq(['Currently, ignored users are: bob, carol'])
   end
 
   it 'disables and re-enables the current channel' do
@@ -60,10 +60,26 @@ RSpec.describe Admin::Ignore do
     expect(replies.last).to eq('Hello, bob!')
   end
 
+  it 'persists every change to the blacklist cache' do
+    file = File.join(Dir.home, '.zeta', 'cache', 'blacklist.rb')
+    saved = -> { File.open(file) { |f| Marshal.load(f) } }
+
+    say 'opal', '.ignore bob'
+    expect(saved.call.users).to eq(['bob'])
+    say 'opal', '.unignore bob'
+    expect(saved.call.users).to be_empty
+    say 'opal', '.disable #other'
+    expect(saved.call.channels).to eq(['#other'])
+    say 'opal', '.enable #other'
+    expect(saved.call.channels).to be_empty
+  end
+
   it 'disables and enables other channels' do
     say 'opal', '.disable #other'
+    expect(actions_to).to eq(['has disabled #other buffer'])
     expect(Blacklist.channels).to eq(['#other'])
     say 'opal', '.enable #other'
+    expect(actions_to.last).to eq('has enabled #other buffer')
     expect(Blacklist.channels).to be_empty
     say 'opal', '.enable #other'
     expect(replies).to eq(['Channel is currently enabled'])

@@ -26,7 +26,7 @@ RSpec.describe Plugins::BotInfo do
   it 'notices bot information' do
     pm 'bob', 'info'
     expect(notices_to('bob')).to eq([
-                                      "Hello I'm Zeta and im running cinch(#{Cinch::VERSION}) with ruby(#{RUBY_VERSION}).",
+                                      "Hello I'm Zeta.",
                                       'I am currently trolling 9 users in 1 channels with an uptime of ' \
                                       "#{notices_to('bob')[1][/uptime of (.*)\z/, 1]}",
                                       "My master is Liothen and he has plugged me with #{Bot.plugins.size - 10} plugins"

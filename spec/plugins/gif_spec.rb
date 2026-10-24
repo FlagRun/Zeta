@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Plugins::Gif do
-  before { plugin(described_class).instance_variable_set(:@imgurray, []) }
+  # Expire the hour-long imgur cache left behind by earlier examples
+  before { plugin(described_class).instance_variable_set(:@last_update, Time.at(0)) }
 
   it 'searches gifbin' do
     stub_request(:get, 'http://www.gifbin.com/search/cats/')
@@ -41,5 +42,20 @@ RSpec.describe Plugins::Gif do
 
     expect(replies).to eq(['IMGUR↦ https://i.imgur.com/old.gif', 'IMGUR↦ https://i.imgur.com/new.gif'])
     expect(stub).to have_been_requested.twice
+  end
+  it 'drops stale gifs when the refreshed list has none' do
+    stub_request(:get, 'http://reddit.com/r/gifs.json').to_return(
+      { body: { data: { children: [{ data: { url: 'https://i.imgur.com/old.gif' } }] } }.to_json },
+      { body: { data: { children: [{ data: { url: 'https://v.redd.it/xyz' } }] } }.to_json }
+    )
+    say 'bob', '.imgif'
+    travel_to(Time.now + 3601) { say 'bob', '.imgif' }
+
+    expect(replies).to eq(['IMGUR↦ https://i.imgur.com/old.gif', 'IMGUR↦ '])
+  end
+
+  it 'is listed in .help' do
+    say 'bob', '.help gif'
+    expect(notices_to('bob')).to eq(["Help for \u0002GIF\u000f:", '?randomgif | ?rgif | ?gifme <query>'])
   end
 end

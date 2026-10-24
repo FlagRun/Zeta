@@ -73,7 +73,8 @@ RSpec.describe Plugins::DarkScience do
     end
 
     it 'shows user statistics' do
-      stub_request(:post, 'https://quotes.example.org/api/irc/user/view').to_return(body: user.to_json)
+      stub_request(:post, 'https://quotes.example.org/api/irc/user/view')
+        .with(body: { auth_token: 'quote-key', username: 'alice' }).to_return(body: user.to_json)
       say 'bob', '.stats alice'
       expect(replies).to eq(['Statistics → alice ~ Currently in 3 ~ Owner of 1 channels ~ Admin of 0 channels ~ ' \
                              'Operator(halfop) of 2(0) channels ~ and finally voiced in 4 channels'])
@@ -96,5 +97,69 @@ RSpec.describe Plugins::DarkScience do
       say 'bob', '.peek #chat'
       expect(replies).to eq(['Peek → Kaboom'])
     end
+    it 'shows away messages and last-seen times for offline users' do
+      user[:data][:user].merge!(online: false, online_last: Time.utc(2026, 6, 1, 10).to_i,
+                                away: true, away_msg: 'gone fishing', identified: false)
+      stub_request(:post, 'https://darchoods.net/api/irc/user/view').to_return(body: user.to_json)
+      travel_to(Time.utc(2026, 6, 1, 12)) { say 'bob', '.finger alice' }
+      expect(replies).to eq(['Finger → alice!alice@alice.host ~ Not Identified ~ Currently in 3 channels  ~ ' \
+                             'Seen about 2 hours ago  ~ Geo: NL ~ Away: gone fishing ~ Client: irssi ~ '])
+    end
+
+    it 'falls back when the away message and last-seen time are missing' do
+      user[:data][:user].merge!(online: false, away: true)
+      stub_request(:post, 'https://darchoods.net/api/irc/user/view').to_return(body: user.to_json)
+      travel_to(Time.utc(2026, 6, 1, 12)) { say 'bob', '.finger alice' }
+      expect(replies).to eq(['Finger → alice!alice@alice.host ~ Identified ~ Currently in 3 channels  ~ ' \
+                             'Seen over 56 years ago  ~ Geo: NL ~ Away: No Message ~ Client: irssi ~ '])
+    end
+
+    { 'finger' => 'https://darchoods.net', 'stats' => 'https://quotes.example.org' }.each do |cmd, host|
+      it "stops after an authorization failure on .#{cmd}" do
+        stub_request(:post, "#{host}/api/irc/user/view").to_return(status: 401)
+        say 'bob', ".#{cmd} alice"
+        expect(actions_to).to eq(["isn't currently authorized to do that"])
+        expect(replies).to be_empty
+      end
+    end
+
+    it 'reports finger outages' do
+      stub_request(:post, 'https://darchoods.net/api/irc/user/view').to_return(body: user.merge(status_code: 503).to_json)
+      say 'bob', '.finger alice'
+      expect(replies).to eq(['Finger → Service Down'])
+    end
+
+    it 'reports unknown users in statistics' do
+      stub_request(:post, 'https://quotes.example.org/api/irc/user/view')
+        .to_return(body: { status_code: 200, data: { user: [] } }.to_json)
+      say 'bob', '.stats ghost'
+      expect(replies).to eq(['Statistics → User Not Found'])
+    end
+
+    it 'reports statistics outages' do
+      stub_request(:post, 'https://quotes.example.org/api/irc/user/view').to_return(body: user.merge(status_code: 503).to_json)
+      say 'bob', '.stats alice'
+      expect(replies).to eq(['Statistics → Service Down'])
+    end
+
+    it 'reports peek outages' do
+      stub_request(:post, 'https://darchoods.net/api/irc/channel/view')
+        .to_return(body: { status_code: 404, data: { channel: { name: '#chat' } } }.to_json)
+      say 'bob', '.peek #chat'
+      expect(replies).to eq(['Peek → Service Down'])
+    end
+
+    it 'reports unknown channels' do
+      stub_request(:post, 'https://darchoods.net/api/irc/channel/view')
+        .to_return(body: { status_code: 200, data: { channel: [] } }.to_json)
+      say 'bob', '.peek #nowhere'
+      expect(replies).to eq(['Peek → Channel Not Found'])
+    end
+  end
+
+  it 'is listed in .help' do
+    say 'bob', '.help darkscience api'
+    expect(notices_to('bob')).to eq(["Help for \u0002DarkScience API\u000f:",
+                                     '?finger <nick>, ?peek <#channel>, ?stats <nick>, ?quote, ?addquote <quote>, ?quote <id>'])
   end
 end

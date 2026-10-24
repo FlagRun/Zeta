@@ -23,6 +23,22 @@ RSpec.describe Admin::AutoVoice do
     expect(sent).not_to include('MODE #test +v alice')
   end
 
+  it 'accepts true and false as switches' do
+    say 'opal', '.autovoice true'
+    say 'opal', '.autovoice status'
+    say 'opal', '.autovoice false'
+    say 'opal', '.autovoice status'
+    expect(replies).to eq(['AutoVoice is now enabled!', 'AutoVoice is currently: On',
+                           'AutoVoice is now disabled!', 'AutoVoice is currently: Off'])
+  end
+
+  it 'starts out disabled when freshly loaded' do
+    Bot.plugins.unregister_plugin(plugin(described_class))
+    Bot.plugins.register_plugin(described_class)
+    say 'opal', '.autovoice status'
+    expect(replies).to eq(['AutoVoice is currently: Off'])
+  end
+
   it 'reports its status' do
     say 'opal', '.autovoice status'
     expect(replies).to eq(['AutoVoice is currently: Off'])

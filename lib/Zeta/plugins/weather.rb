@@ -25,8 +25,6 @@ module Plugins
     match /setw (.+)/, method: :set_location
     match /wx (.+)/, method: :weather
     match /weather (.+)/, method: :weather
-    match /almanac (.+)/, method: :almanac
-    match /hurricane/, method: :hurricane
 
     #####
     def initialize(*args)

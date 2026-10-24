@@ -5,6 +5,8 @@ RSpec.describe Plugins::BotHelp do
     say 'bob', '.help'
     expect(notices_to('bob').first).to eq("All #{Bot.plugins.size} currently loaded plugins for Zeta:")
     expect(notices_to('bob').join(' ')).to include('Rainbow', '8ball', 'Weather')
+    expect(notices_to('bob').size).to eq(3)
+    expect(notices_to('bob').last).to eq('To view help for a plugin, use `!help <plugin name>`.')
   end
 
   it 'shows help for a plugin (case-insensitive)' do

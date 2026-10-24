@@ -50,10 +50,10 @@ module Admin
 
     def bl_defaults(m)
       clear_blacklist()
-      Blacklist.urls = Config.options[:blacklist][:urls]
-      Blacklist.users = Config.options[:blacklist][:users]
-      Blacklist.masks = Config.options[:blacklist][:masks]
-      Blacklist.channels = Config.options[:blacklist][:channels]
+      Blacklist.urls = Config.options[:blacklist][:urls].dup
+      Blacklist.users = Config.options[:blacklist][:users].dup
+      Blacklist.masks = Config.options[:blacklist][:masks].dup
+      Blacklist.channels = Config.options[:blacklist][:channels].dup
       save_blacklist()
       m.reply 'Default Blacklist Loaded'
     end

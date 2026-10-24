@@ -39,4 +39,27 @@ RSpec.describe Plugins::Wolfram do
     say 'bob', '.wolframalpha anything'
     expect(replies).to eq(['Unable to get a results'])
   end
+  it 'notices three-line results to the user' do
+    stub_request(:get, api).with(query: hash_including(input: 'roots of x^3-x')).to_return(body: result('x^3-x = 0', "x = -1\nx = 0\nx = 1"))
+    say 'bob', '.calc roots of x^3-x'
+    expect(replies).to be_empty
+    expect(notices_to('bob')).to eq(['# Wolfram Results #', ' x^3-x = 0', ' x = -1', 'x = 0', 'x = 1'])
+  end
+
+  it 'answers two-line results in the channel' do
+    stub_request(:get, api).with(query: hash_including({})).to_return(body: result('sqrt(4)', "2\n-2"))
+    say 'bob', '.calc sqrt(4)'
+    expect(replies).to eq(["sqrt(4) = 2", '-2'])
+  end
+
+  it 'reports an empty input interpretation' do
+    stub_request(:get, api).with(query: hash_including({})).to_return(body: result('', '42'))
+    say 'bob', '.calc nothing'
+    expect(replies).to eq(['Unable to get a results'])
+  end
+
+  it 'is listed in .help' do
+    say 'bob', '.help wolfram alpha plugin'
+    expect(notices_to('bob')).to eq(["Help for \u0002Wolfram Alpha plugin\u000f:", 'WIP'])
+  end
 end

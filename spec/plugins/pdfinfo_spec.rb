@@ -52,6 +52,33 @@ RSpec.describe Plugins::PDFinfo do
     stub_request(:get, url).to_return(status: 404)
     say 'bob', url
     expect(replies).to be_empty
-    expect(IrcHarness.error_log).to include('OpenURI::HTTPError')
+    expect(IrcHarness.error_log.lines.map { _1.chomp.split(' !! ', 2).last })
+      .to eq(['[Plugins::PDFinfo] OpenURI::HTTPError: 404 '])
+  end
+
+  it 'parses files right at the size limit and refuses one byte more' do
+    serve(build_pdf('<< /Title (Edge) >>'), length: 4_000_000)
+    say 'bob', url
+    stub_request(:head, url).to_return(headers: { 'Content-Length' => '4000001' })
+    say 'bob', url
+    expect(replies).to eq(['PDF (3906kb) → Edge', 'PDF → Unable to parse. file too big 3906kb'])
+  end
+
+  it 'also inspects links matching extra configured patterns' do
+    options = Bot.config.plugins.options
+    options[described_class] = { blacklist: [%r{/download/\d+$}] }
+    download = 'https://files.example/download/42'
+    stub_request(:head, download).to_return(headers: { 'Content-Length' => '1024' })
+    stub_request(:get, download).to_return(body: build_pdf('<< /Title (Configured) >>'))
+    say 'bob', download
+    expect(replies).to eq(['PDF (1kb) → Configured'])
+  ensure
+    options.delete(described_class)
+  end
+
+  it 'documents itself in the help listing' do
+    say 'bob', '.help pdf information'
+    expect(notices_to('bob')).to eq(["Help for \x02PDF Information\x0F:",
+                                     'This plugin will check a url for a pdf link and fetch metadata from it'])
   end
 end

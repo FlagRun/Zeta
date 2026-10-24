@@ -5,6 +5,12 @@ RSpec.describe Plugins::Macros do
     expect(plugin(described_class).macros).to include('dnf', 'punch')
   end
 
+  it 'loads the locale when the plugin is created' do
+    fresh = described_class.new(Bot)
+    fresh.unregister
+    expect(fresh.macros).to include('dnf' => 'Duke Nukem Forever came out. Your argument is invalid.')
+  end
+
   it 'sends a simple macro' do
     say 'bob', '.dnf'
     expect(replies).to eq(['Duke Nukem Forever came out. Your argument is invalid.'])
@@ -45,6 +51,34 @@ RSpec.describe Plugins::Macros do
     plugin(described_class).macros.delete('where')
   end
 
+  describe 'hash macros' do
+    let(:macros) { plugin(described_class).macros }
+
+    after { macros.delete('multi') }
+
+    it 'sends every line in order unless the type is random' do
+      macros['multi'] = { 'lines' => ['one [self]', 'two', 'three'] }
+      say 'bob', '.multi'
+      expect(replies).to eq(['one bob', 'two', 'three'])
+    end
+
+    it 'sends every line as an action' do
+      macros['multi'] = { 'sent_as' => 'action', 'lines' => ['waves at [in]', 'bows'] }
+      say 'bob', '.multi carol'
+      expect(actions_to).to eq(['waves at carol', 'bows'])
+      expect(replies).to be_empty
+    end
+
+    it 'waits before each line when a sleep is configured' do
+      log = []
+      allow(plugin(described_class)).to receive(:sleep) { |secs| log << "sleep #{secs}" }
+      allow(Bot.irc).to receive(:send).and_wrap_original { |orig, line| log << line; orig.call(line) }
+      macros['multi'] = { 'sleep' => 2, 'lines' => %w[ready set] }
+      say 'bob', '.multi'
+      expect(log).to eq(['sleep 2', 'PRIVMSG #test :ready', 'sleep 2', 'PRIVMSG #test :set'])
+    end
+  end
+
   it 'ignores unknown macros' do
     say 'bob', '.definitelynotamacro'
     expect(replies).to be_empty
@@ -64,6 +98,20 @@ RSpec.describe Plugins::Macros do
   it 'reloads macros for IRC operators' do
     pm 'opal', '.reload'
     expect(notices_to('opal')).to eq(['Macros have been reloaded.'])
+  end
+
+  it 'reads the macros back from the locale on reload' do
+    macros = plugin(described_class)
+    original = macros.macros
+    macros.instance_variable_set(:@macros, {})
+    say 'bob', '.dnf'
+    expect(replies).to be_empty
+
+    pm 'opal', '.reload'
+    say 'bob', '.dnf'
+    expect(replies).to eq(['Duke Nukem Forever came out. Your argument is invalid.'])
+  ensure
+    macros.instance_variable_set(:@macros, original) if macros.macros.empty?
   end
 
   it 'does not reload macros for regular users' do

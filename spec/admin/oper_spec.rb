@@ -13,6 +13,15 @@ RSpec.describe Admin::Oper do
     expect(sent.grep(/\AOPER/)).to be_empty
   end
 
+  it 'needs both a username and a password' do
+    Config.oper_username = 'zeta'
+    say 'opal', '.operup'
+    Config.oper_username = nil
+    Config.oper_password = 's3cret'
+    say 'opal', '.operup'
+    expect(sent.grep(/\AOPER/)).to be_empty
+  end
+
   it 'kills users' do
     say 'opal', '.kill bob being rude'
     expect(sent).to include('KILL bob being rude')
@@ -34,6 +43,17 @@ RSpec.describe Admin::Oper do
     expect(messages_to('OperServ')).to eq(['mode #test +o Zeta', 'mode #test +mi'])
     expect(sent).to include('KILL bob This channel is being cleared')
     expect(sent).not_to include('KILL Zeta This channel is being cleared')
+    expect(replies).to eq(['This channel is being cleared', '#test has been cleared, 8 clients killed'])
+  end
+
+  it 'joins the channel before clearing it' do
+    say 'opal', '.clearchan #test yes'
+    expect(sent.index('JOIN #test')).to be < sent.index('KILL bob This channel is being cleared')
+  end
+
+  it 'also accepts true as confirmation' do
+    say 'opal', '.clearchan #test true'
+    expect(sent.grep(/\AKILL/).size).to eq(8)
     expect(replies.last).to eq('#test has been cleared, 8 clients killed')
   end
 
