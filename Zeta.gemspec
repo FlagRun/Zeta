@@ -26,24 +26,33 @@ Gem::Specification.new do |spec|
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.require_paths = ["lib"]
+  spec.required_ruby_version = ">= 3.2"
 
-  spec.add_development_dependency "bundler", "~> 2.4"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "bundler", ">= 2.4"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "webmock", "~> 3.0"
   spec.add_development_dependency "irbtools"
+
+  # Former default gems that are bundled/removed in Ruby 3.4+ / 4.0
+  spec.add_dependency 'logger'
+  spec.add_dependency 'ostruct'
+  spec.add_dependency 'base64'
+  spec.add_dependency 'bigdecimal'
+  spec.add_dependency 'csv'
+  spec.add_dependency 'pstore'
+  spec.add_dependency 'cgi'
 
   spec.add_dependency 'daemons'
   spec.add_dependency 'destructor'
   spec.add_dependency 'tzinfo'
   spec.add_dependency 'unitwise'
 
-  spec.add_dependency 'cinch'
-  spec.add_dependency 'cinch-cooldown'
+  spec.add_dependency 'ircinch' # maintained, drop-in fork of the archived cinch gem
   spec.add_dependency 'cinch-toolbox'
-  spec.add_dependency 'cinch-quotes'
 
   spec.add_dependency 'mkfifo'
-  spec.add_dependency 'nokogiri', "~> 1.13.6"
+  spec.add_dependency 'nokogiri', ">= 1.13.6"
   spec.add_dependency 'dronebl.rb'
   spec.add_dependency 'dnsbl-client'
 
@@ -69,7 +78,6 @@ Gem::Specification.new do |spec|
   # API
   spec.add_dependency 'wolfram'
   spec.add_dependency 'wolfram-alpha'
-  spec.add_dependency 'github_api'
   spec.add_dependency 'gist'
   spec.add_dependency 'discourse_api'
   spec.add_dependency 'video_info'

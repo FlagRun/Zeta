@@ -33,7 +33,7 @@ module Admin
 
     def botevalmsg(m, s)
       return unless Config.debug
-      return m.user.msg eval(s)
+      return m.user.send eval(s)
     rescue => e
       m.user.send "eval error: %s\n- %s (%s)" % [s, e.message, e.class.name]
     end

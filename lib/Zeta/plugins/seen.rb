@@ -24,7 +24,7 @@ module Plugins
 
     def listen(m)
       return if m.channel == '#services'
-      @users[m.user.nick] = SeenStruct.new(m.user, m.channel, Time.now)
+      @users[m.user.nick] = SeenStruct.new(m.user.nick, m.channel.name, Time.now)
     end
 
     def execute(m, nick)
@@ -33,7 +33,7 @@ module Plugins
         m.reply 'You are a Stupid human!'
       elsif nick == m.user.nick
         m.reply "Unfortunately, I see an idiot by the name of #{m.user.nick}"
-      elsif @users.key?(nick) && (@users[nick].where == m.channel)
+      elsif @users.key?(nick) && (@users[nick].where.to_s == m.channel.name)
         time_ago = time_ago_in_words(Time.at(@users[nick].time))
         m.reply "Seen ∴ \x0304#{@users[nick].who}\x0F was last seen talking in here about \x02#{time_ago}\x0F ago."
       else
@@ -53,7 +53,7 @@ module Plugins
     end
 
     def load_seen
-      if File.exists?(File.join(Dir.home, '.zeta', 'cache', 'seen.rb'))
+      if File.exist?(File.join(Dir.home, '.zeta', 'cache', 'seen.rb'))
         begin
           File.open(File.join(Dir.home, '.zeta', 'cache', 'seen.rb')) do |file|
             return Marshal.load(file)

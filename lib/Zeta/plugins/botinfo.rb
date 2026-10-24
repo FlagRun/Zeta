@@ -57,7 +57,7 @@ module Plugins
         uptime: ChronicDuration.output(Time.now.to_i - @started_at.to_i)
       }
 
-      tf = TagFormatter.new open(File.join(__dir__, '../botinfo.txt'),&:read), tags: tags
+      tf = TagFormatter.new File.read(File.join(__dir__, '../botinfo.txt')), tags: tags
 
       m.user.notice tf.parse
     end

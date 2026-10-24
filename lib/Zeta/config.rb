@@ -34,7 +34,7 @@ ConfigStruct = Struct.new(
 # Initialize Config
 Config = ConfigStruct.new
 
-if File.exists? File.join(Dir.home, '.zeta', 'config.rb')
+if File.exist? File.join(Dir.home, '.zeta', 'config.rb')
   begin
     require File.join(Dir.home, '.zeta', 'config.rb')
   rescue => e

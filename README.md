@@ -3,7 +3,7 @@ Cinch IRC bot written with plenty of help. I will not claim any of the plugins
 And will try to get the correct credits in source
 
 # Installation
-Zeta requires ruby >= 2.7.6 and rubygems. Installation beyond that is simple
+Zeta requires ruby >= 3.2 (tested on 4.0) and rubygems. Installation beyond that is simple
 
 _Steps_
 * gem install zetabot
@@ -15,7 +15,7 @@ _Docker_
 Zeta will need its config file mounted in the `.zeta/config.rb` image for her to function. 
 
 ```dockerfile
-FROM docker.io/ruby:2.7.6
+FROM docker.io/ruby:4.0
 RUN useradd zeta -m
 USER zeta
 WORKDIR /home/zeta/
@@ -27,6 +27,17 @@ CMD [ "zetabot"]
 
 _Plugins_
 All plugins are automatically loaded that are in the plugins directory
+
+_Development_
+
+```sh
+bundle install
+bundle exec rake   # runs the rspec suite
+```
+
+The specs boot the real bot against a temporary `$HOME` (see `spec/fixtures/config.rb`)
+and feed raw IRC lines through Cinch, recording what the bot sends. No network access is
+needed; HTTP APIs are stubbed with WebMock. Known bugs are kept as `pending` examples.
 
 ## Commands
 roles: owner,admin,operator,halfop,voice,nobody

@@ -17,14 +17,24 @@ module Admin
 
     # Methods
     def nick(m, nick)
+      old_nick = @bot.nick
       bot.nick = nick
       synchronize(:nickchange) do
-        @bot.handlers.dispatch :admin, m, "My nick got changed from #{@bot.last_nick} to #{@bot.nick} by #{m.user.nick}", m.target
+        @bot.handlers.dispatch :admin, m, "My nick got changed from #{old_nick} to #{nick} by #{m.user.nick}", m.target
       end
     end
 
-    def mode(m, nick)
-      bot.modes = m
+    def mode(m, modes)
+      add, remove = [], []
+      target = add
+      modes.strip.each_char do |c|
+        case c
+        when '+' then target = add
+        when '-' then target = remove
+        else target << c
+        end
+      end
+      bot.modes = (bot.modes | add) - remove
     end
 
     def quit(m, msg=nil)

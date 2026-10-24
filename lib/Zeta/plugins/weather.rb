@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'cgi/escape'
 require 'persist'
 require 'open-uri'
 require 'json'
@@ -24,8 +25,6 @@ module Plugins
     match /setw (.+)/, method: :set_location
     match /wx (.+)/, method: :weather
     match /weather (.+)/, method: :weather
-    match /almanac (.+)/, method: :almanac
-    match /hurricane/, method: :hurricane
 
     #####
     def initialize(*args)
@@ -41,7 +40,9 @@ module Plugins
       if !@store[msg.user.to_s].nil? && query.nil?
         stored_location, stored_source = @store[msg.user.to_s].split('::')
         stored_source = @api_src.include?(stored_source) ? stored_source : 'owm'
-        data = send("#{stored_source}_src", stored_location)
+        true_src = stored_source
+        query = stored_location
+        data = send("#{true_src}_src", query)
         # location = geolookup(@store[msg.user.to_s])
         # data = wunderground_src(stored_location, false)
       elsif query.nil?
@@ -74,9 +75,9 @@ module Plugins
       return msg.reply "No results found for #{query}." if data.nil?
 
       # Store and display general location
-      serial_location = "#{query}::#{src}"
+      serial_location = "#{query}::#{true_src}"
       @store[msg.user.to_s] = serial_location unless data.nil?
-      msg.reply "Your location is now set to #{data.ac.name}, #{data.ac.c}!"
+      msg.reply "Your location is now set to #{data.ac.formatted_address}!"
     end
 
     # -private
@@ -92,7 +93,7 @@ module Plugins
         ).body, object_class: OpenStruct
       )
 
-      return nil if ac.results.nil? ## Unable to locate
+      return nil if ac.results.blank? ## Unable to locate
 
       ac = ac.results[0]
       lat = ac.geometry.location.lat
@@ -108,6 +109,7 @@ module Plugins
       pressure = Unitwise(data.main.pressure.to_f, 'mbar')
       wind = Unitwise(data.wind.speed, 'kilometer')
 
+      data.ac = ac
       data.reply = "OWM ∴ #{ac.formatted_address} " \
                   "≈ #{(Time.now.utc + data.timezone.seconds).strftime("%c")} " \
                   "≈ #{data.weather[0].description},  #{temp.convert_to('[degF]').to_i.round(2)} F (#{temp.convert_to('Cel').to_i.round(2)} C) " \
@@ -127,7 +129,7 @@ module Plugins
         RestClient.get("https://maps.googleapis.com/maps/api/geocode/json?address=#{location}&key=#{Config.secrets[:google]}").body,
         object_class: OpenStruct
       )
-      return nil if ac.results.nil? ## Unable to locate
+      return nil if ac.results.blank? ## Unable to locate
 
       ac = ac.results[0]
       lat = ac.geometry.location.lat
@@ -140,13 +142,13 @@ module Plugins
       return nil if stations.nil? ## Unable to find station. probably not in the USA
 
       parsed = JSON.parse(
-        RestClient.get("#{CGI.escape(stations['observationStations'][0])}/observations/current").body,
+        RestClient.get("#{stations['observationStations'][0]}/observations/current").body,
         object_class: OpenStruct
       )
 
       data = parsed.properties
       data.ac = ac
-      f = data.temperature.value * 9 / 5
+      f = data.temperature.value * 9 / 5.0 + 32
       temp = "#{f.round(2)} F (#{data.temperature.value.to_i.round(2)} C) "
       wind = "Gusts: #{data.windGust.value} avg: #{data.windSpeed.value.to_i.round(2)}"
       feelslike = "#{data.windChill.value.to_i.round(2)} C"

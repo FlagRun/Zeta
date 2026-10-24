@@ -22,7 +22,7 @@ module Admin
     match 'ignorelist', method: :ignore_list
 
     def finalize
-      save_blacklist()
+      save_blacklist
     end
 
     # Methods
@@ -31,7 +31,7 @@ module Admin
       return m.reply("You can't ignore yourself") if m.user.nick == nickname
       u = User(nickname)
       if m.channel.users.member?(u)
-        if Blacklist.users.include? u
+        if Blacklist.users.include? u.to_s
           m.reply("#{nickname} is already being ignored")
         else
           Blacklist.users << u.to_s
@@ -40,7 +40,8 @@ module Admin
       else
         m.reply "#{nickname} isn't currently in channel"
       end
-      save_blacklist()
+
+      save_blacklist
     end
 
     def unignore_user(m, nickname)
@@ -52,7 +53,8 @@ module Admin
       else
         m.reply "#{nickname} isn't on the ignore list"
       end
-      save_blacklist()
+
+      save_blacklist
     end
 
     def disable_channel(m, channel=nil)
@@ -71,7 +73,8 @@ module Admin
           m.action_reply "has disabled #{m.channel.to_s} buffer"
         end
       end
-      save_blacklist()
+
+      save_blacklist
     end
 
     def enable_channel(m, channel=nil)
@@ -90,11 +93,12 @@ module Admin
           m.reply('Channel is currently enabled')
         end
       end
-      save_blacklist()
+
+      save_blacklist
     end
 
     def ignore_list(m)
-      m.reply "Currently ignored users are: #{Blacklist.users.join(', ')}"
+      m.reply "Currently, ignored users are: #{Blacklist.users.join(', ')}"
     end
 
 

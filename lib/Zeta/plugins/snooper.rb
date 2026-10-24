@@ -46,7 +46,7 @@ module Plugins
     meta tags, and paste the result back into the channel.
     HELP
 
-    match %r{\b((https?:\/\/)?(([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+\@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,6})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:\@&=+$,%#-]+)*\/?))}i,
+    match %r{\b((https?:\/\/)?(([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+\@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,63})(:[0-9]{1,5})?((\/[0-9a-zA-Z_!~*'().;?:\@&=+$,%#-]+)*\/?))}i,
           use_prefix: false,
           react_on: :channel
 
@@ -151,7 +151,7 @@ module Plugins
         error "[408] #{msg.user} - #{url}"
         msg.reply 'URL was forced Timed out'
       rescue => e
-        error e
+        error "#{e.class.name}: #{e.message}"
         error "[404] #{msg.user} - #{url}"
         msg.safe_reply 'I am unable to load that URL'
       end

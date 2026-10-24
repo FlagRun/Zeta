@@ -22,7 +22,7 @@ module Plugins
 
     match /reload/, method: :execute_reloadmacros, react_on: :private
     def execute_reloadmacros m
-      return unless check_user(m, :admin)
+      return unless check?(m, :admin, true)
       # return unless check_channel(m)
       begin
         # @macros = YAML::load_file($root_path + '/locales/macros.yml')
@@ -36,7 +36,8 @@ module Plugins
     match /(\w+)(?: (.+))?/, method: :execute_macro, group: :macro
     def execute_macro m, macro, arguments
       return unless @macros.has_key?(macro)
-      parse(arguments.to_s.rstrip, @macros[macro], m.channel, m.user)
+      input = arguments.to_s.strip
+      parse(input.empty? ? nil : input, @macros[macro], m.channel, m.user)
 
 
       # Guide to writing macros:

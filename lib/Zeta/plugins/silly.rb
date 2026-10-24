@@ -71,8 +71,8 @@ module Plugins
 
     def halloween(m, tz = nil)
       tz ||= "-00:00"
-      tz = tzparser(tz)
       begin
+        tz = tzparser(tz)
         today = Time.now.localtime(tz)
         hw = Time.new(today.year, 10, 31, 0, 0, 0, tz)
         hw = hw.next_year if hw.to_date.past?
@@ -93,8 +93,8 @@ module Plugins
 
     def xmas(m, tz = nil)
       tz ||= "-00:00"
-      tz = tzparser(tz)
       begin
+        tz = tzparser(tz)
         today   = Time.now.localtime(tz)
         xmas    = Time.new(today.year, 12, 25, 0, 0, 0, tz)
         xmas    = xmas.next_year if xmas.to_date.past?
@@ -115,8 +115,8 @@ module Plugins
 
     def newyear(m, tz = nil)
       tz ||= "-00:00"
-      tz = tzparser(tz)
       begin
+        tz = tzparser(tz)
         today = Time.now.localtime(tz)
         nyear = Time.new(today.year.succ, 1, 1, 0, 0, 0, tz)
         #nyear = nyear.next_year if nyear.to_date.past?
@@ -137,8 +137,8 @@ module Plugins
 
     def tz(m, tz = nil)
       tz ||= "-00:00"
-      tz = tzparser(tz)
       begin
+        tz = tzparser(tz)
         today = Time.now.localtime(tz)
         message = today.to_s
       rescue ArgumentError => ae

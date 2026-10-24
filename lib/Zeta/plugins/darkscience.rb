@@ -40,7 +40,7 @@ module Plugins
             )
         )
       rescue RestClient::Unauthorized
-        msg.action_reply "isn't currently authorized to do that"
+        return msg.action_reply "isn't currently authorized to do that"
       end
 
       # Turn JSON into an object
@@ -73,7 +73,7 @@ module Plugins
             )
         )
       rescue RestClient::Unauthorized
-        msg.action_reply "isn't currently authorized to do that"
+        return msg.action_reply "isn't currently authorized to do that"
       end
 
       # Turn JSON into an object
@@ -114,7 +114,7 @@ module Plugins
             )
         )
       rescue RestClient::Unauthorized
-        msg.action_reply "isn't currently authorized to do that"
+        return msg.action_reply "isn't currently authorized to do that"
       end
 
       # Turn JSON into an object

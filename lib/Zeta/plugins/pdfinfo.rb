@@ -44,7 +44,7 @@ module Plugins
 
 
       # Get file and parse metadata
-      open(url, "rb") do |io|
+      URI.open(url, "rb") do |io|
         reader = PDF::Reader.new(io)
         creator = reader.info[:Creator] || 'Anon'
         producer = reader.info[:Producer] || 'Anon'

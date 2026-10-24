@@ -23,25 +23,36 @@ module Admin
         $1 + "_" + $2
       }.downcase # we downcase here to also catch the first letter
 
-      #file_name = "lib/plugins/#{mapping}.rb"
-      stdlib_plugin = File.join('Zeta', 'plugins', p.to_s)
-      custom_plugin = File.join(Dir.home, '.zeta', 'plugins', p.to_s, "#{p.to_s}.rb")
+      # Mapping becomes part of a file path; reject anything that could traverse directories
+      unless mapping.match?(/\A\w+\z/)
+        m.reply "Could not load #{plugin} because #{mapping} is not a valid plugin name."
+        return
+      end
 
-      unless File.exist?(custom_plugin)
-        m.reply "Could not load #{plugin} because #{file_name} does not exist."
+      custom_plugin = File.join(Dir.home, '.zeta', 'plugins', mapping, "#{mapping}.rb")
+      stdlib_plugin = File.expand_path(File.join('..', 'plugins', "#{mapping}.rb"), __dir__)
+      file_name = [custom_plugin, stdlib_plugin].find { |f| File.exist?(f) }
+
+      unless file_name
+        m.reply "Could not load #{plugin} because #{mapping}.rb does not exist."
+        return
+      end
+
+      existing = plugin_class(plugin)
+      if existing && @bot.plugins.any? { |p| p.instance_of?(existing) }
+        m.reply "#{plugin} is already loaded."
         return
       end
 
       begin
-        load(custom_plugin)
-      rescue
+        load(file_name)
+      rescue StandardError, ScriptError
         m.reply "Could not load #{plugin}."
         raise
       end
 
-      begin
-        const = Plugins.const_get(plugin)
-      rescue NameError
+      const = plugin_class(plugin)
+      unless const
         m.reply "Could not load #{plugin} because no matching class was found."
         return
       end
@@ -51,9 +62,8 @@ module Admin
     end
 
     def unload_plugin(m, plugin)
-      begin
-        plugin_class = Plugins.const_get(plugin)
-      rescue NameError
+      plugin_class = plugin_class(plugin)
+      unless plugin_class
         m.reply "Could not unload #{plugin} because no matching class was found."
         return
       end
@@ -92,13 +102,22 @@ module Admin
     end
 
     def set_option(m, plugin, option, value)
-      begin
-        const = Plugins.const_get(plugin)
-      rescue NameError
+      const = plugin_class(plugin)
+      unless const
         m.reply "Could not set plugin option for #{plugin} because no matching class was found."
         return
       end
       @bot.config.plugins.options[const][option.to_sym] = eval(value)
+    end
+
+    private
+
+    # Bare `Plugins` here would resolve to this class, not the ::Plugins namespace.
+    def plugin_class(name)
+      const = ::Plugins.const_get(name, false)
+      const if const.is_a?(Class) && const.include?(Cinch::Plugin)
+    rescue NameError
+      nil
     end
   end
 
