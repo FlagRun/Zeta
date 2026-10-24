@@ -11,7 +11,7 @@ module Admin
 
     def open_fifo(m)
       # Sometimes FiFo is left open on crash, remove old fifo
-      if File.exists?(File.join(Dir.home, '.zeta', 'zeta.io'))
+      if File.exist?(File.join(Dir.home, '.zeta', 'zeta.io'))
         File.delete(File.join(Dir.home, '.zeta', 'zeta.io'))
       end
 

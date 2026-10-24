@@ -23,8 +23,17 @@ module Admin
       end
     end
 
-    def mode(m, nick)
-      bot.modes = m
+    def mode(m, modes)
+      add, remove = [], []
+      target = add
+      modes.strip.each_char do |c|
+        case c
+        when '+' then target = add
+        when '-' then target = remove
+        else target << c
+        end
+      end
+      bot.modes = (bot.modes | add) - remove
     end
 
     def quit(m, msg=nil)

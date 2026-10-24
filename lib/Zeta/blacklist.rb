@@ -1,7 +1,7 @@
 BlackListStruct = Struct.new :channels, :users, :plugins, :urls, :masks
 
 # Load Cached
-if File.exists?(File.join(Dir.home, '.zeta', 'cache', 'blacklist.rb'))
+if File.exist?(File.join(Dir.home, '.zeta', 'cache', 'blacklist.rb'))
   File.open(File.join(Dir.home, '.zeta', 'cache', 'blacklist.rb')) do |file|
     Blacklist = Marshal.load(file)
   end

@@ -24,22 +24,22 @@ module Admin
 
 
     def bl_channel(m, chan)
-      m.reply "#{chan} is already on BlackList" if Blacklist.channels.include? chan
+      return m.reply "#{chan} is already on BlackList" if Blacklist.channels.include? chan
       Blacklist.channels << chan
       save_blacklist()
       m.reply "#{chan} is now on the BlackList"
     end
 
     def bl_url(m, url)
-      m.reply "#{url} is already on BlackList" if Blacklist.channels.include? url
+      return m.reply "#{url} is already on BlackList" if Blacklist.urls.include? url
       Blacklist.urls << url
       save_blacklist()
       m.reply "#{url} is now on the BlackList"
     end
 
     def bl_mask(m, mask)
-      m.reply "#{mask} is already on BlackList" if Blacklist.masks.include? mask
-      Blacklist.masks << url
+      return m.reply "#{mask} is already on BlackList" if Blacklist.masks.include? mask
+      Blacklist.masks << mask
       save_blacklist()
       m.reply "#{mask} is now on the BlackList"
     end

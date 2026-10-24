@@ -64,7 +64,7 @@ module Cinch
           when :a, :admin # Admin
             return true if channel.admins.include? user
             false
-          when :o, :op # Op
+          when :o, :op, :operator # Op
             return true if channel.ops.include? user
             false
           when :h, :halfop # Half-Op

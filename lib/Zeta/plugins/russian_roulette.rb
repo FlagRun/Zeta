@@ -84,7 +84,7 @@ module Plugins
 
     def end_game(channel, premature=false)
       @games.delete channel.name
-      channel.msg "Oh vell, it vas fun vhile it lasted." if premature
+      channel.send "Oh vell, it vas fun vhile it lasted." if premature
       sleep 1
       channel.action "holsters the pistol."
     end

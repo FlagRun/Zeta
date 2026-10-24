@@ -3,6 +3,8 @@
 # Great gem
 require 'cinch'
 require 'cinch/toolbox'
+require 'nokogiri'
+require 'open-uri'
 # require 'cinch/cooldown'
 # require 'cinch-cooldown'
 
@@ -33,8 +35,8 @@ module Plugins
 
     def wiki(term)
       # URI Encode
-      term = URI.escape(term, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
-      url = "http://en.wikipedia.org/w/index.php?search=#{term}"
+      term = URI.encode_www_form_component(term).gsub("+", "%20")
+      url = "https://en.wikipedia.org/w/index.php?search=#{term}"
 
       # Truncate text and url if they are too long
       text = Cinch::Toolbox.truncate(get_def(term, url), @max_length)
@@ -44,11 +46,11 @@ module Plugins
     end
 
     def get_def(term, url)
-      cats = Cinch::Toolbox.get_html_element(url, '#mw-normal-catlinks')
+      cats = html_element(url, '#mw-normal-catlinks')
       if cats && cats.include?('Disambiguation')
         wiki_text = "'#{term} is too vague and lead to a disambiguation page."
       else
-        wiki_text = Cinch::Toolbox.get_html_element(url, '#mw-content-text p')
+        wiki_text = html_element(url, '#mw-content-text p')
         if wiki_text.nil? || wiki_text.include?('Help:Searching')
           return not_found(wiki_text, url)
         end
@@ -57,8 +59,8 @@ module Plugins
     end
 
     def not_found(wiki_text, url)
-      msg = "I couldn't find anything for that search, "
-      alt_term_text = Cinch::Toolbox.get_html_element(url, '.searchdidyoumean')
+      msg = +"I couldn't find anything for that search, "
+      alt_term_text = html_element(url, '.searchdidyoumean')
       if alt_term_text
         alt_term = alt_term_text[/\ADid you mean: (\w+)\z/, 1]
         msg << "did you mean '#{alt_term}'?"
@@ -66,6 +68,14 @@ module Plugins
         msg << 'sorry!'
       end
       msg
+    end
+
+    # Cinch::Toolbox.get_html_element relies on Kernel#open(url), removed in Ruby 3
+    def html_element(url, selector)
+      doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => "Zeta/#{Zeta::VERSION}").read)
+      doc.css(selector).first&.content
+    rescue SocketError, OpenURI::HTTPError, Net::OpenTimeout, Net::ReadTimeout, SystemCallError
+      nil
     end
   end
 end

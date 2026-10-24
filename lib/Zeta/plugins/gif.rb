@@ -15,7 +15,7 @@ module Plugins
     def initialize(*args)
       super
       @imgurray = []
-      @last_update = Time
+      @last_update = Time.at(0)
     end
 
     match 'randomgif', method: :imgif
@@ -53,11 +53,12 @@ module Plugins
 
     def imgur
       # Cache results for 1 hour
-      if @imgurray.empty? || @last_update >= (Time.now + 3600)
+      if @imgurray.empty? || @last_update < (Time.now - 3600)
         parser = URI::Parser.new
 
         url = parser.escape('http://reddit.com/r/gifs.json')
         doc = JSON.load(RestClient.get(url).body)
+        @imgurray.clear
 
         doc['data']['children'].each_with_index do |post, index|
           if doc['data']['children'][index]['data']['url'].to_s =~ /imgur/

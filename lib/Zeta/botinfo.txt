@@ -1,0 +1,3 @@
+Hello I'm {bot_name}.
+I am currently trolling {total_users} users in {total_channels} channels with an uptime of {uptime}
+My master is {owner_name} and he has plugged me with {plugins_count_remaining} plugins

@@ -1,5 +1,5 @@
 require 'crack'
-require 'cgi'
+require 'cgi/escape'
 
 module Plugins
   class Wolfram
@@ -24,10 +24,10 @@ module Plugins
 
         data = Crack::XML.parse(request)
 
-        pod0 = data['queryresult']['pod'][0]['subpod']['plaintext'].strip
-        pod1 = data['queryresult']['pod'][1]['subpod']['plaintext'].strip
+        pod0 = data['queryresult']['pod'][0]['subpod']['plaintext']&.strip
+        pod1 = data['queryresult']['pod'][1]['subpod']['plaintext'].to_s.strip
 
-        return 'Unable to get a results' if pod0.nil?
+        return m.reply('Unable to get a results') if pod0.nil?
 
         if pod1.lines.count > 2
           m.user.send "# Wolfram Results #\n #{pod0}\n #{pod1}", true

@@ -151,7 +151,7 @@ module Plugins
         error "[408] #{msg.user} - #{url}"
         msg.reply 'URL was forced Timed out'
       rescue => e
-        error e
+        error "#{e.class.name}: #{e.message}"
         error "[404] #{msg.user} - #{url}"
         msg.safe_reply 'I am unable to load that URL'
       end

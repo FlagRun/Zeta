@@ -30,13 +30,13 @@ module Admin
     def oper_clearchan(m, chan, confirm=false)
       if confirm == 'yes' || confirm == 'true'
         Channel(chan).join
-        User('OperServ').send("mode #{chan} +o #{Zeta}")
+        User('OperServ').send("mode #{chan} +o #{@bot.nick}")
         User('OperServ').send("mode #{chan} +mi")
         Channel(chan).send('This channel is being cleared')
 
         number_killed = 0
         Channel(chan).users.each_key do |u|
-          if u != Zeta
+          if u != @bot
             number_killed += 1
             @bot.irc.send("KILL #{u.nick} This channel is being cleared")
           end
