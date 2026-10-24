@@ -23,6 +23,12 @@ module Admin
         $1 + "_" + $2
       }.downcase # we downcase here to also catch the first letter
 
+      # Mapping becomes part of a file path; reject anything that could traverse directories
+      unless mapping.match?(/\A\w+\z/)
+        m.reply "Could not load #{plugin} because #{mapping} is not a valid plugin name."
+        return
+      end
+
       custom_plugin = File.join(Dir.home, '.zeta', 'plugins', mapping, "#{mapping}.rb")
       stdlib_plugin = File.expand_path(File.join('..', 'plugins', "#{mapping}.rb"), __dir__)
       file_name = [custom_plugin, stdlib_plugin].find { |f| File.exist?(f) }

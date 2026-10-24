@@ -126,6 +126,16 @@ RSpec.describe Admin::Plugins do
     expect(replies).to eq(['Could not load NoSuchThing because no_such_thing.rb does not exist.'])
   end
 
+  it 'refuses file mappings that could escape the plugin directories' do
+    loaded = []
+    without_partial_double_verification do
+      allow_any_instance_of(Admin::Plugins).to receive(:load) { |_, f| loaded << f }
+    end
+    say 'opal', '.plugin load Evil ../../../tmp/evil'
+    expect(replies).to eq(['Could not load Evil because ../../../tmp/evil is not a valid plugin name.'])
+    expect(loaded).to be_empty
+  end
+
   it 'reports unknown plugins when unloading' do
     say 'opal', '.plugin unload String'
     expect(replies).to eq(['Could not unload String because no matching class was found.'])
