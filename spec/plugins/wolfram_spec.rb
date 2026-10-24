@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Plugins::Wolfram do
-  let(:api) { 'http://api.wolframalpha.com/v2/query' }
+  let(:api) { 'https://api.wolframalpha.com/v2/query' }
 
   def result(input, output)
     <<~XML
@@ -34,7 +34,7 @@ RSpec.describe Plugins::Wolfram do
     expect(replies).to eq(['Unable to get a results'])
   end
 
-  it 'handles failures' do
+  it 'handles failures', :allow_errors do
     stub_request(:get, api).with(query: hash_including({})).to_return(status: 500)
     say 'bob', '.wolframalpha anything'
     expect(replies).to eq(['Unable to get a results'])
@@ -55,6 +55,45 @@ RSpec.describe Plugins::Wolfram do
   it 'reports an empty input interpretation' do
     stub_request(:get, api).with(query: hash_including({})).to_return(body: result('', '42'))
     say 'bob', '.calc nothing'
+    expect(replies).to eq(['Unable to get a results'])
+  end
+
+  it 'no longer uses the plain http endpoint, which now only redirects' do
+    stub_request(:get, api).with(query: hash_including({})).to_return(body: result('2+2', '4'))
+    say 'bob', '.calc 2+2'
+    expect(a_request(:get, %r{\Ahttp://})).not_to have_been_made
+    expect(replies).to eq(['2+2 = 4'])
+  end
+
+  it 'says so when Wolfram rejects the appid', :allow_errors do
+    stub_request(:get, api).with(query: hash_including({}))
+                           .to_return(status: 401, body: '<error status="401" message="Invalid appid"></error>')
+    say 'bob', '.calc 2+2'
+    expect(actions_to).to eq(["isn't currently authorized to do that"])
+  end
+
+  it 'answers results with only an input pod' do
+    stub_request(:get, api).with(query: hash_including({}))
+                           .to_return(body: '<queryresult><pod><subpod><plaintext>pi</plaintext></subpod></pod></queryresult>')
+    say 'bob', '.calc pi'
+    expect(replies).to eq(['pi'])
+  end
+
+  it 'joins pods made of several subpods' do
+    stub_request(:get, api).with(query: hash_including({})).to_return(body: <<~XML)
+      <queryresult>
+        <pod><subpod><plaintext>x^2 = 4</plaintext></subpod></pod>
+        <pod><subpod><plaintext>x = -2</plaintext></subpod><subpod><plaintext>x = 2</plaintext></subpod></pod>
+      </queryresult>
+    XML
+    say 'bob', '.calc solve x^2 = 4'
+    expect(replies).to eq(['x^2 = 4 = x = -2', 'x = 2'])
+  end
+
+  it 'reports queries Wolfram cannot understand' do
+    stub_request(:get, api).with(query: hash_including({}))
+                           .to_return(body: '<queryresult success="false" error="false" numpods="0"></queryresult>')
+    say 'bob', '.calc asdkjhqwe'
     expect(replies).to eq(['Unable to get a results'])
   end
 

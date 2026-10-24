@@ -4,7 +4,36 @@ RSpec.describe Plugins::Wikipedia do
   def search_url(term) = "https://en.wikipedia.org/w/index.php?search=#{term}"
 
   before do
-    stub_request(:get, %r{\Ahttp://is\.gd/create\.php}).to_return(body: 'https://is.gd/short')
+    stub_request(:get, %r{\Ahttp://is\.gd/}).to_return(status: 301, headers: { 'Location' => 'https://is.gd/' })
+    stub_request(:get, %r{\Ahttps://is\.gd/create\.php}).to_return(body: 'https://is.gd/short')
+  end
+
+  it 'skips the empty placeholder paragraphs Wikipedia puts before the article text' do
+    stub_request(:get, search_url('google'))
+      .to_return(body: "<div id=\"mw-content-text\"><p class=\"mw-empty-elt\">\n</p><p>Google LLC is a company.</p></div>")
+    say 'bob', '.wiki google'
+    expect(replies).to eq(['Wiki ∴ Google LLC is a company. [https://is.gd/short]'])
+  end
+
+  it 'asks is.gd over https to shorten the escaped search url' do
+    stub_request(:get, search_url('Ruby')).to_return(body: '<div id="mw-content-text"><p>A gem.</p></div>')
+    say 'bob', '.wiki Ruby'
+    expect(a_request(:get, 'https://is.gd/create.php')
+      .with(query: { format: 'simple', url: search_url('Ruby') })).to have_been_made
+  end
+
+  it 'falls back to the full url when the shortener fails' do
+    stub_request(:get, %r{\Ahttps://is\.gd/create\.php}).to_return(body: 'Error: rate limit exceeded')
+    stub_request(:get, search_url('Ruby')).to_return(body: '<div id="mw-content-text"><p>A gem.</p></div>')
+    say 'bob', '.wiki Ruby'
+    expect(replies).to eq(["Wiki ∴ A gem. [#{search_url('Ruby')}]"])
+  end
+
+  it 'falls back to the full url when the shortener is unreachable' do
+    stub_request(:get, %r{\Ahttps://is\.gd/create\.php}).to_raise(SocketError)
+    stub_request(:get, search_url('Ruby')).to_return(body: '<div id="mw-content-text"><p>A gem.</p></div>')
+    say 'bob', '.wiki Ruby'
+    expect(replies).to eq(["Wiki ∴ A gem. [#{search_url('Ruby')}]"])
   end
 
   it 'replies with the first paragraph and a short url' do

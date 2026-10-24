@@ -5,6 +5,7 @@ require 'cinch'
 require 'cinch/toolbox'
 require 'nokogiri'
 require 'open-uri'
+require 'cgi/escape'
 # require 'cinch/cooldown'
 # require 'cinch-cooldown'
 
@@ -40,9 +41,18 @@ module Plugins
 
       # Truncate text and url if they are too long
       text = Cinch::Toolbox.truncate(get_def(term, url), @max_length)
-      url  = Cinch::Toolbox.shorten(url)
+      url  = shorten(url)
 
       "Wiki ∴ #{text} [#{url}]"
+    end
+
+    # Cinch::Toolbox.shorten calls is.gd over http, which now only answers with a redirect
+    def shorten(url)
+      return url if url.length < 45
+      short = URI.open("https://is.gd/create.php?format=simple&url=#{CGI.escape(url)}").read.strip
+      short.match?(%r{\Ahttps?://is\.gd/\w+\z}) ? short : url
+    rescue SocketError, OpenURI::HTTPError, Net::OpenTimeout, Net::ReadTimeout, SystemCallError
+      url
     end
 
     def get_def(term, url)
@@ -73,7 +83,8 @@ module Plugins
     # Cinch::Toolbox.get_html_element relies on Kernel#open(url), removed in Ruby 3
     def html_element(url, selector)
       doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => "Zeta/#{Zeta::VERSION}").read)
-      doc.css(selector).first&.content
+      # Wikipedia pads articles with empty placeholder paragraphs; skip blank matches
+      doc.css(selector).map(&:content).find { |text| !text.strip.empty? }
     rescue SocketError, OpenURI::HTTPError, Net::OpenTimeout, Net::ReadTimeout, SystemCallError
       nil
     end
